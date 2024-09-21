@@ -1,0 +1,30 @@
+{
+    "current": {
+        "track": 1,
+        "frog": 3,
+        "cite": 5,
+        "animal": 12,
+        "meme": 18,
+        "food": 25,
+        "soundpad": 40,
+        "drawing": 70,
+        "rain": 100,
+        "event": 200,
+        "role": 700,
+        "band": 2000
+    },
+    "default": {
+        "track": 1,
+        "frog": 3,
+        "cite": 5,
+        "animal": 12,
+        "meme": 18,
+        "food": 25,
+        "soundpad": 40,
+        "drawing": 70,
+        "rain": 100,
+        "event": 200,
+        "role": 700,
+        "band": 2000
+    }
+}

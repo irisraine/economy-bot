@@ -1,0 +1,20 @@
+# Ignore directory in any project's directiories
+__pycache__
+database
+logs
+.venv
+.vscode
+.idea
+.env
+
+# Ignore all temporary *.pyc files in any project's directiories
+*.pyc
+
+# Ignore all files in the assets directory
+shop_items/**
+
+# Do not ignore directories within assets
+!shop_items/**/
+
+# Ignore current cache
+settings/cache.json
