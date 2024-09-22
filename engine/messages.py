@@ -2,6 +2,7 @@ import nextcord
 import engine.config as config
 from datetime import datetime
 import engine.utils as utils
+import engine.sql as sql
 
 
 class MessageContainer:
@@ -123,7 +124,7 @@ def catch(user, amount):
 def cooldown(delta_time):
     return MessageContainer(
         title="Не так быстро!",
-        description=f"Лягушек можно ловить только один раз в 10 секунд. "
+        description=f"Лягушек можно ловить только один раз в {config.CATCHING_COOLDOWN} секунд. "
                     f"Подожди еще **{datetime.fromtimestamp(config.CATCHING_COOLDOWN - delta_time).strftime('%H:%M:%S')}** перед следующей попыткой",
         file_path=config.COOLDOWN_IMAGE
     )
@@ -142,12 +143,10 @@ def balance(user, user_balance):
 def insufficient_balance():
     return MessageContainer(
         title="Недостаточно средств",
-        description=f"К сожалению, в твоем болоте слишком мало лягушек, и ты не можешь позволить себе покупку столь дорогостоящего товара. Недаром говорят, что нищета хуже воровства!",
+        description=f"К сожалению, в твоем болоте слишком мало лягушек, и ты не можешь позволить себе покупку "
+                    f"столь дорогостоящего товара. Недаром говорят, что нищета хуже воровства!",
         file_path=config.COOLDOWN_IMAGE
     )
-
-def balance_bank():
-    pass
 
 def buying_confirmation(item, price):
     return MessageContainer(
@@ -188,7 +187,8 @@ def item_purchased(item):
 def transfer(other_user, amount):
     return MessageContainer(
         title="Перевод земноводных средств",
-        description=f"Вы собираетесь от чистого сердца подарить {amount} {utils.numeral(amount)} пользователю {other_user.mention}.",
+        description=f"Вы собираетесь от чистого сердца подарить {amount} {utils.numeral(amount)} "
+                    f"пользователю {other_user.mention}.",
         file_path=config.TRANSFER_IMAGE
     )
 
@@ -202,7 +202,9 @@ def transfer_successful(other_user, amount):
 def transfer_denied(other_user, amount):
     return MessageContainer(
         title="Перевод невозможен",
-        description=f"К сожалению, в твоем болоте слишком мало лягушек, и ты не можешь позволить себе перевести {other_user.mention} целых {amount} {utils.numeral(amount)}. Если хочешь исправить эту ситуацию, пойди и займись их ловлей.",
+        description=f"К сожалению, в твоем болоте слишком мало лягушек, и ты не можешь позволить себе "
+                    f"перевести {other_user.mention} целых {amount} {utils.numeral(amount)}. "
+                    f"Если хочешь исправить эту ситуацию, пойди и займись их ловлей.",
         file_path=config.TRANSFER_DENIED_IMAGE
     )
 
@@ -231,6 +233,161 @@ def admin_panel():
         description=f"Настройки бота, доступные только для администраторов",
         file_path=config.ADMIN_PANEL_IMAGE
     )
+
+def bank_balance():
+    return MessageContainer(
+        title="Баланс всемирного болотного банка",
+        description=f"Общий объем счетов банковской казны "
+                    f"составляет **{sql.get_bank_balance()}** <:1frg:1286272480083836970>. "
+                    f"Именно столько в сумме потратили участники нашего сервера на покупки в магазине!",
+        file_path=config.BANK_BALANCE_IMAGE
+    )
+
+def send_message_by_bot():
+    return MessageContainer(
+        title="Отправить сообщение от лица бота",
+        description=f"Сообщение будет отправлено в новостной канал <#1280947121004216362>",
+        file_path=config.BANK_BALANCE_IMAGE
+    )
+
+def set_price():
+    return MessageContainer(
+        title="Установить новую цену на товар",
+        description=f"Установка цены на товар",
+        file_path=config.SET_PRICE_IMAGE
+    )
+
+def set_probabilities():
+    return MessageContainer(
+        title="Установить вероятности отлова",
+        description=f"Задайте в процентах в открывшейся форме вероятности отлова определенного количества лягушек. \n"
+                    f"Обычный улов составляет 1-2 лягушки, редкий улов - 3-4 лягушки, эпический - 5-6 лягушек, "
+                    f"и легендарный - от 7 до 45 лягушек \n"
+                    f"Имейте в виду, что каждая последующая вероятность должна обязательно быть меньше предыдущей!",
+        file_path=config.SET_PROBABILITIES_IMAGE
+    )
+
+def set_cooldown():
+    return MessageContainer(
+        title="Установить новую продолжительность кулдауна",
+        description=f"Укажите длительность промежутка между ловлями лягушек. Он должен составлять не менее 1, и не более 100 секунд",
+        file_path=config.SET_PRICE_IMAGE
+    )
+
+def set_price_confirmed(valid_price=True):
+    if valid_price:
+        title = "Успешно"
+        description = f"Новая цена установлена!"
+    else:
+        title = "Ошибка"
+        description = f"Вы установили неправильную цену. Цена должна быть целым положительным числом!"
+
+    return MessageContainer(
+        title=title,
+        description=description
+    )
+
+def reset_price_confirmed():
+    return MessageContainer(
+        title="Успешно",
+        description=f"Установлены цены по умолчанию!"
+    )
+
+def set_probabilities_confirmed(valid_probabilities=True):
+    if valid_probabilities:
+        title = "Успешно"
+        description = f"Новые значения вероятностей отлова установлены!"
+    else:
+        title = "Ошибка"
+        description = f"Вы установили ошиблись при установке вероятностей. Внимательно перечитайте требования к устанавливаемым значениям"
+
+    return MessageContainer(
+        title=title,
+        description=description
+    )
+
+def reset_probabilities_confirmed():
+    return MessageContainer(
+        title="Успешно",
+        description=f"Установлены вероятности по умолчанию!"
+    )
+
+def set_cooldown_confirmed(valid_cooldown=True):
+    if valid_cooldown:
+        title = "Успешно"
+        description = f"Новое значение кулдауна установлено!"
+    else:
+        title = "Ошибка"
+        description = f"Вы установили ошиблись при установке кулдауна. Внимательно перечитайте требования к устанавливаемым значению"
+
+    return MessageContainer(
+        title=title,
+        description=description
+    )
+
+def reset_cooldown_confirmed():
+    return MessageContainer(
+        title="Успешно",
+        description=f"Установлена продолдительность кулдауна по умолчанию!"
+    )
+
+def news_channel_message(title, description):
+    return MessageContainer(
+        title=f"**{title}**",
+        description=description
+    )
+
+def send_message_by_bot_confirmed():
+    return MessageContainer(
+        title="Успешно",
+        description=f"Сообщение отправлено!"
+    )
+
+def all_users_balances():
+    all_users_balances_list = ""
+    for i, user_balance in enumerate(sql.get_all_users_balances()):
+        all_users_balances_list += f"{i}. {user_balance[0]} — **{user_balance[1]}** <:1frg:1286272480083836970>\n"
+    return MessageContainer(
+        title="Земноводные состояния всех пользователей",
+        description=f"Список балансов пользователей сервера, поймавших и имеющих на счету хотя бы одну лягушку: \n\n"
+                    f"{all_users_balances_list}",
+        file_path=config.ALL_USERS_BALANCES_IMAGE
+    )
+
+def service_purchased_and_requested(user, item):
+    services = {
+        "drawing": "просит нарисовать для него **авторский рисунок**.",
+        "rain": "вызывает **дождь из лягушек**.",
+        "event": "хочет организовать на сервере уникальный **ивент**.",
+        "role": "приобрел **роль** <@&1286287383762960384>.",
+        "band": "запрашивает создание собственной дерзкой **банды** на сервере.",
+    }
+    return MessageContainer(
+        title="Пользователь приобрел премиум-услугу",
+        description=f"Пользователь {user} потратил **{config.PRICES[item]}** <:1frg:1286272480083836970> своих "
+                    f"кровно заработанных, и {services[item]}",
+        file_path = config.SHOP_ITEMS_SERVICES[item]
+    )
+
+def unlimited_transfer():
+    return MessageContainer(
+        title="Подарить сокровище от админа",
+        description=f"Вы собираетесь от чистого сердца подарить другому пользователю целое состояние - или одну лягушку. Главное, что вы хозяин болота и не ограничены ничем!",
+        file_path=config.TRANSFER_IMAGE
+    )
+
+def unlimited_transfer_confirmed(other_user=None, amount=None, is_valid_transfer=True):
+    if is_valid_transfer:
+        return MessageContainer(
+            title="Перевод произведен успешно",
+            description=f"Вы выпустили {amount} {utils.numeral(amount)} в болото, принадлежащее {other_user}.",
+            file_path=config.TRANSFER_SUCCESS_IMAGE
+        )
+    else:
+        return MessageContainer(
+            title="Ошибка",
+            description="Перевод невозможен. Похоже, вы ошиблись при вводе суммы."
+        )
 
 def not_applied_yet():
     return MessageContainer(

@@ -1,11 +1,11 @@
 import nextcord
 from nextcord.ext import commands, application_checks
 import logging
+import random
 from datetime import datetime
 import engine.config as config
 import engine.sql as sql
 import engine.views as views
-import engine.utils as utils
 import engine.messages as messages
 
 
@@ -16,7 +16,7 @@ client = commands.Bot(command_prefix=':', intents=intents, default_guild_ids=[co
 async def catch(interaction: nextcord.Interaction):
     user_balance = sql.get_user_balance(interaction.user.id)
     if user_balance is None:
-        sql.create_user_balance(interaction.user.id)
+        sql.create_user_balance(interaction.user.id, interaction.user.name)
 
     current_time = int(datetime.now().timestamp())
     delta_time = current_time - sql.get_last_catching_time(interaction.user.id)
@@ -25,7 +25,17 @@ async def catch(interaction: nextcord.Interaction):
             embed=messages.cooldown(delta_time).embed,
             file=messages.cooldown(delta_time).file)
 
-    amount_of_caught_frogs = utils.catch_random_amount_of_frogs()
+    amount_of_caught_frogs = 0
+    rand = random.random()
+    if rand < config.PROBABILITIES['legendary']:
+        amount_of_caught_frogs = random.randint(7, 45)
+    elif rand < config.PROBABILITIES['rare']:
+        amount_of_caught_frogs = random.choice([5, 6])
+    elif rand < config.PROBABILITIES['uncommon']:
+        amount_of_caught_frogs = random.choice([3, 4])
+    elif rand < config.PROBABILITIES['common']:
+        amount_of_caught_frogs = random.choice([1, 2])
+
     sql.set_last_catching_time(interaction.user.id, current_time)
     if amount_of_caught_frogs > 0:
         sql.set_user_balance(interaction.user.id, amount_of_caught_frogs)
@@ -38,7 +48,7 @@ async def catch(interaction: nextcord.Interaction):
 async def balance(interaction: nextcord.Interaction):
     user_balance = sql.get_user_balance(interaction.user.id)
     if user_balance is None:
-        sql.create_user_balance(interaction.user.id)
+        sql.create_user_balance(interaction.user.id, interaction.user.name)
         user_balance = sql.get_user_balance(interaction.user.id)
     return await interaction.response.send_message(
         embed=messages.balance(interaction.user.mention, user_balance).embed,

@@ -5,19 +5,6 @@ import logging
 import engine.config as config
 
 
-def catch_random_amount_of_frogs():
-    random_value = random.random()
-    if random_value < config.PROBABILITIES['legendary']:
-        return random.randint(7, 45)
-    elif random_value < config.PROBABILITIES['rare']:
-        return random.choice([5, 6])
-    elif random_value < config.PROBABILITIES['uncommon']:
-        return random.choice([3, 4])
-    elif random_value < config.PROBABILITIES['common']:
-        return random.choice([1, 2])
-    else:
-        return 0
-
 def numeral(amount):
     if 11 <= amount % 100 <= 14:
         return "лягушек"
@@ -29,12 +16,93 @@ def numeral(amount):
     else:
         return "лягушек"
 
+def validate_cooldown(cooldown):
+    if cooldown.isdigit():
+        return 0 < int(cooldown) < 100
+    return False
+
+def validate_price(price):
+    if price.isdigit():
+        return int(price) > 0
+    return False
+
+def validate_probabilities(probabilities):
+    parsed_probabilities = {}
+    for rarity, value in probabilities.items():
+        if not value.isdigit():
+            return False
+        parsed_value = int(value)
+        if not (1 <= parsed_value <= 99):
+            return False,
+        parsed_probabilities[rarity] = parsed_value
+    values = list(parsed_probabilities.values())
+    for i in range(len(values) - 1):
+        if values[i] <= values[i + 1]:
+            return False
+    return True
+
+def set_price(item=None, price=None, reset=False):
+    prices = json_safeload(config.PRICES_JSON)
+    if reset:
+        for key, default_value in prices['default'].items():
+            prices['current'][key] = default_value
+    else:
+        prices["current"][item] = int(price)
+    json_safewrite(config.PRICES_JSON, prices)
+    config.PRICES = json_safeload(config.PRICES_JSON)['current']
+    # try:
+    #     with open(config.PRICES_JSON, 'w') as jsonfile:
+    #         json.dump(prices, jsonfile, indent=4)
+    #     config.PRICES = json_safeload(config.PRICES_JSON)['current']
+    # except Exception as error:
+    #     logging.info(f"Произошла ошибка {error} при попытке записи файла {config.PRICES_JSON}! Изменения не сохранены!")
+
+def set_probabilities(updated_probabilities=None, reset=False):
+    probabilities = json_safeload(config.PROBABILITIES_JSON)
+    if reset:
+        probabilities['current'] = probabilities['default']
+    else:
+        probabilities['current'] = {key: int(value) / 100 for key, value in updated_probabilities.items()}
+    json_safewrite(config.PROBABILITIES_JSON, probabilities)
+    config.PROBABILITIES = json_safeload(config.PROBABILITIES_JSON)['current']
+
+    # try:
+    #     with open(config.PROBABILITIES_JSON, 'w') as jsonfile:
+    #         json.dump(probabilities, jsonfile, indent=4)
+    #     config.PROBABILITIES = json_safeload(config.PROBABILITIES_JSON)['current']
+    # except Exception as error:
+    #     logging.info(f"Произошла ошибка {error} при попытке записи файла {config.PROBABILITIES_JSON}! Изменения не сохранены!")
+
+def set_cooldown(updated_cooldown=None, reset=False):
+    cooldown = json_safeload(config.CATCHING_COOLDOWN_JSON)
+    if reset:
+        cooldown['current'] = cooldown['default']
+    else:
+        cooldown['current'] = int(updated_cooldown)
+    json_safewrite(config.CATCHING_COOLDOWN_JSON, cooldown)
+    config.CATCHING_COOLDOWN = json_safeload(config.CATCHING_COOLDOWN_JSON)['current']
+
+    # try:
+    #     with open(config.CATCHING_COOLDOWN, 'w') as jsonfile:
+    #         json.dump(cooldown, jsonfile, indent=4)
+    #     config.CATCHING_COOLDOWN = json_safeload(config.CATCHING_COOLDOWN)['current']
+    # except Exception as error:
+    #     logging.info(f"Произошла ошибка {error} при попытке записи файла {config.CATCHING_COOLDOWN}! Изменения не сохранены!")
+
 def json_safeload(filepath):
     try:
         with open(filepath, 'r') as jsonfile:
             return json.load(jsonfile)
     except (FileNotFoundError, json.JSONDecodeError) as error:
         logging.info(f"Произошла ошибка {error} при попытке открытия файла {filepath}! Работа бота невозможна")
+
+def json_safewrite(filepath, data):
+    try:
+        with open(filepath, 'w') as jsonfile:
+            json.dump(data, jsonfile, indent=4)
+    except Exception as error:
+        logging.info(
+            f"Произошла ошибка {error} при попытке записи файла {filepath}! Изменения не сохранены!")
 
 def get_random_shop_item_filepath(item):
     shop_items = json_safeload(config.SHOP_ITEMS_CACHE)

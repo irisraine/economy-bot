@@ -7,16 +7,21 @@ load_dotenv()
 
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 GUILD_ID = int(os.getenv('GUILD_ID'))
-
-CATCHING_COOLDOWN = 10
+ADMIN_ID = int(os.getenv('ADMIN_ID'))
+NEWS_CHANNEL_ID =int(os.getenv('NEWS_CHANNEL_ID'))
 
 BASIC_COLOR_CODE = (8, 117, 30)
 
 SEPARATOR = "assets/separator.png"
 BALANCE_IMAGE = "assets/balance.png"
+BANK_BALANCE_IMAGE = "assets/bank_balance.png"
+ALL_USERS_BALANCES_IMAGE = "assets/all_users_balances.png"
 
 SHOP_ENTRANCE_IMAGE = "assets/shop_entrance.png"
 SHOP_COUNTER_IMAGE = "assets/shop_counter.png"
+
+SET_PRICE_IMAGE = "assets/set_price.png"
+SET_PROBABILITIES_IMAGE = "assets/set_probabilities.png"
 
 COOLDOWN_IMAGE = "assets/cooldown.png"
 
@@ -45,5 +50,9 @@ SHOP_ITEMS_SERVICES = {
     "band": "assets/band.png",
 }
 
-PRICES = utils.json_safeload("settings/prices.json")['current']
-PROBABILITIES = utils.json_safeload("settings/probabilities.json")['current']
+CATCHING_COOLDOWN_JSON = "settings/cooldown.json"
+CATCHING_COOLDOWN = utils.json_safeload(CATCHING_COOLDOWN_JSON)['current']
+PRICES_JSON = "settings/prices.json"
+PRICES = utils.json_safeload(PRICES_JSON)['current']
+PROBABILITIES_JSON = "settings/probabilities.json"
+PROBABILITIES = utils.json_safeload(PROBABILITIES_JSON)['current']
