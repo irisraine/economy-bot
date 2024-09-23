@@ -45,7 +45,7 @@ options = [
     nextcord.SelectOption(label=f"Создать свою банду", value="band", emoji="🥷"),
 ]
 
-class ShopList(nextcord.ui.View):
+class ShopMenuView(nextcord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
@@ -113,7 +113,7 @@ class PurchaseView(nextcord.ui.View):
         await interaction.edit_original_message(
             embed=messages.shop().embed,
             file=messages.shop().file,
-            view=ShopList()
+            view=ShopMenuView()
         )
 
 class TransferView(nextcord.ui.View):
@@ -152,7 +152,7 @@ class TransferView(nextcord.ui.View):
         )
 
 
-class AdminPanelView(nextcord.ui.View):
+class AdminMenuView(nextcord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
@@ -211,7 +211,7 @@ class AdminPanelView(nextcord.ui.View):
                 emoji="💭"),
         ]
     )
-    async def select_admin_panel_callback(self, select, interaction: nextcord.Interaction):
+    async def select_admin_menu_callback(self, select, interaction: nextcord.Interaction):
         admin_actions = {
             "bank_balance": {"message": messages.bank_balance(), "view": AdminActionBasicView()},
             "all_users_balance": {"message": messages.all_users_balances(), "view": AdminActionBasicView()},
@@ -258,12 +258,12 @@ class AdminActionBasicView(nextcord.ui.View):
             return False
 
     @nextcord.ui.button(label="Вернуться в админку", style=nextcord.ButtonStyle.gray, emoji="◀️", row=2)
-    async def return_to_admin_panel_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+    async def return_to_admin_menu_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
         await interaction.edit_original_message(
-            embed=messages.admin_panel().embed,
-            file=messages.admin_panel().file,
-            view=AdminPanelView()
+            embed=messages.admin().embed,
+            file=messages.admin().file,
+            view=AdminMenuView()
         )
 
     @nextcord.ui.button(label="Закрыть", style=nextcord.ButtonStyle.gray, emoji="❌", row=2)

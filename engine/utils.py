@@ -73,7 +73,7 @@ def json_safeload(filepath):
     try:
         with open(filepath, 'r') as jsonfile:
             return json.load(jsonfile)
-    except (FileNotFoundError, json.JSONDecodeError) as error:
+    except Exception as error:
         logging.info(f"Произошла ошибка {error} при попытке открытия файла {filepath}! Работа бота невозможна")
 
 def json_safewrite(filepath, data):
@@ -100,11 +100,7 @@ def refresh_cache():
                 directory_tree[dir_name] = items
                 files_count[dir_name] = len(items)
             break
-    try:
-        with open(config.SHOP_ITEMS_CACHE, 'w') as shop_contents_cache:
-            json.dump(directory_tree, shop_contents_cache, indent=2)
-        files_count_printable = '\n'.join(f"*{key}*: **{value}**" for key, value in files_count.items())
-        logging.info(f"Содержимое магазина успешно перекэшировано и записано в файл {config.SHOP_ITEMS_CACHE}")
-        return files_count_printable
-    except IOError as error:
-        logging.info(f"При кэшировании медиафайлов магазина произошла ошибка: {error}")
+    json_safewrite(config.SHOP_ITEMS_CACHE, directory_tree)
+    files_count_printable = '\n'.join(f"*{key}*: **{value}**" for key, value in files_count.items())
+    logging.info(f"Содержимое магазина успешно перекэшировано и записано в файл {config.SHOP_ITEMS_CACHE}")
+    return files_count_printable

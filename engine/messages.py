@@ -84,7 +84,7 @@ def catch(user, amount):
         case amount if 3 <= amount <= 4:
             result = "uncommon"
         case amount if 5 <= amount <= 6:
-            result = "rare"
+            result = "epic"
         case amount if amount >= 7:
             result = "legendary"
         case _:
@@ -110,11 +110,11 @@ def catch(user, amount):
                            f"и поймал {amount} {utils.numeral(amount)}",
             "file_path": config.CATCH_UNCOMMON_IMAGE
         },
-        "rare": {
+        "epic": {
             "title": "Впечатляющий результат!",
             "description": f"Здорово {user}! Ты поистине превзошел сам себя, далеко не каждому ловцу так везет. "
                            f"Сегодня тебе удалось поймать аж {amount} {utils.numeral(amount)}",
-            "file_path": config.CATCH_RARE_IMAGE
+            "file_path": config.CATCH_EPIC_IMAGE
         },
         "legendary": {
             "title": "Грандиозное событие!",
@@ -175,13 +175,13 @@ def item_purchased(item):
         "soundpad": "> **У рыб был вопрос к морю, и отвечал волн бас:**\n "
                     "> **«Теперь он ваше горе, и будет жить у вас.»**",
         "drawing": "*Сообщение о покупке услуги отправлено администратору.* \n\n"
-                   "Свяжитесь с <@1058616492758941787>, чтобы она нарисовала персонально для вас шедевр, "
+                   f"Свяжитесь с <@{config.ADMIN_ID}>, чтобы она нарисовала персонально для вас шедевр, "
                    "который вы сможете с гордостью повесить на стену.",
         "rain": "*Сообщение о покупке услуги отправлено администратору.* \n\n"
-                "Волшебники Изумрудного города уже прогревают свои адские машины, чтобы обрушить "
+                "Волшебники Изумрудного города уже раскочегаривают свои адские машины, чтобы обрушить "
                 "апокалиптический лягушачий дождь на грешный мир. Не спасется никто!",
         "event": "*Сообщение о покупке услуги отправлено администратору.* \n\n"
-                 "Дело за малым - изложите @ свои безумные планы, и на ближайшее время весь сервер поучаствует "
+                 f"Дело за малым - изложите <@{config.ADMIN_ID}> свои безумные планы, и на ближайшее время весь сервер поучаствует "
                  "в вашем авторском приключении",
         "role": "*Теперь вы принадлежите к земноводной элите этого сервера.* \n\n"
                 "Слышите звук? Это перед вами раскрылись потаенные двери, где вас уже ждут другие посвященные.",
@@ -261,11 +261,11 @@ def caching_successful(files_count_printable):
         description=f"Количество файлов в папках:\n\n{files_count_printable}"
     )
 
-def admin_panel():
+def admin():
     return MessageContainer(
         title="Админка",
         description=f"Настройки бота, доступные только для администраторов",
-        file_path=config.ADMIN_PANEL_IMAGE
+        file_path=config.ADMIN_MENU_IMAGE
     )
 
 def set_price():
@@ -279,12 +279,15 @@ def set_price_result(valid_price=True):
     if valid_price:
         title = "Успешно"
         description = f"Новая цена установлена!"
+        file_path = None
     else:
         title = "Ошибка"
         description = f"Вы установили неправильную цену. Цена должна быть целым положительным числом!"
+        file_path = config.ERROR_IMAGE
     return MessageContainer(
         title=title,
-        description=description
+        description=description,
+        file_path=file_path
     )
 
 def reset_prices_result():
@@ -307,12 +310,15 @@ def set_probabilities_result(valid_probabilities=True):
     if valid_probabilities:
         title = "Успешно"
         description = f"Новые значения вероятностей отлова установлены!"
+        file_path = None
     else:
         title = "Ошибка"
         description = f"Вы установили ошиблись при установке вероятностей. Внимательно перечитайте требования к устанавливаемым значениям"
+        file_path = config.ERROR_IMAGE
     return MessageContainer(
         title=title,
-        description=description
+        description=description,
+        file_path=file_path
     )
 
 def reset_probabilities_result():
@@ -332,12 +338,15 @@ def set_cooldown_result(valid_cooldown=True):
     if valid_cooldown:
         title = "Успешно"
         description = f"Новое значение кулдауна установлено!"
+        file_path = None
     else:
         title = "Ошибка"
         description = f"Вы установили ошиблись при установке кулдауна. Внимательно перечитайте требования к устанавливаемым значению"
+        file_path = config.ERROR_IMAGE
     return MessageContainer(
         title=title,
-        description=description
+        description=description,
+        file_path=file_path
     )
 
 def reset_cooldown_result():
@@ -350,7 +359,7 @@ def post_news():
     return MessageContainer(
         title="Отправить сообщение от лица бота",
         description=f"Сообщение будет отправлено в новостной канал <#1280947121004216362>",
-        file_path=config.BANK_BALANCE_IMAGE
+        file_path=config.NEWS_POST_IMAGE
     )
 
 def post_news_result():
@@ -382,7 +391,8 @@ def all_users_balances():
 def news_channel_message(title, description):
     return MessageContainer(
         title=f"**{title}**",
-        description=description
+        description=description,
+        file_path=config.NEWS_POST_IMAGE
     )
 
 def gift():
@@ -402,11 +412,13 @@ def gift_confirmation(other_user=None, amount=None, is_valid_transfer=True):
     else:
         return MessageContainer(
             title="Ошибка",
-            description="Перевод невозможен. Похоже, вы ошиблись при вводе суммы."
+            description="Перевод невозможен. Похоже, вы ошиблись при вводе суммы.",
+            file_path=config.ERROR_IMAGE
         )
 
 def admin_option_only_warning():
     return MessageContainer(
         title="Ошибка",
-        description="Использовать опции админ-панели могут только администраторы сервера."
+        description="Использовать опции админ-панели могут только администраторы сервера.",
+        file_path=config.ERROR_IMAGE
     )

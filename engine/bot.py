@@ -81,16 +81,16 @@ async def shop(interaction: nextcord.Interaction):
         await interaction.response.send_message(
             embed=messages.shop().embed,
             file=messages.shop().file,
-            view=views.ShopList()
+            view=views.ShopMenuView()
         )
 
 @client.slash_command(description="Админка")
 @application_checks.has_permissions(administrator=True)
 async def admin(interaction: nextcord.Interaction):
         await interaction.response.send_message(
-            embed=messages.admin_panel().embed,
-            file=messages.admin_panel().file,
-            view=views.AdminPanelView()
+            embed=messages.admin().embed,
+            file=messages.admin().file,
+            view=views.AdminMenuView()
         )
 
 @client.event
