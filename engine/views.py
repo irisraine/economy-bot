@@ -96,6 +96,9 @@ class PurchaseView(nextcord.ui.View):
                     embed=messages.service_request(interaction.user.mention, self.shop_item).embed,
                     file=messages.service_request(interaction.user.mention, self.shop_item).file,
                 )
+            if self.shop_item == "role":
+                premium_role = interaction.guild.get_role(config.PREMIUM_ROLE_ID)
+                await interaction.user.add_roles(premium_role)
 
             await interaction.edit_original_message(
                 content=bought_item_message.content,

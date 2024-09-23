@@ -9,6 +9,7 @@ DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 GUILD_ID = int(os.getenv('GUILD_ID'))
 ADMIN_ID = int(os.getenv('ADMIN_ID'))
 NEWS_CHANNEL_ID =int(os.getenv('NEWS_CHANNEL_ID'))
+PREMIUM_ROLE_ID =int(os.getenv('PREMIUM_ROLE_ID'))
 
 BASIC_COLOR_CODE = (8, 117, 30)
 FROG_EMOJI = "<:1frg:1286272480083836970>"
