@@ -2,13 +2,13 @@
     "current": {
         "common": 0.35,
         "uncommon": 0.2,
-        "rare": 0.1,
+        "epic": 0.06,
         "legendary": 0.02
     },
     "default": {
         "common": 0.35,
         "uncommon": 0.2,
-        "rare": 0.1,
+        "epic": 0.06,
         "legendary": 0.02
     }
 }

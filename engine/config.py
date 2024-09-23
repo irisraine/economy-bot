@@ -39,14 +39,17 @@ TRANSFER_DENIED_IMAGE = "assets/transfer_denied.jpg"
 TRANSFER_FAILED_TO_SELF_IMAGE = "assets/transfer_to_self.jpg"
 TRANSFER_FAILED_TO_BOT_IMAGE = "assets/transfer_to_bot.jpg"
 
+GIFT_IMAGE = "assets/gift.jpg"
+GIFT_SUCCESS_IMAGE = "assets/gift_successful.jpg"
+
 SHOP_ITEMS_PATH = "shop_items"
 SHOP_ITEMS_CACHE = "settings/cache.json"
 
 ADMIN_MENU_IMAGE = "assets/admin_menu.jpg"
 
-ERROR_IMAGE = "assets/error.jpg"
-
 NEWS_POST_IMAGE = "assets/post_news.jpg"
+
+CACHING_SUCCESSFUL_IMAGE = "assets/caching_successful.jpg"
 
 SHOP_ITEMS_SERVICES = {
     "drawing": "assets/drawing.jpg",
@@ -55,6 +58,9 @@ SHOP_ITEMS_SERVICES = {
     "role": "assets/role.jpg",
     "band": "assets/band.jpg",
 }
+
+ERROR_IMAGE = "assets/error.jpg"
+SUCCESS_OPERATION_IMAGE = "assets/success_operation.jpg"
 
 CATCHING_COOLDOWN_JSON = "settings/cooldown.json"
 CATCHING_COOLDOWN = utils.json_safeload(CATCHING_COOLDOWN_JSON)['current']

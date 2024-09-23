@@ -31,17 +31,17 @@ def probabilities():
     }
 
 options = [
-    nextcord.SelectOption(label=f"Послушать эпичный трек про Леху", value="track", emoji="🎸"),
-    nextcord.SelectOption(label=f"Лягушка", value="frog", emoji="🐸"),
+    nextcord.SelectOption(label=f"Послушать случайный трек про Леху", value="track", emoji="🎸"),
+    nextcord.SelectOption(label=f"Случайная лягушка", value="frog", emoji="🐸"),
     nextcord.SelectOption(label=f"Случайная мудрая мысль на день", value="cite", emoji="📖"),
     nextcord.SelectOption(label=f"Случайное фото домашнего любимца", value="animal", emoji="🦊"),
     nextcord.SelectOption(label=f"Случайный мем", value="meme", emoji="🎭"),
-    nextcord.SelectOption(label=f"Сделать заказ в ресторане 'Жабий квак'", value="food", emoji="🥐"),
+    nextcord.SelectOption(label=f"Сделать заказ в ресторане «Жабий квак»", value="food", emoji="🥐"),
     nextcord.SelectOption(label=f"Случайный саундпад Лехи", value="soundpad", emoji="🔊"),
-    nextcord.SelectOption(label=f"Авторский рисунок", value="drawing", emoji="🏞"),
+    nextcord.SelectOption(label=f"Авторский скетч", value="drawing", emoji="🏞"),
     nextcord.SelectOption(label=f"Дождь из лягушек", value="rain", emoji="🌧"),
     nextcord.SelectOption(label=f"Ивент", value="event", emoji="🚀"),
-    nextcord.SelectOption(label=f"Роль 'Легушька' на 1 месяц", value="role", emoji="🎖"),
+    nextcord.SelectOption(label=f"Роль «Легушька» на 1 месяц", value="role", emoji="🎖"),
     nextcord.SelectOption(label=f"Создать свою банду", value="band", emoji="🥷"),
 ]
 
@@ -182,7 +182,7 @@ class AdminMenuView(nextcord.ui.View):
             nextcord.SelectOption(
                 label=f"Посмотреть счёта всех участников",
                 value="all_users_balance",
-                description="Изучить содержимое карманов всех участников",
+                description="Изучить содержимое прудов всех участников",
                 emoji="📈"),
             nextcord.SelectOption(
                 label=f"Перевести сколько угодно лягушек участнику",
@@ -219,7 +219,7 @@ class AdminMenuView(nextcord.ui.View):
             "prices": {"message": messages.set_price(), "view": SetPriceView()},
             "probabilities": {"message": messages.set_probabilities(), "view": SetProbabilitiesView()},
             "cooldown": {"message": messages.set_cooldown(), "view": SetCooldownView()},
-            "post_news": {"message": messages.post_news(), "view": MessageByBotView()},
+            "post_news": {"message": messages.post_news(), "view": PostNewsView()},
         }
         await interaction.response.defer()
 
@@ -272,7 +272,7 @@ class AdminActionBasicView(nextcord.ui.View):
         await interaction.delete_original_message()
 
 
-class MessageWindow(nextcord.ui.Modal):
+class PostNewsWindow(nextcord.ui.Modal):
     def __init__(self):
         super().__init__("Отправка сообщения в новостной канал")
 
@@ -303,13 +303,13 @@ class MessageWindow(nextcord.ui.Modal):
             file=messages.post_news_result().file,
             ephemeral=True)
 
-class MessageByBotView(AdminActionBasicView):
+class PostNewsView(AdminActionBasicView):
     def __init__(self):
         super().__init__()
 
     @nextcord.ui.button(label="Создать и опубликовать новость", style=nextcord.ButtonStyle.green, emoji="🗞")
     async def send_message_by_bot_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-        await interaction.response.send_modal(MessageWindow())
+        await interaction.response.send_modal(PostNewsWindow())
 
 class SetPriceModal(nextcord.ui.Modal):
     def __init__(self, item):
@@ -364,7 +364,7 @@ class SetProbabilitiesModal(nextcord.ui.Modal):
             label="Стандартный улов",
             max_length=4,
             required=True,
-            placeholder=f"Текущая вероятность: {probabilities()['common']} процентов",
+            placeholder=f"Текущая вероятность: {probabilities()['common']} %",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.common)
@@ -372,7 +372,7 @@ class SetProbabilitiesModal(nextcord.ui.Modal):
             label="Редкий улов",
             max_length=4,
             required=True,
-            placeholder=f"Текущая вероятность: {probabilities()['uncommon']} процентов",
+            placeholder=f"Текущая вероятность: {probabilities()['uncommon']} %",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.uncommon)
@@ -380,7 +380,7 @@ class SetProbabilitiesModal(nextcord.ui.Modal):
             label="Эпичный улов",
             max_length=4,
             required=True,
-            placeholder=f"Текущая вероятность: {probabilities()['epic']} процентов",
+            placeholder=f"Текущая вероятность: {probabilities()['epic']} %",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.epic)
@@ -388,7 +388,7 @@ class SetProbabilitiesModal(nextcord.ui.Modal):
             label="Легендарный улов",
             max_length=4,
             required=True,
-            placeholder=f"Текущая вероятность: {probabilities()['legendary']} процентов",
+            placeholder=f"Текущая вероятность: {probabilities()['legendary']} %",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.legendary)
@@ -408,7 +408,6 @@ class SetProbabilitiesModal(nextcord.ui.Modal):
             embed=messages.set_probabilities_result(is_valid_probabilities).embed,
             file=messages.set_probabilities_result(is_valid_probabilities).file,
             ephemeral=True)
-
 
 class SetProbabilitiesView(AdminActionBasicView):
     def __init__(self):
@@ -459,7 +458,7 @@ class SetCooldownView(AdminActionBasicView):
     async def set_cooldown_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.send_modal(SetCooldownModal())
 
-    @nextcord.ui.button(label="По умолчанию", style=nextcord.ButtonStyle.gray, emoji="⏱")
+    @nextcord.ui.button(label="По умолчанию", style=nextcord.ButtonStyle.green, emoji="⏱")
     async def default_cooldown_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
         utils.set_cooldown(reset=True)
@@ -471,16 +470,16 @@ class SetCooldownView(AdminActionBasicView):
 
 class GiftModal(nextcord.ui.Modal):
     def __init__(self):
-        super().__init__("Подарить участнику лягушачье сокровище")
+        super().__init__("Подарить участнику болотное сокровище")
 
         self.username = nextcord.ui.TextInput(
-            label="discord username",
+            label="Discord username",
             required=True,
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.username)
         self.gift_amount = nextcord.ui.TextInput(
-            label="Размер сокровища",
+            label="Количество лягушек",
             max_length=4,
             required=True,
             style=nextcord.TextInputStyle.short
