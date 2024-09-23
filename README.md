@@ -40,3 +40,6 @@ NEWS_CHANNEL_ID = 0000000000000000000
 # ID of special role obtaining in the shop
 PREMIUM_ROLE_ID = 0000000000000000000
 ```
+
+Directory `shop_items` must have `animal, cite, food, frog, meme, soundpad, track` subdirectories, 
+all of them filled with a proper content.
