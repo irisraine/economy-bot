@@ -39,30 +39,39 @@ class MessageContainer:
 def shop():
     return MessageContainer(
         title="**Добро пожаловать в наш магазинчик на болоте!**",
-        description=f"***1. Трек про Леху - {config.PRICES['track']} <:1frg:1286272480083836970>*** "
-                        "Один из легендарных хитов из платинового альбома о величайшем повелителе жаб, грозная слава о котором однажды гремела по всему Лаграсу.\n\n"    
-                        f"***2. Лягушка - {config.PRICES['frog']} <:1frg:1286272480083836970>***"
-                        "Профессиональная фотография одной из прекрасных представительниц отряда земноводных. Собери всю коллекцию, если ты настоящий фанат лягушек.\n\n"                        
-                        f"***3. Случайная мудрая мысль на день- {config.PRICES['cite']} <:1frg:1286272480083836970>***"
-                        "Кусочек мудрости, который позволит тебе преисполниться и задуматься о вечном.\n\n"                        
-                        f"***4. Случайное фото домашнего любимца - {config.PRICES['animal']} <:1frg:1286272480083836970>***"
-                        "Фото забавного и милого пушистика. Кошки, собаки, попугаи, кролики, грызуны. А если очень повезет, то ты даже сможешь увидеть лису!\n\n"
-                        f"***5. Случайный мем - {config.PRICES['meme']} <:1frg:1286272480083836970>***"
-                        "Ржака. Просто ржака. \n\n"
-                        f"***6. Сделать заказ в ресторане 'Жабий квак' - {config.PRICES['food']} <:1frg:1286272480083836970>***"
-                        "Вкуснейшая и изысканная пища. Настоящий пир! Последние пару месяцев ты был вынужден перебиваться одной лишь дрянной пустой похлебкой из походного котелка? Теперь побалуй себя!\n\n"
-                        f"***7. Случайный саундпад Лехи - {config.PRICES['soundpad']} <:1frg:1286272480083836970>***"
-                        "Уникальная возможность услышать несколько секунд живой речи величайшего повелителя жаб.\n\n"
-                        f"***8. Скетчик с вашим животным/вами в антропоморфном стиле - {config.PRICES['drawing']} <:1frg:1286272480083836970>***"
-                        "Профессиональный художник с уникальным видением, стилем и двадцатилетним опытом рисования сотворит художественный шедевр, увековечивающий тебя и твоего домашнего любимца.\n\n"
-                        f"***9. Дождь из лягушек - {config.PRICES['rain']} <:1frg:1286272480083836970>***"
-                        "Устрой апокалипсис! Простри руку твою с жезлом твоим на реки, на потоки и на озера и выведи лягух на землю Лаграсскую. Алексей простёр руку свою на воды Миссисипи; и вышли лягушки и покрыли землю Лаграсскую.\n\n"
-                        f"***10. Ивент - {config.PRICES['event']} <:1frg:1286272480083836970>***"
-                        "Стань организатором своего собственного ивента. Давно мечтал о том, чтобы сотни людей поучаствовали в твоем диком и безумном квесте? Сейчас самое время!\n\n"
-                        f"***11. Роль 'Легушька' на 1 месяц - {config.PRICES['role']} <:1frg:1286272480083836970>***"
-                        "Драгоценная донатная роль <@&1286287383762960384>, доступная только состоятельным людям и дающая доступ в закрытый клуб сервера и множество иных привилегий, теперь станет твоей.\n\n"
-                        f"***12. Банда - {config.PRICES['band']} <:1frg:1286272480083836970>***"
-                        "Сколоти свою собственную банду, которая будет наводить леденящий ужас на весь Лаграс.\n\n",
+        description=f"***1. Трек про Леху - {config.PRICES['track']} {config.FROG_EMOJI}*** "
+                    "Один из легендарных хитов из платинового альбома о величайшем повелителе жаб, "
+                    "грозная слава о котором однажды гремела по всему Лаграсу.\n\n"    
+                    f"***2. Лягушка - {config.PRICES['frog']} {config.FROG_EMOJI}***"
+                    "Профессиональная фотография одной из прекрасных представительниц отряда земноводных. "
+                    "Собери всю коллекцию, если ты настоящий фанат лягушек.\n\n"                        
+                    f"***3. Случайная мудрая мысль на день- {config.PRICES['cite']} {config.FROG_EMOJI}***"
+                    "Кусочек мудрости, который позволит тебе преисполниться и задуматься о вечном.\n\n"                        
+                    f"***4. Случайное фото домашнего любимца - {config.PRICES['animal']} {config.FROG_EMOJI}***"
+                    "Фото забавного и милого пушистика. Кошки, собаки, попугаи, кролики, грызуны. "
+                    "А если очень повезет, то ты даже сможешь увидеть лису!\n\n"
+                    f"***5. Случайный мем - {config.PRICES['meme']} {config.FROG_EMOJI}***"
+                    "Ржака. Просто ржака. \n\n"
+                    f"***6. Сделать заказ в ресторане 'Жабий квак' - {config.PRICES['food']} {config.FROG_EMOJI}***"
+                    "Вкуснейшая и изысканная пища. Настоящий пир! Последние пару месяцев ты был вынужден перебиваться "
+                    "одной лишь дрянной пустой похлебкой из походного котелка? Теперь побалуй себя!\n\n"
+                    f"***7. Случайный саундпад Лехи - {config.PRICES['soundpad']} {config.FROG_EMOJI}***"
+                    "Уникальная возможность услышать несколько секунд живой речи величайшего повелителя жаб.\n\n"
+                    f"***8. Скетчик с вашим животным/вами в антропоморфном стиле - {config.PRICES['drawing']} {config.FROG_EMOJI}***"
+                    "Профессиональный художник с уникальным видением, стилем и двадцатилетним опытом рисования "
+                    "сотворит художественный шедевр, увековечивающий тебя и твоего домашнего любимца.\n\n"
+                    f"***9. Дождь из лягушек - {config.PRICES['rain']} {config.FROG_EMOJI}***"
+                    "Устрой апокалипсис! Простри руку твою с жезлом твоим на реки, на потоки и на озера и выведи "
+                    "лягух на землю Лаграсскую. Алексей простёр руку свою на воды Миссисипи; и вышли лягушки и "
+                    "покрыли землю Лаграсскую.\n\n"
+                    f"***10. Ивент - {config.PRICES['event']} {config.FROG_EMOJI}***"
+                    "Стань организатором своего собственного ивента. Давно мечтал о том, чтобы сотни людей "
+                    "поучаствовали в твоем диком и безумном квесте? Сейчас самое время!\n\n"
+                    f"***11. Роль 'Легушька' на 1 месяц - {config.PRICES['role']} {config.FROG_EMOJI}***"
+                    "Драгоценная донатная роль <@&1286287383762960384>, доступная только состоятельным людям и дающая "
+                    "доступ в закрытый клуб сервера и множество иных привилегий, теперь станет твоей.\n\n"
+                    f"***12. Банда - {config.PRICES['band']} {config.FROG_EMOJI}***"
+                    "Сколоти свою собственную банду, которая будет наводить леденящий ужас на весь Лаграс.\n\n",
         file_path=config.SHOP_ENTRANCE_IMAGE
     )
 
@@ -133,7 +142,7 @@ def balance(user, user_balance):
     if user_balance == 0:
         description = f"{user}, на твоем счету пока еще нет ни одной лягушки. Самое время заняться их ловлей!"
     else:
-        description = f"{user}, сейчас у тебя на счету **{user_balance}** <:1frg:1286272480083836970>."
+        description = f"{user}, сейчас у тебя на счету **{user_balance}** {config.FROG_EMOJI}."
     return MessageContainer(
         title="Лягушачий баланс",
         description=description,
@@ -151,7 +160,7 @@ def insufficient_balance():
 def buying_confirmation(item, price):
     return MessageContainer(
         title="Подтверждение покупки",
-        description=f"Вы собираетесь приобрести **{item}** за **{price}** <:1frg:1286272480083836970>",
+        description=f"Вы собираетесь приобрести **{item}** за **{price}** {config.FROG_EMOJI}",
         file_path=config.SHOP_COUNTER_IMAGE
     )
 
@@ -163,18 +172,28 @@ def item_purchased(item):
         "animal": "**Заботьтесь о нем как следует.**",
         "meme": "**Держи краба.**",
         "food": "**Паеш.**",
-        "soundpad": "> **У рыб был вопрос к морю, и отвечал волн бас:**\n > **«Теперь он ваше горе, и будет жить у вас.»**",
-        "drawing": "*Сообщение о покупке услуги отправлено администратору.* \n\nСвяжитесь с <@1058616492758941787>, чтобы она нарисовала персонально для вас шедевр, который вы сможете с гордостью повесить на стену.",
-        "rain": "*Сообщение о покупке услуги отправлено администратору.* \n\nВолшебники Изумрудного города уже прогревают свои адские машины, чтобы обрушить апокалиптический лягушачий дождь на грешный мир. Не спасется никто!",
-        "event": "*Сообщение о покупке услуги отправлено администратору.* \n\nДело за малым - изложите @ свои безумные планы, и на ближайшее время весь сервер поучаствует в вашем авторском приключении",
-        "role": "*Теперь вы принадлежите к земноводной элите этого сервера.* Слышите звук? Это перед вами раскрылись потаенные двери, где вас уже ждут другие посвященные.",
-        "band": "*Сообщение о покупке услуги отправлено администратору.* \nСобирай людей под свои знамена. Отныне вы банда! Сообщи администраторам, и они создадут для тебя и твоих друзей закрытый канал, чат и собственную уникальную роль.",
+        "soundpad": "> **У рыб был вопрос к морю, и отвечал волн бас:**\n "
+                    "> **«Теперь он ваше горе, и будет жить у вас.»**",
+        "drawing": "*Сообщение о покупке услуги отправлено администратору.* \n\n"
+                   "Свяжитесь с <@1058616492758941787>, чтобы она нарисовала персонально для вас шедевр, "
+                   "который вы сможете с гордостью повесить на стену.",
+        "rain": "*Сообщение о покупке услуги отправлено администратору.* \n\n"
+                "Волшебники Изумрудного города уже прогревают свои адские машины, чтобы обрушить "
+                "апокалиптический лягушачий дождь на грешный мир. Не спасется никто!",
+        "event": "*Сообщение о покупке услуги отправлено администратору.* \n\n"
+                 "Дело за малым - изложите @ свои безумные планы, и на ближайшее время весь сервер поучаствует "
+                 "в вашем авторском приключении",
+        "role": "*Теперь вы принадлежите к земноводной элите этого сервера.* \n\n"
+                "Слышите звук? Это перед вами раскрылись потаенные двери, где вас уже ждут другие посвященные.",
+        "band": "*Сообщение о покупке услуги отправлено администратору.* \n\n"
+                "Собирай людей под свои знамена. Отныне вы банда! Сообщи администраторам, и они создадут для тебя "
+                "и твоих друзей закрытый канал, чат и собственную уникальную роль.",
     }
     service = True if (item in ["drawing", "rain", "event", "role", "band"]) else False
 
     title = "Премиум-услуга приобретена!" if service else None
     if not service:
-        file_path = utils.get_random_shop_item_filepath(item)
+        file_path = utils.get_random_shop_item(item)
     else:
         file_path = config.SHOP_ITEMS_SERVICES[item]
 
@@ -221,6 +240,21 @@ def transfer_failed(reason):
         file_path=file_path
     )
 
+def service_request(user, item):
+    services = {
+        "drawing": "просит нарисовать для него **авторский рисунок**.",
+        "rain": "вызывает **дождь из лягушек**.",
+        "event": "хочет организовать на сервере уникальный **ивент**.",
+        "role": "приобрел **роль** <@&1286287383762960384>.",
+        "band": "запрашивает создание собственной дерзкой **банды** на сервере.",
+    }
+    return MessageContainer(
+        title="Пользователь приобрел премиум-услугу",
+        description=f"Пользователь {user} потратил **{config.PRICES[item]}** {config.FROG_EMOJI} своих "
+                    f"кровно заработанных, и {services[item]}",
+        file_path = config.SHOP_ITEMS_SERVICES[item]
+    )
+
 def caching_successful(files_count_printable):
     return MessageContainer(
         title="Кэширование завершено",
@@ -234,27 +268,29 @@ def admin_panel():
         file_path=config.ADMIN_PANEL_IMAGE
     )
 
-def bank_balance():
-    return MessageContainer(
-        title="Баланс всемирного болотного банка",
-        description=f"Общий объем счетов банковской казны "
-                    f"составляет **{sql.get_bank_balance()}** <:1frg:1286272480083836970>. "
-                    f"Именно столько в сумме потратили участники нашего сервера на покупки в магазине!",
-        file_path=config.BANK_BALANCE_IMAGE
-    )
-
-def send_message_by_bot():
-    return MessageContainer(
-        title="Отправить сообщение от лица бота",
-        description=f"Сообщение будет отправлено в новостной канал <#1280947121004216362>",
-        file_path=config.BANK_BALANCE_IMAGE
-    )
-
 def set_price():
     return MessageContainer(
         title="Установить новую цену на товар",
         description=f"Установка цены на товар",
         file_path=config.SET_PRICE_IMAGE
+    )
+
+def set_price_result(valid_price=True):
+    if valid_price:
+        title = "Успешно"
+        description = f"Новая цена установлена!"
+    else:
+        title = "Ошибка"
+        description = f"Вы установили неправильную цену. Цена должна быть целым положительным числом!"
+    return MessageContainer(
+        title=title,
+        description=description
+    )
+
+def reset_prices_result():
+    return MessageContainer(
+        title="Успешно",
+        description=f"Установлены цены по умолчанию!"
     )
 
 def set_probabilities():
@@ -267,6 +303,24 @@ def set_probabilities():
         file_path=config.SET_PROBABILITIES_IMAGE
     )
 
+def set_probabilities_result(valid_probabilities=True):
+    if valid_probabilities:
+        title = "Успешно"
+        description = f"Новые значения вероятностей отлова установлены!"
+    else:
+        title = "Ошибка"
+        description = f"Вы установили ошиблись при установке вероятностей. Внимательно перечитайте требования к устанавливаемым значениям"
+    return MessageContainer(
+        title=title,
+        description=description
+    )
+
+def reset_probabilities_result():
+    return MessageContainer(
+        title="Успешно",
+        description=f"Установлены вероятности по умолчанию!"
+    )
+
 def set_cooldown():
     return MessageContainer(
         title="Установить новую продолжительность кулдауна",
@@ -274,61 +328,55 @@ def set_cooldown():
         file_path=config.SET_PRICE_IMAGE
     )
 
-def set_price_confirmed(valid_price=True):
-    if valid_price:
-        title = "Успешно"
-        description = f"Новая цена установлена!"
-    else:
-        title = "Ошибка"
-        description = f"Вы установили неправильную цену. Цена должна быть целым положительным числом!"
-
-    return MessageContainer(
-        title=title,
-        description=description
-    )
-
-def reset_price_confirmed():
-    return MessageContainer(
-        title="Успешно",
-        description=f"Установлены цены по умолчанию!"
-    )
-
-def set_probabilities_confirmed(valid_probabilities=True):
-    if valid_probabilities:
-        title = "Успешно"
-        description = f"Новые значения вероятностей отлова установлены!"
-    else:
-        title = "Ошибка"
-        description = f"Вы установили ошиблись при установке вероятностей. Внимательно перечитайте требования к устанавливаемым значениям"
-
-    return MessageContainer(
-        title=title,
-        description=description
-    )
-
-def reset_probabilities_confirmed():
-    return MessageContainer(
-        title="Успешно",
-        description=f"Установлены вероятности по умолчанию!"
-    )
-
-def set_cooldown_confirmed(valid_cooldown=True):
+def set_cooldown_result(valid_cooldown=True):
     if valid_cooldown:
         title = "Успешно"
         description = f"Новое значение кулдауна установлено!"
     else:
         title = "Ошибка"
         description = f"Вы установили ошиблись при установке кулдауна. Внимательно перечитайте требования к устанавливаемым значению"
-
     return MessageContainer(
         title=title,
         description=description
     )
 
-def reset_cooldown_confirmed():
+def reset_cooldown_result():
     return MessageContainer(
         title="Успешно",
         description=f"Установлена продолдительность кулдауна по умолчанию!"
+    )
+
+def post_news():
+    return MessageContainer(
+        title="Отправить сообщение от лица бота",
+        description=f"Сообщение будет отправлено в новостной канал <#1280947121004216362>",
+        file_path=config.BANK_BALANCE_IMAGE
+    )
+
+def post_news_result():
+    return MessageContainer(
+        title="Успешно",
+        description=f"Сообщение отправлено!"
+    )
+
+def bank_balance():
+    return MessageContainer(
+        title="Баланс всемирного болотного банка",
+        description=f"Общий объем счетов банковской казны "
+                    f"составляет **{sql.get_bank_balance()}** {config.FROG_EMOJI}. "
+                    f"Именно столько в сумме потратили участники нашего сервера на покупки в магазине!",
+        file_path=config.BANK_BALANCE_IMAGE
+    )
+
+def all_users_balances():
+    all_users_balances_list = ""
+    for i, user_balance in enumerate(sql.get_all_users_balances()):
+        all_users_balances_list += f"{i}. {user_balance[0]} — **{user_balance[1]}** {config.FROG_EMOJI}\n"
+    return MessageContainer(
+        title="Земноводные состояния всех пользователей",
+        description=f"Список балансов пользователей сервера, поймавших и имеющих на счету хотя бы одну лягушку: \n\n"
+                    f"{all_users_balances_list}",
+        file_path=config.ALL_USERS_BALANCES_IMAGE
     )
 
 def news_channel_message(title, description):
@@ -337,46 +385,14 @@ def news_channel_message(title, description):
         description=description
     )
 
-def send_message_by_bot_confirmed():
-    return MessageContainer(
-        title="Успешно",
-        description=f"Сообщение отправлено!"
-    )
-
-def all_users_balances():
-    all_users_balances_list = ""
-    for i, user_balance in enumerate(sql.get_all_users_balances()):
-        all_users_balances_list += f"{i}. {user_balance[0]} — **{user_balance[1]}** <:1frg:1286272480083836970>\n"
-    return MessageContainer(
-        title="Земноводные состояния всех пользователей",
-        description=f"Список балансов пользователей сервера, поймавших и имеющих на счету хотя бы одну лягушку: \n\n"
-                    f"{all_users_balances_list}",
-        file_path=config.ALL_USERS_BALANCES_IMAGE
-    )
-
-def service_purchased_and_requested(user, item):
-    services = {
-        "drawing": "просит нарисовать для него **авторский рисунок**.",
-        "rain": "вызывает **дождь из лягушек**.",
-        "event": "хочет организовать на сервере уникальный **ивент**.",
-        "role": "приобрел **роль** <@&1286287383762960384>.",
-        "band": "запрашивает создание собственной дерзкой **банды** на сервере.",
-    }
-    return MessageContainer(
-        title="Пользователь приобрел премиум-услугу",
-        description=f"Пользователь {user} потратил **{config.PRICES[item]}** <:1frg:1286272480083836970> своих "
-                    f"кровно заработанных, и {services[item]}",
-        file_path = config.SHOP_ITEMS_SERVICES[item]
-    )
-
-def unlimited_transfer():
+def gift():
     return MessageContainer(
         title="Подарить сокровище от админа",
         description=f"Вы собираетесь от чистого сердца подарить другому пользователю целое состояние - или одну лягушку. Главное, что вы хозяин болота и не ограничены ничем!",
         file_path=config.TRANSFER_IMAGE
     )
 
-def unlimited_transfer_confirmed(other_user=None, amount=None, is_valid_transfer=True):
+def gift_confirmation(other_user=None, amount=None, is_valid_transfer=True):
     if is_valid_transfer:
         return MessageContainer(
             title="Перевод произведен успешно",
@@ -389,8 +405,8 @@ def unlimited_transfer_confirmed(other_user=None, amount=None, is_valid_transfer
             description="Перевод невозможен. Похоже, вы ошиблись при вводе суммы."
         )
 
-def not_applied_yet():
+def admin_option_only_warning():
     return MessageContainer(
-        title="В разработке",
-        description=f"Эта функция будет добавлена несколько позднее. Имейте терпение.",
+        title="Ошибка",
+        description="Использовать опции админ-панели могут только администраторы сервера."
     )

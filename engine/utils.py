@@ -50,12 +50,6 @@ def set_price(item=None, price=None, reset=False):
         prices["current"][item] = int(price)
     json_safewrite(config.PRICES_JSON, prices)
     config.PRICES = json_safeload(config.PRICES_JSON)['current']
-    # try:
-    #     with open(config.PRICES_JSON, 'w') as jsonfile:
-    #         json.dump(prices, jsonfile, indent=4)
-    #     config.PRICES = json_safeload(config.PRICES_JSON)['current']
-    # except Exception as error:
-    #     logging.info(f"Произошла ошибка {error} при попытке записи файла {config.PRICES_JSON}! Изменения не сохранены!")
 
 def set_probabilities(updated_probabilities=None, reset=False):
     probabilities = json_safeload(config.PROBABILITIES_JSON)
@@ -66,13 +60,6 @@ def set_probabilities(updated_probabilities=None, reset=False):
     json_safewrite(config.PROBABILITIES_JSON, probabilities)
     config.PROBABILITIES = json_safeload(config.PROBABILITIES_JSON)['current']
 
-    # try:
-    #     with open(config.PROBABILITIES_JSON, 'w') as jsonfile:
-    #         json.dump(probabilities, jsonfile, indent=4)
-    #     config.PROBABILITIES = json_safeload(config.PROBABILITIES_JSON)['current']
-    # except Exception as error:
-    #     logging.info(f"Произошла ошибка {error} при попытке записи файла {config.PROBABILITIES_JSON}! Изменения не сохранены!")
-
 def set_cooldown(updated_cooldown=None, reset=False):
     cooldown = json_safeload(config.CATCHING_COOLDOWN_JSON)
     if reset:
@@ -81,13 +68,6 @@ def set_cooldown(updated_cooldown=None, reset=False):
         cooldown['current'] = int(updated_cooldown)
     json_safewrite(config.CATCHING_COOLDOWN_JSON, cooldown)
     config.CATCHING_COOLDOWN = json_safeload(config.CATCHING_COOLDOWN_JSON)['current']
-
-    # try:
-    #     with open(config.CATCHING_COOLDOWN, 'w') as jsonfile:
-    #         json.dump(cooldown, jsonfile, indent=4)
-    #     config.CATCHING_COOLDOWN = json_safeload(config.CATCHING_COOLDOWN)['current']
-    # except Exception as error:
-    #     logging.info(f"Произошла ошибка {error} при попытке записи файла {config.CATCHING_COOLDOWN}! Изменения не сохранены!")
 
 def json_safeload(filepath):
     try:
@@ -104,7 +84,7 @@ def json_safewrite(filepath, data):
         logging.info(
             f"Произошла ошибка {error} при попытке записи файла {filepath}! Изменения не сохранены!")
 
-def get_random_shop_item_filepath(item):
+def get_random_shop_item(item):
     shop_items = json_safeload(config.SHOP_ITEMS_CACHE)
     return f"{config.SHOP_ITEMS_PATH}/{item}/{random.choice(shop_items[item])}"
 
@@ -128,4 +108,3 @@ def refresh_cache():
         return files_count_printable
     except IOError as error:
         logging.info(f"При кэшировании медиафайлов магазина произошла ошибка: {error}")
-

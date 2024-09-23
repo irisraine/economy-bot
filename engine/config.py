@@ -11,6 +11,7 @@ ADMIN_ID = int(os.getenv('ADMIN_ID'))
 NEWS_CHANNEL_ID =int(os.getenv('NEWS_CHANNEL_ID'))
 
 BASIC_COLOR_CODE = (8, 117, 30)
+FROG_EMOJI = "<:1frg:1286272480083836970>"
 
 SEPARATOR = "assets/separator.png"
 BALANCE_IMAGE = "assets/balance.png"
