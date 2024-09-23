@@ -327,7 +327,7 @@ class SetPriceModal(nextcord.ui.Modal):
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        is_valid_price = utils.validate_price(self.price.value)
+        is_valid_price = utils.validate(self.price.value, check_type='price')
         if is_valid_price:
             utils.set_price(self.item, self.price.value)
         await interaction.followup.send(
@@ -401,7 +401,7 @@ class SetProbabilitiesModal(nextcord.ui.Modal):
             "epic": self.epic.value,
             "legendary": self.legendary.value
         }
-        is_valid_probabilities = utils.validate_probabilities(updated_probabilities)
+        is_valid_probabilities = utils.validate(updated_probabilities, check_type='probabilities')
         if is_valid_probabilities:
             utils.set_probabilities(updated_probabilities)
         await interaction.followup.send(
@@ -442,7 +442,7 @@ class SetCooldownModal(nextcord.ui.Modal):
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        is_valid_cooldown = utils.validate_cooldown(self.cooldown.value)
+        is_valid_cooldown = utils.validate(self.cooldown.value, check_type='cooldown')
         if is_valid_cooldown:
             utils.set_cooldown(self.cooldown.value)
         await interaction.followup.send(
@@ -488,7 +488,7 @@ class GiftModal(nextcord.ui.Modal):
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        is_valid_gift = self.gift_amount.value.isdigit()
+        is_valid_gift = utils.validate(self.gift_amount.value, check_type='gift')
         if is_valid_gift:
             sql.set_user_balance_by_username(self.username.value, int(self.gift_amount.value))
         await interaction.followup.send(

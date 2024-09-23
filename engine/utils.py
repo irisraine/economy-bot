@@ -17,30 +17,31 @@ def numeral(amount):
     else:
         return "лягушек"
 
-def validate_cooldown(cooldown):
-    if cooldown.isdigit():
-        return 0 < int(cooldown) < 100
-    return False
+def validate(value, check_type):
+    if check_type == 'cooldown':
+        if value.isdigit():
+            return 0 < int(value) < 100
+        return False
 
-def validate_price(price):
-    if price.isdigit():
-        return int(price) > 0
-    return False
+    elif check_type in ['price', 'gift']:
+        if value.isdigit():
+            return int(value) > 0
+        return False
 
-def validate_probabilities(probabilities):
-    parsed_probabilities = {}
-    for rarity, value in probabilities.items():
-        if not value.isdigit():
-            return False
-        parsed_value = int(value)
-        if not (1 <= parsed_value <= 99):
-            return False,
-        parsed_probabilities[rarity] = parsed_value
-    values = list(parsed_probabilities.values())
-    for i in range(len(values) - 1):
-        if values[i] <= values[i + 1]:
-            return False
-    return True
+    elif check_type == 'probabilities':
+        parsed_probabilities = {}
+        for rarity, probability in value.items():
+            if not probability.isdigit():
+                return False
+            parsed_probability = int(probability)
+            if not (1 <= parsed_probability <= 99):
+                return False
+            parsed_probabilities[rarity] = parsed_probability
+        values = list(parsed_probabilities.values())
+        for i in range(len(values) - 1):
+            if values[i] <= values[i + 1]:
+                return False
+        return True
 
 def set_price(item=None, price=None, reset=False):
     prices = json_safeload(config.PRICES_JSON)
@@ -75,7 +76,7 @@ def json_safeload(filepath):
         with open(filepath, 'r') as jsonfile:
             return json.load(jsonfile)
     except Exception as error:
-        logging.info(f"Произошла ошибка {error} при попытке открытия файла {filepath}! Работа бота невозможна")
+        logging.info(f"Произошла ошибка '{error}' при попытке открытия файла '{filepath}'! Работа бота невозможна")
 
 def json_safewrite(filepath, data):
     dir_name = os.path.dirname(filepath)
@@ -85,14 +86,17 @@ def json_safewrite(filepath, data):
             json.dump(data, temp_jsonfile, indent=4)
         os.replace(temp_jsonfile_name, filepath)
     except Exception as error:
-        logging.info(
-            f"Произошла ошибка {error} при попытке записи файла {filepath}! Изменения не сохранены.")
+        logging.info(f"Произошла ошибка '{error}' при попытке записи файла '{filepath}'! Изменения не сохранены.")
         if os.path.exists(temp_jsonfile_name):
             os.remove(temp_jsonfile_name)
 
 def get_random_shop_item(item):
     shop_items = json_safeload(config.SHOP_ITEMS_CACHE)
-    return f"{config.SHOP_ITEMS_PATH}/{item}/{random.choice(shop_items[item])}"
+    try:
+        return f"{config.SHOP_ITEMS_PATH}/{item}/{random.choice(shop_items[item])}"
+    except Exception as error:
+        logging.error(f"Произошла ошибка '{error}' при попытке извлечения ссылки на файл с предметом из категории '{item}'! "
+                     f"Возможно, проблема в некорректном содержимом файла кэша или его отсутствии.")
 
 def refresh_cache():
     directory_tree = {}
@@ -108,5 +112,5 @@ def refresh_cache():
             break
     json_safewrite(config.SHOP_ITEMS_CACHE, directory_tree)
     files_count_printable = '\n'.join(f"*{key}*: **{value}**" for key, value in files_count.items())
-    logging.info(f"Содержимое магазина успешно перекэшировано и записано в файл {config.SHOP_ITEMS_CACHE}")
+    logging.info(f"Содержимое магазина успешно перекэшировано и записано в файл '{config.SHOP_ITEMS_CACHE}'")
     return files_count_printable
