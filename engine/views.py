@@ -31,18 +31,18 @@ def probabilities():
     }
 
 options = [
-    nextcord.SelectOption(label=f"Послушать случайный трек про Леху", value="track", emoji="🎸"),
-    nextcord.SelectOption(label=f"Случайная лягушка", value="frog", emoji="🐸"),
-    nextcord.SelectOption(label=f"Случайная мудрая мысль на день", value="cite", emoji="📖"),
-    nextcord.SelectOption(label=f"Случайное фото домашнего любимца", value="animal", emoji="🦊"),
-    nextcord.SelectOption(label=f"Случайный мем", value="meme", emoji="🎭"),
-    nextcord.SelectOption(label=f"Сделать заказ в ресторане «Жабий квак»", value="food", emoji="🥐"),
-    nextcord.SelectOption(label=f"Случайный саундпад Лехи", value="soundpad", emoji="🔊"),
-    nextcord.SelectOption(label=f"Авторский скетч", value="drawing", emoji="🏞"),
-    nextcord.SelectOption(label=f"Дождь из лягушек", value="rain", emoji="🌧"),
-    nextcord.SelectOption(label=f"Ивент", value="event", emoji="🚀"),
-    nextcord.SelectOption(label=f"Роль «Легушька» на 1 месяц", value="role", emoji="🎖"),
-    nextcord.SelectOption(label=f"Создать свою банду", value="band", emoji="🥷"),
+    nextcord.SelectOption(label=f"Послушать случайный трек про Леху", value="track", emoji=f"{config.ITEMS_EMOJI['track']}"),
+    nextcord.SelectOption(label=f"Случайная лягушка", value="frog", emoji=f"{config.ITEMS_EMOJI['frog']}"),
+    nextcord.SelectOption(label=f"Случайная мудрая мысль на день", value="cite", emoji=f"{config.ITEMS_EMOJI['cite']}"),
+    nextcord.SelectOption(label=f"Случайное фото домашнего любимца", value="animal", emoji=f"{config.ITEMS_EMOJI['animal']}"),
+    nextcord.SelectOption(label=f"Случайный мем", value="meme", emoji=f"{config.ITEMS_EMOJI['meme']}"),
+    nextcord.SelectOption(label=f"Сделать заказ в ресторане «Жабий квак»", value="food", emoji=f"{config.ITEMS_EMOJI['food']}"),
+    nextcord.SelectOption(label=f"Случайный саундпад Лехи", value="soundpad", emoji=f"{config.ITEMS_EMOJI['soundpad']}"),
+    nextcord.SelectOption(label=f"Авторский скетч", value="drawing", emoji=f"{config.ITEMS_EMOJI['drawing']}"),
+    nextcord.SelectOption(label=f"Дождь из лягушек", value="rain", emoji=f"{config.ITEMS_EMOJI['rain']}"),
+    nextcord.SelectOption(label=f"Ивент", value="event", emoji=f"{config.ITEMS_EMOJI['event']}"),
+    nextcord.SelectOption(label=f"Роль «Легушька» на 1 месяц", value="role", emoji=f"{config.ITEMS_EMOJI['role']}"),
+    nextcord.SelectOption(label=f"Создать свою банду", value="band", emoji=f"{config.ITEMS_EMOJI['band']}"),
 ]
 
 class ShopMenuView(nextcord.ui.View):
@@ -208,7 +208,7 @@ class AdminMenuView(nextcord.ui.View):
                 label=f"Отправить любое сообщение от имени бота в салун",
                 value="post_news",
                 description="Говорить от имени лягушачьего предводителя",
-                emoji="💭"),
+                emoji="💬"),
         ]
     )
     async def select_admin_menu_callback(self, select, interaction: nextcord.Interaction):
