@@ -1,4 +1,5 @@
 import os
+import tempfile
 import json
 import random
 import logging
@@ -77,12 +78,17 @@ def json_safeload(filepath):
         logging.info(f"Произошла ошибка {error} при попытке открытия файла {filepath}! Работа бота невозможна")
 
 def json_safewrite(filepath, data):
+    dir_name = os.path.dirname(filepath)
     try:
-        with open(filepath, 'w') as jsonfile:
-            json.dump(data, jsonfile, indent=4)
+        with tempfile.NamedTemporaryFile('w', dir=dir_name, delete=False) as temp_jsonfile:
+            temp_jsonfile_name = temp_jsonfile.name
+            json.dump(data, temp_jsonfile, indent=4)
+        os.replace(temp_jsonfile_name, filepath)
     except Exception as error:
         logging.info(
-            f"Произошла ошибка {error} при попытке записи файла {filepath}! Изменения не сохранены!")
+            f"Произошла ошибка {error} при попытке записи файла {filepath}! Изменения не сохранены.")
+        if os.path.exists(temp_jsonfile_name):
+            os.remove(temp_jsonfile_name)
 
 def get_random_shop_item(item):
     shop_items = json_safeload(config.SHOP_ITEMS_CACHE)
