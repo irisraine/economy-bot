@@ -192,14 +192,22 @@ def item_purchased(item):
     service = True if (item in ["drawing", "rain", "event", "role", "band"]) else False
 
     title = "Премиум-услуга приобретена!" if service else None
+    description = items[item]
     if not service:
         file_path = utils.get_random_shop_item(item)
     else:
         file_path = config.SHOP_ITEMS_SERVICES[item]
 
+    if file_path is None:
+        title = "Ошибка"
+        description = ("К сожалению, данный товар по неизвестной причине отсутствует на нашем складе. "
+                       "Приносим извинения за доставленные неудобства. \n"
+                       "*Пожалуйста, обратитесь к администратору для возврата потраченных средств.*")
+        file_path = config.ERROR_IMAGE
+
     return MessageContainer(
         title=title,
-        description=items[item],
+        description=description,
         file_path=file_path,
     )
 
