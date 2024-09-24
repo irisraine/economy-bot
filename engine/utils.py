@@ -3,7 +3,12 @@ import tempfile
 import json
 import random
 import logging
+from datetime import datetime
 import engine.config as config
+
+
+def get_timestamp():
+    return int(datetime.now().timestamp())
 
 
 def numeral(amount):

@@ -103,6 +103,8 @@ class PurchaseView(nextcord.ui.View):
                 )
             if self.shop_item == "role":
                 premium_role = interaction.guild.get_role(config.PREMIUM_ROLE_ID)
+                expiration_time = utils.get_timestamp() + config.PREMIUM_ROLE_DURATION
+                sql.add_premium_role_owner(interaction.user.id, interaction.user.name, expiration_time)
                 await interaction.user.add_roles(premium_role)
             logging.info(f"Пользователь {interaction.user.name} покупает предмет из категории '{self.shop_item}'.")
 
@@ -140,8 +142,7 @@ class TransferView(nextcord.ui.View):
                 view=None
             )
 
-        other_user_balance = sql.get_user_balance(self.other_user.id)
-        if other_user_balance is None:
+        if sql.get_user_balance(self.other_user.id) is None:
             sql.create_user_balance(self.other_user.id, self.other_user.name)
         sql.set_user_balance(interaction.user.id, -self.transfer_amount)
         sql.set_user_balance(self.other_user.id, self.transfer_amount)
@@ -218,6 +219,11 @@ class AdminMenuView(nextcord.ui.View):
                 value="post_news",
                 description="Говорить от имени лягушачьего предводителя",
                 emoji="💬"),
+            nextcord.SelectOption(
+                label="Проверить статусы обладателей роли лягушки",
+                value="role_manage",
+                description="Кому и сколько еще осталось квакать",
+                emoji="👑"),
         ]
     )
     async def select_admin_menu_callback(self, select, interaction: nextcord.Interaction):
@@ -229,6 +235,7 @@ class AdminMenuView(nextcord.ui.View):
             "probabilities": {"message": messages.set_probabilities(), "view": SetProbabilitiesView()},
             "cooldown": {"message": messages.set_cooldown(), "view": SetCooldownView()},
             "post_news": {"message": messages.post_news(), "view": PostNewsView()},
+            "role_manage": {"message": messages.role_manage(), "view": RoleManageView()},
         }
         await interaction.response.defer()
 
@@ -518,13 +525,16 @@ class GiftModal(nextcord.ui.Modal):
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
         is_valid_gift = utils.validate(self.gift_amount.value, check_type='gift')
-        if is_valid_gift:
-            sql.set_user_balance_by_username(self.username.value, int(self.gift_amount.value))
+        other_user = nextcord.utils.get(bot.client.get_all_members(), name=self.username.value)
+        if other_user and is_valid_gift:
+            if not sql.get_user_balance(other_user.id):
+                sql.create_user_balance(other_user.id, self.username.value)
+            sql.set_user_balance(other_user.id, int(self.gift_amount.value))
             logging.info(f"Администратор переводит пользователю {self.username.value} лягушек "
                          f"в количестве {self.gift_amount.value} шт.")
         await interaction.followup.send(
-            embed=messages.gift_confirmation(self.username.value, int(self.gift_amount.value), is_valid_gift).embed,
-            file=messages.gift_confirmation(self.username.value, int(self.gift_amount.value), is_valid_gift).file,
+            embed=messages.gift_confirmation(other_user, self.gift_amount.value, is_valid_gift).embed,
+            file=messages.gift_confirmation(other_user, self.gift_amount.value, is_valid_gift).file,
             ephemeral=True)
 
 
@@ -535,3 +545,24 @@ class GiftView(AdminActionBasicView):
     @nextcord.ui.button(label="Сделать подарок с барского плеча", style=nextcord.ButtonStyle.green, emoji="💰")
     async def gift_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.send_modal(GiftModal())
+
+
+class RoleManageView(AdminActionBasicView):
+    def __init__(self):
+        super().__init__()
+
+    @nextcord.ui.button(label="Снять просроченные роли", style=nextcord.ButtonStyle.green, emoji="➖")
+    async def remove_expired_roles_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        await interaction.response.defer()
+        expired_premium_role_owners_ids = sql.remove_expired_premium_role_owners(utils.get_timestamp())
+        if expired_premium_role_owners_ids:
+            premium_role = interaction.guild.get_role(config.PREMIUM_ROLE_ID)
+            for expired_premium_role_owner_id in expired_premium_role_owners_ids:
+                expired_premium_role_owner = interaction.guild.get_member(expired_premium_role_owner_id[0])
+                await expired_premium_role_owner.remove_roles(premium_role)
+            logging.info("Администратор снимает с участников роли, срок использования которых истек.")
+        await interaction.followup.send(
+            embed=messages.role_expired_and_removed(expired_premium_role_owners_ids).embed,
+            file=messages.role_expired_and_removed(expired_premium_role_owners_ids).file,
+            ephemeral=True
+        )

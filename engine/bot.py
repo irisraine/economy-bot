@@ -2,11 +2,11 @@ import nextcord
 from nextcord.ext import commands, application_checks
 import logging
 import random
-from datetime import datetime
 import engine.config as config
 import engine.sql as sql
 import engine.views as views
 import engine.messages as messages
+import engine.utils as utils
 
 
 intents = nextcord.Intents.all()
@@ -19,7 +19,7 @@ async def catch(interaction: nextcord.Interaction):
     if user_balance is None:
         sql.create_user_balance(interaction.user.id, interaction.user.name)
 
-    current_time = int(datetime.now().timestamp())
+    current_time = utils.get_timestamp()
     delta_time = current_time - sql.get_last_catching_time(interaction.user.id)
     if delta_time < config.CATCHING_COOLDOWN:
         return await interaction.response.send_message(
@@ -110,7 +110,7 @@ async def on_application_command_error(interaction: nextcord.Interaction, error)
             embed=messages.admin_option_only_warning().embed,
             file=messages.admin_option_only_warning().file,
             ephemeral=True
-        )
+    )
     else:
         logging.error(f"При использовании команды произошла непредвиденная ошибка: '{error}'")
 

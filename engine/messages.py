@@ -16,6 +16,7 @@ ERROR_DESCRIPTION_SHOP = ("К сожалению, данный товар по �
 ERROR_DESCRIPTION_GENERAL = ("Что-то пошло не так. :(\n "
                              "В этой жизни всегда так, что порой что-то может пойти не так.")
 
+
 class MessageContainer:
     def __init__(self, title=None, description=None, file_path=None):
         self.__content = None
@@ -88,7 +89,7 @@ def shop():
                     "Стань организатором своего собственного ивента. Давно мечтал о том, чтобы сотни людей "
                     "поучаствовали в твоем диком и безумном квесте? Сейчас самое время!\n\n"
                     f"***11. Роль «Легушька» на 1 месяц - {config.PRICES['role']} {config.FROG_EMOJI}***"
-                    "Донатная роль <@&1286287383762960384>, доступная только состоятельным людям и дающая "
+                    f"Донатная роль <@&{config.PREMIUM_ROLE_ID}>, доступная только состоятельным людям и дающая "
                     "доступ в приватный голосовой чат сервера и иные привилегии, теперь станет твоей.\n\n"
                     f"***12. Банда - {config.PRICES['band']} {config.FROG_EMOJI}***"
                     "Создай свою собственную банду, слава о которой прогремит по всему Дикому Западу. "
@@ -479,17 +480,72 @@ def gift():
 
 def gift_confirmation(other_user=None, amount=None, is_valid_transfer=True):
     if is_valid_transfer:
-        return MessageContainer(
-            title="Перевод произведен успешно",
-            description=f"Вы выпустили **{amount}** {utils.numeral(amount)} в пруд, принадлежащий **{other_user}**.",
-            file_path=config.GIFT_SUCCESS_IMAGE
-        )
+        title = "Перевод произведен успешно"
+        description = (f"Вы выпустили **{amount}** {utils.numeral(int(amount))} в пруд, "
+                       f"принадлежащий **{other_user.mention}**.")
+        file_path = config.GIFT_SUCCESS_IMAGE
+    elif not other_user:
+        title = ERROR_HEADER
+        description = "Перевод невозможен. Пользователя с таким именем нет на нашем сервере."
+        file_path = config.ERROR_IMAGE
     else:
-        return MessageContainer(
-            title=ERROR_HEADER,
-            description="Перевод невозможен. Похоже, вы ошиблись при вводе количества лягушек.",
-            file_path=config.ERROR_IMAGE
-        )
+        title = ERROR_HEADER
+        description = "Перевод невозможен. Похоже, вы ошиблись при вводе количества лягушек."
+        file_path = config.ERROR_IMAGE
+
+    return MessageContainer(
+        title=title,
+        description=description,
+        file_path=file_path
+    )
+
+
+def role_manage():
+    premium_role_owners = ""
+    current_time = utils.get_timestamp()
+    for i, premium_role_owner in enumerate(sql.get_all_premium_role_owners()):
+        expiration_time = premium_role_owner[1]
+        if expiration_time > current_time:
+            if expiration_time - current_time < 86400:
+                expire = "истекает **сегодня!**"
+            else:
+                expiration_date = datetime.fromtimestamp(expiration_time).strftime('%d/%m/%Y')
+                expire = f"истекает **{expiration_date}**."
+        else:
+            expire = "**уже истекла!**"
+        premium_role_owners += f"{i}. {premium_role_owner[0]} — {expire}\n"
+
+    if premium_role_owners:
+        description = (f"Нижеприведенные участники на данный момент обладают "
+                       f"донатной ролью <@&{config.PREMIUM_ROLE_ID}>:\n\n "
+                       f"{premium_role_owners}\n"
+                       f"*Если в списке имеются участники, чей срок использования роли истек, "
+                       f"снимите с них роль c помощью соответствующей кнопки.*")
+    else:
+        description = (f"Еще ни один из участников не смог позволить себе приобрести "
+                       f"донатную роль <@&{config.PREMIUM_ROLE_ID}>.\n\n")
+
+    return MessageContainer(
+        title="Список обладателей донатной роли",
+        description=description,
+        file_path=config.ROLE_LISTING_IMAGE
+    )
+
+
+def role_expired_and_removed(expired_premium_role_owners_ids):
+    if expired_premium_role_owners_ids:
+        title = SUCCESS_HEADER
+        description = "Участники с просроченными донатными ролями лишились их."
+        file_path = config.ROLE_REMOVAL_IMAGE
+    else:
+        title = ERROR_HEADER
+        description = "Участники с просроченной донатной ролью отсутствует. Здесь не с кого и нечего снимать!"
+        file_path = config.ERROR_IMAGE
+    return MessageContainer(
+        title=title,
+        description=description,
+        file_path=file_path
+    )
 
 
 def admin_option_only_warning():
