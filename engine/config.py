@@ -92,6 +92,7 @@ SHOP_ITEMS_SERVICES = {
 }
 
 ERROR_IMAGE = "assets/error.jpg"
+ERROR_SHOP_IMAGE = "assets/error_shop.png"
 SUCCESS_OPERATION_IMAGE = "assets/success_operation.jpg"
 
 CATCHING_COOLDOWN_JSON = "settings/cooldown.json"

@@ -1,9 +1,20 @@
 import nextcord
+import os
+import logging
 import engine.config as config
 from datetime import datetime
 import engine.utils as utils
 import engine.sql as sql
 
+ERROR_HEADER = "Ошибка"
+SUCCESS_HEADER = "Успешно"
+
+ERROR_DESCRIPTION_SHOP = ("К сожалению, данный товар по неизвестной причине отсутствует на нашем складе. "
+                          "Приносим извинения за доставленные неудобства. \n\n "
+                          "*Пожалуйста, обратитесь к администратору для возврата потраченных средств.*")
+
+ERROR_DESCRIPTION_GENERAL = ("Что-то пошло не так. :(\n "
+                             "В этой жизни всегда так, что порой что-то может пойти не так.")
 
 class MessageContainer:
     def __init__(self, title=None, description=None, file_path=None):
@@ -11,6 +22,16 @@ class MessageContainer:
         self.__embed = None
         if not file_path:
             file_path = config.SEPARATOR
+        if not os.path.isfile(file_path):
+            logging.error(f"Произошла ошибка  при попытке открытия файла '{file_path}'! Файл не найден.")
+            if "shop_items" in file_path:
+                title = ERROR_HEADER
+                description = ERROR_DESCRIPTION_SHOP
+                file_path = config.ERROR_SHOP_IMAGE
+            else:
+                title = ERROR_HEADER
+                description = ERROR_DESCRIPTION_GENERAL
+                file_path = config.ERROR_IMAGE
         file_name = file_path.split('/')[-1]
         if file_name.split('.')[-1] in ['jpg', 'jpeg', 'png']:
             self.__embed = nextcord.Embed(
@@ -206,10 +227,8 @@ def item_purchased(item):
         file_path = config.SHOP_ITEMS_SERVICES[item]
 
     if file_path is None:
-        title = "Ошибка"
-        description = ("К сожалению, данный товар по неизвестной причине отсутствует на нашем складе. "
-                       "Приносим извинения за доставленные неудобства. \n\n"
-                       "*Пожалуйста, обратитесь к администратору для возврата потраченных средств.*")
+        title = ERROR_HEADER
+        description = ERROR_DESCRIPTION_SHOP
         file_path = config.ERROR_IMAGE
 
     return MessageContainer(
@@ -280,7 +299,7 @@ def caching_successful(files_count_printable):
         description = f"Количество файлов в папках:\n\n{files_count_printable}"
         file_path = config.CACHING_SUCCESSFUL_IMAGE
     else:
-        title = "Ошибка"
+        title = ERROR_HEADER
         description = ("Ошибка при кэшировании файлов. Проверьте наличие директории 📁***shop_items*** и всех "
                        "необходимых подпапок с содержимым.")
         file_path = config.ERROR_IMAGE
@@ -309,11 +328,11 @@ def set_price():
 
 def set_price_result(valid_price=True):
     if valid_price:
-        title = "Успешно"
+        title = SUCCESS_HEADER
         description = "Новая цена установлена!"
         file_path = config.SUCCESS_OPERATION_IMAGE
     else:
-        title = "Ошибка"
+        title = ERROR_HEADER
         description = "Вы установили неправильную цену. Цена должна быть целым положительным числом!"
         file_path = config.ERROR_IMAGE
     return MessageContainer(
@@ -325,7 +344,7 @@ def set_price_result(valid_price=True):
 
 def reset_prices_result():
     return MessageContainer(
-        title="Успешно",
+        title=SUCCESS_HEADER,
         description="Установлены цены по умолчанию!",
         file_path=config.SUCCESS_OPERATION_IMAGE
     )
@@ -346,11 +365,11 @@ def set_probabilities():
 
 def set_probabilities_result(valid_probabilities=True):
     if valid_probabilities:
-        title = "Успешно"
+        title = SUCCESS_HEADER
         description = "Новые значения вероятностей отлова установлены!"
         file_path = config.SUCCESS_OPERATION_IMAGE
     else:
-        title = "Ошибка"
+        title = ERROR_HEADER
         description = ("Вы ошиблись при установке вероятностей. Внимательно перечитайте требования "
                        "к устанавливаемым значениям.")
         file_path = config.ERROR_IMAGE
@@ -363,7 +382,7 @@ def set_probabilities_result(valid_probabilities=True):
 
 def reset_probabilities_result():
     return MessageContainer(
-        title="Успешно",
+        title=SUCCESS_HEADER,
         description="Установлены вероятности по умолчанию!",
         file_path=config.SUCCESS_OPERATION_IMAGE
     )
@@ -380,11 +399,11 @@ def set_cooldown():
 
 def set_cooldown_result(valid_cooldown=True):
     if valid_cooldown:
-        title = "Успешно"
+        title = SUCCESS_HEADER
         description = "Новое значение кулдауна установлено!"
         file_path = config.SUCCESS_OPERATION_IMAGE
     else:
-        title = "Ошибка"
+        title = ERROR_HEADER
         description = ("Вы установили ошиблись при установке кулдауна. "
                        "Внимательно перечитайте требования к устанавливаемым значению")
         file_path = config.ERROR_IMAGE
@@ -397,7 +416,7 @@ def set_cooldown_result(valid_cooldown=True):
 
 def reset_cooldown_result():
     return MessageContainer(
-        title="Успешно",
+        title=SUCCESS_HEADER,
         description="Установлена продолжительность кулдауна по умолчанию!"
     )
 
@@ -412,7 +431,7 @@ def post_news():
 
 def post_news_result():
     return MessageContainer(
-        title="Успешно",
+        title=SUCCESS_HEADER,
         description="Сообщение отправлено!",
         file_path=config.SUCCESS_OPERATION_IMAGE
     )
@@ -467,7 +486,7 @@ def gift_confirmation(other_user=None, amount=None, is_valid_transfer=True):
         )
     else:
         return MessageContainer(
-            title="Ошибка",
+            title=ERROR_HEADER,
             description="Перевод невозможен. Похоже, вы ошиблись при вводе количества лягушек.",
             file_path=config.ERROR_IMAGE
         )
@@ -475,7 +494,7 @@ def gift_confirmation(other_user=None, amount=None, is_valid_transfer=True):
 
 def admin_option_only_warning():
     return MessageContainer(
-        title="Ошибка",
+        title=ERROR_HEADER,
         description="Использовать опции админ-панели могут только администраторы сервера.",
         file_path=config.ERROR_IMAGE
     )
