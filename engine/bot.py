@@ -1,5 +1,6 @@
 import nextcord
 from nextcord.ext import commands, application_checks
+import os
 import logging
 import random
 import engine.config as config
@@ -118,4 +119,6 @@ async def on_application_command_error(interaction: nextcord.Interaction, error)
 @client.event
 async def on_ready():
     logging.info(f'Бот залогинен под именем: {client.user.name}')
+    if not os.path.exists('database'):
+        os.makedirs('database')
     sql.create_tables()
