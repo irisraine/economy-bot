@@ -26,7 +26,7 @@ def numeral(amount):
 def validate(value, check_type):
     if check_type == 'cooldown':
         if value.isdigit():
-            return 0 < int(value) < 100
+            return 0 < int(value) <= 24
         return False
 
     elif check_type in ['price', 'gift']:

@@ -22,7 +22,7 @@ async def catch(interaction: nextcord.Interaction):
 
     current_time = utils.get_timestamp()
     delta_time = current_time - sql.get_last_catching_time(interaction.user.id)
-    if delta_time < config.CATCHING_COOLDOWN:
+    if delta_time < config.CATCHING_COOLDOWN * 3600:
         return await interaction.response.send_message(
             embed=messages.cooldown(delta_time).embed,
             file=messages.cooldown(delta_time).file)

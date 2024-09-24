@@ -157,8 +157,8 @@ def catch(user, amount):
 def cooldown(delta_time):
     return MessageContainer(
         title="Не так быстро!",
-        description=f"Лягушек можно ловить только один раз в **{config.CATCHING_COOLDOWN}** секунд. "
-                    f"Подожди еще **{datetime.fromtimestamp(config.CATCHING_COOLDOWN - delta_time).strftime('%H:%M:%S')}** перед следующей попыткой.",
+        description=f"Лягушек можно ловить только один раз в **{config.CATCHING_COOLDOWN}** часов. "
+                    f"Подожди еще **{datetime.fromtimestamp(config.CATCHING_COOLDOWN * 3600 - delta_time).strftime('%H:%M:%S')}** перед следующей попыткой.",
         file_path=config.COOLDOWN_IMAGE
     )
 
@@ -393,7 +393,7 @@ def set_cooldown():
     return MessageContainer(
         title="Установить новую продолжительность кулдауна",
         description="Укажите длительность промежутка между ловлями лягушек. "
-                    "Он должен составлять не менее 1, и не более 100 секунд",
+                    "Он должен составлять не менее 1, и не более 24 часов.",
         file_path=config.SET_PRICE_IMAGE
     )
 
@@ -418,7 +418,8 @@ def set_cooldown_result(valid_cooldown=True):
 def reset_cooldown_result():
     return MessageContainer(
         title=SUCCESS_HEADER,
-        description="Установлена продолжительность кулдауна по умолчанию!"
+        description="Установлена продолжительность кулдауна по умолчанию!",
+        file_path=config.SUCCESS_OPERATION_IMAGE
     )
 
 
