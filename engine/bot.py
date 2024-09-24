@@ -11,7 +11,7 @@ import engine.utils as utils
 
 
 intents = nextcord.Intents.all()
-client = commands.Bot(command_prefix=':', intents=intents, default_guild_ids=[config.GUILD_ID])
+client = commands.Bot(command_prefix=';', intents=intents, default_guild_ids=[config.GUILD_ID])
 
 
 @client.slash_command(description="Поймать лягушку")
