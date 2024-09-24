@@ -10,6 +10,7 @@ def catch_sql_exceptions(func):
             logging.error(f'Ошибка доступа к базе данных! Дополнительная информация: {e}')
     return wrapper
 
+
 @catch_sql_exceptions
 def create_tables():
     with sqlite3.connect("database/vault.db") as db_connect:
@@ -29,6 +30,7 @@ def create_tables():
             WHERE NOT EXISTS (SELECT 1 FROM bank_balance
             )""")
 
+
 @catch_sql_exceptions
 def create_user_balance(user_discord_id, user_discord_name):
     with sqlite3.connect("database/vault.db") as db_connect:
@@ -36,6 +38,7 @@ def create_user_balance(user_discord_id, user_discord_name):
         cursor.execute("INSERT INTO user_balances (user_discord_id, user_discord_name) VALUES (?, ?)",
                        (user_discord_id, user_discord_name))
         return cursor.fetchone()
+
 
 @catch_sql_exceptions
 def get_user_balance(user_discord_id):
@@ -46,12 +49,14 @@ def get_user_balance(user_discord_id):
         row = cursor.fetchone()
         return row[0] if row else None
 
+
 @catch_sql_exceptions
 def get_all_users_balances():
     with sqlite3.connect("database/vault.db") as db_connect:
         cursor = db_connect.cursor()
         cursor.execute("SELECT user_discord_name, balance FROM user_balances WHERE balance > 0 ORDER BY balance DESC")
         return cursor.fetchall()
+
 
 @catch_sql_exceptions
 def get_last_catching_time(user_discord_id):
@@ -61,12 +66,14 @@ def get_last_catching_time(user_discord_id):
                        (user_discord_id,))
         return cursor.fetchone()[0]
 
+
 @catch_sql_exceptions
 def set_user_balance(user_discord_id, amount):
     with sqlite3.connect("database/vault.db") as db_connect:
         cursor = db_connect.cursor()
         cursor.execute("UPDATE user_balances SET balance = balance + ? WHERE user_discord_id = ?",
                        (amount, user_discord_id,))
+
 
 @catch_sql_exceptions
 def set_user_balance_by_username(user_discord_name, amount):
@@ -75,6 +82,7 @@ def set_user_balance_by_username(user_discord_name, amount):
         cursor.execute("UPDATE user_balances SET balance = balance + ? WHERE user_discord_name = ?",
                        (amount, user_discord_name,))
 
+
 @catch_sql_exceptions
 def set_last_catching_time(user_discord_id, current_time):
     with sqlite3.connect("database/vault.db") as db_connect:
@@ -82,12 +90,14 @@ def set_last_catching_time(user_discord_id, current_time):
         cursor.execute("UPDATE user_balances SET last_catching_time = ? WHERE user_discord_id = ?",
                        (current_time, user_discord_id,))
 
+
 @catch_sql_exceptions
 def get_bank_balance():
     with sqlite3.connect("database/vault.db") as db_connect:
         cursor = db_connect.cursor()
         cursor.execute("SELECT balance FROM bank_balance")
         return cursor.fetchone()[0]
+
 
 @catch_sql_exceptions
 def set_bank_balance(amount):

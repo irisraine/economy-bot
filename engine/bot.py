@@ -12,6 +12,7 @@ import engine.messages as messages
 intents = nextcord.Intents.all()
 client = commands.Bot(command_prefix=':', intents=intents, default_guild_ids=[config.GUILD_ID])
 
+
 @client.slash_command(description="Поймать лягушку")
 async def catch(interaction: nextcord.Interaction):
     user_balance = sql.get_user_balance(interaction.user.id)
@@ -46,6 +47,7 @@ async def catch(interaction: nextcord.Interaction):
         embed=messages.catch(interaction.user.mention, amount_of_caught_frogs).embed,
         file=messages.catch(interaction.user.mention, amount_of_caught_frogs).file)
 
+
 @client.slash_command(description="Посмотреть свой баланс")
 async def balance(interaction: nextcord.Interaction):
     user_balance = sql.get_user_balance(interaction.user.id)
@@ -57,45 +59,49 @@ async def balance(interaction: nextcord.Interaction):
         file=messages.balance(interaction.user.mention, user_balance).file
     )
 
+
 @client.slash_command(description="Подарить лягушек другому участнику")
 async def transfer(
-        interaction: nextcord.Interaction,
-        amount: int = nextcord.SlashOption(
-                name="amount",
-                description="Количество отдаваемых лягушек"),
-        other_user: nextcord.Member = nextcord.SlashOption(
-                name="username",
-                description="Имя получателя"),
-    ):
-        if other_user == interaction.user or other_user.bot:
-            fault_message = messages.transfer_failed("to_bot") if other_user.bot else messages.transfer_failed("to_self")
-            return await interaction.response.send_message(
-                embed=fault_message.embed,
-                file=fault_message.file,
-            )
-
-        await interaction.response.send_message(
-            embed=messages.transfer(other_user, amount).embed,
-            file=messages.transfer(other_user, amount).file,
-            view=views.TransferView(amount, other_user)
+    interaction: nextcord.Interaction,
+    amount: int = nextcord.SlashOption(
+        name="amount",
+        description="Количество отдаваемых лягушек"),
+    other_user: nextcord.Member = nextcord.SlashOption(
+        name="username",
+        description="Имя получателя"),
+):
+    if other_user == interaction.user or other_user.bot:
+        fault_message = messages.transfer_failed("to_bot") if other_user.bot else messages.transfer_failed("to_self")
+        return await interaction.response.send_message(
+            embed=fault_message.embed,
+            file=fault_message.file,
         )
+
+    await interaction.response.send_message(
+        embed=messages.transfer(other_user, amount).embed,
+        file=messages.transfer(other_user, amount).file,
+        view=views.TransferView(amount, other_user)
+    )
+
 
 @client.slash_command(description="Магазин West Wolves")
 async def shop(interaction: nextcord.Interaction):
-        await interaction.response.send_message(
-            embed=messages.shop().embed,
-            file=messages.shop().file,
-            view=views.ShopMenuView()
-        )
+    await interaction.response.send_message(
+        embed=messages.shop().embed,
+        file=messages.shop().file,
+        view=views.ShopMenuView()
+    )
+
 
 @client.slash_command(description="Админка")
 @application_checks.has_permissions(administrator=True)
 async def admin(interaction: nextcord.Interaction):
-        await interaction.response.send_message(
-            embed=messages.admin().embed,
-            file=messages.admin().file,
-            view=views.AdminMenuView()
-        )
+    await interaction.response.send_message(
+        embed=messages.admin().embed,
+        file=messages.admin().file,
+        view=views.AdminMenuView()
+    )
+
 
 @client.event
 async def on_application_command_error(interaction: nextcord.Interaction, error):
@@ -107,6 +113,7 @@ async def on_application_command_error(interaction: nextcord.Interaction, error)
         )
     else:
         logging.error(f"При использовании команды произошла непредвиденная ошибка: '{error}'")
+
 
 @client.event
 async def on_ready():

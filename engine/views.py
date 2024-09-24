@@ -23,6 +23,7 @@ def items():
         "band": {"price": config.PRICES['band'], "description": "Банда"},
     }
 
+
 def probabilities():
     return {
         "common": int(config.PROBABILITIES['common'] * 100),
@@ -31,20 +32,22 @@ def probabilities():
         "legendary": int(config.PROBABILITIES['legendary'] * 100)
     }
 
+
 options = [
-    nextcord.SelectOption(label=f"Послушать случайный трек про Леху", value="track", emoji=f"{config.ITEMS_EMOJI['track']}"),
-    nextcord.SelectOption(label=f"Случайная лягушка", value="frog", emoji=f"{config.ITEMS_EMOJI['frog']}"),
-    nextcord.SelectOption(label=f"Случайная мудрая мысль на день", value="cite", emoji=f"{config.ITEMS_EMOJI['cite']}"),
-    nextcord.SelectOption(label=f"Случайное фото домашнего любимца", value="animal", emoji=f"{config.ITEMS_EMOJI['animal']}"),
-    nextcord.SelectOption(label=f"Случайный мем", value="meme", emoji=f"{config.ITEMS_EMOJI['meme']}"),
-    nextcord.SelectOption(label=f"Сделать заказ в ресторане «Жабий квак»", value="food", emoji=f"{config.ITEMS_EMOJI['food']}"),
-    nextcord.SelectOption(label=f"Случайный саундпад Лехи", value="soundpad", emoji=f"{config.ITEMS_EMOJI['soundpad']}"),
-    nextcord.SelectOption(label=f"Авторский скетч", value="drawing", emoji=f"{config.ITEMS_EMOJI['drawing']}"),
-    nextcord.SelectOption(label=f"Дождь из лягушек", value="rain", emoji=f"{config.ITEMS_EMOJI['rain']}"),
-    nextcord.SelectOption(label=f"Ивент", value="event", emoji=f"{config.ITEMS_EMOJI['event']}"),
-    nextcord.SelectOption(label=f"Роль «Легушька» на 1 месяц", value="role", emoji=f"{config.ITEMS_EMOJI['role']}"),
-    nextcord.SelectOption(label=f"Создать свою банду", value="band", emoji=f"{config.ITEMS_EMOJI['band']}"),
+    nextcord.SelectOption(label="Послушать случайный трек про Леху", value="track", emoji=f"{config.ITEMS_EMOJI['track']}"),
+    nextcord.SelectOption(label="Случайная лягушка", value="frog", emoji=f"{config.ITEMS_EMOJI['frog']}"),
+    nextcord.SelectOption(label="Случайная мудрая мысль на день", value="cite", emoji=f"{config.ITEMS_EMOJI['cite']}"),
+    nextcord.SelectOption(label="Случайное фото домашнего любимца", value="animal", emoji=f"{config.ITEMS_EMOJI['animal']}"),
+    nextcord.SelectOption(label="Случайный мем", value="meme", emoji=f"{config.ITEMS_EMOJI['meme']}"),
+    nextcord.SelectOption(label="Сделать заказ в ресторане «Жабий квак»", value="food", emoji=f"{config.ITEMS_EMOJI['food']}"),
+    nextcord.SelectOption(label="Случайный саундпад Лехи", value="soundpad", emoji=f"{config.ITEMS_EMOJI['soundpad']}"),
+    nextcord.SelectOption(label="Авторский скетч", value="drawing", emoji=f"{config.ITEMS_EMOJI['drawing']}"),
+    nextcord.SelectOption(label="Дождь из лягушек", value="rain", emoji=f"{config.ITEMS_EMOJI['rain']}"),
+    nextcord.SelectOption(label="Ивент", value="event", emoji=f"{config.ITEMS_EMOJI['event']}"),
+    nextcord.SelectOption(label="Роль «Легушька» на 1 месяц", value="role", emoji=f"{config.ITEMS_EMOJI['role']}"),
+    nextcord.SelectOption(label="Создать свою банду", value="band", emoji=f"{config.ITEMS_EMOJI['band']}"),
 ]
+
 
 class ShopMenuView(nextcord.ui.View):
     def __init__(self):
@@ -101,7 +104,7 @@ class PurchaseView(nextcord.ui.View):
             if self.shop_item == "role":
                 premium_role = interaction.guild.get_role(config.PREMIUM_ROLE_ID)
                 await interaction.user.add_roles(premium_role)
-            logging.info(f"Пользователь {interaction.user.name} покупает предмет из категории '{self.shop_item}'")
+            logging.info(f"Пользователь {interaction.user.name} покупает предмет из категории '{self.shop_item}'.")
 
             await interaction.edit_original_message(
                 content=bought_item_message.content,
@@ -176,42 +179,42 @@ class AdminMenuView(nextcord.ui.View):
         placeholder="Выбери нужную опцию",
         options=[
             nextcord.SelectOption(
-                label=f"Кэшировать файлы",
+                label="Кэшировать файлы",
                 value="cache",
                 description="Выполнить при первом запуске бота",
                 emoji="⚙️"),
             nextcord.SelectOption(
-                label=f"Посмотреть счёт банка",
+                label="Посмотреть счёт банка",
                 value="bank_balance",
                 description="Посмотреть, сколько лягушек потратили участники",
                 emoji="🪙"),
             nextcord.SelectOption(
-                label=f"Посмотреть счёта всех участников",
+                label="Посмотреть счёта всех участников",
                 value="all_users_balance",
                 description="Изучить содержимое прудов всех участников",
                 emoji="📈"),
             nextcord.SelectOption(
-                label=f"Перевести сколько угодно лягушек участнику",
+                label="Перевести сколько угодно лягушек участнику",
                 value="gift",
                 description="Одарить участника болотным сокровищем",
                 emoji="💎"),
             nextcord.SelectOption(
-                label=f"Установить цены",
+                label="Установить цены",
                 value="prices",
                 description="Изменить текущие цены или установить дефолтные",
                 emoji="🧮"),
             nextcord.SelectOption(
-                label=f"Установить вероятности отлова",
+                label="Установить вероятности отлова",
                 value="probabilities",
                 description="Побыть властелином вероятностей",
                 emoji="🕹"),
             nextcord.SelectOption(
-                label=f"Установить кулдаун",
+                label="Установить кулдаун",
                 value="cooldown",
                 description="Определить допустимую частоту отлова",
                 emoji="⏰"),
             nextcord.SelectOption(
-                label=f"Отправить любое сообщение от имени бота в салун",
+                label="Отправить любое сообщение от имени бота в салун",
                 value="post_news",
                 description="Говорить от имени лягушачьего предводителя",
                 emoji="💬"),
@@ -339,12 +342,13 @@ class SetPriceModal(nextcord.ui.Modal):
         is_valid_price = utils.validate(self.price.value, check_type='price')
         if is_valid_price:
             utils.set_price(self.item, self.price.value)
-        logging.info(f"Администратор устанавливает цену на товар из категории '{self.item}' "
-                     f"равной {self.price.value} лягушек.")
+            logging.info(f"Администратор устанавливает цену на товар из категории '{self.item}' "
+                         f"равной {self.price.value} лягушек.")
         await interaction.followup.send(
             embed=messages.set_price_result(is_valid_price).embed,
             file=messages.set_price_result(is_valid_price).file,
             ephemeral=True)
+
 
 class SetPriceView(AdminActionBasicView):
     def __init__(self):
@@ -361,7 +365,7 @@ class SetPriceView(AdminActionBasicView):
     async def default_prices_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
         utils.set_price(reset=True)
-        logging.info(f"Администратор устанавливает стандартные цены на все товары в магазине.")
+        logging.info("Администратор устанавливает стандартные цены на все товары в магазине.")
         await interaction.followup.send(
             embed=messages.reset_prices_result().embed,
             file=messages.reset_prices_result().file,
@@ -417,11 +421,11 @@ class SetProbabilitiesModal(nextcord.ui.Modal):
         is_valid_probabilities = utils.validate(updated_probabilities, check_type='probabilities')
         if is_valid_probabilities:
             utils.set_probabilities(updated_probabilities)
-        logging.info(f"Администратор устанавливает новые вероятности отлова лягушек: "
-                     f"стандартный - {self.common.value}%, "
-                     f"редкий - {self.uncommon.value}%, "
-                     f"эпичный - {self.epic.value}%, "
-                     f"легендарный - {self.legendary.value}%. ")
+            logging.info("Администратор устанавливает новые вероятности отлова лягушек: "
+                         f"стандартный - {self.common.value}%, "
+                         f"редкий - {self.uncommon.value}%, "
+                         f"эпичный - {self.epic.value}%, "
+                         f"легендарный - {self.legendary.value}%. ")
         await interaction.followup.send(
             embed=messages.set_probabilities_result(is_valid_probabilities).embed,
             file=messages.set_probabilities_result(is_valid_probabilities).file,
@@ -472,6 +476,7 @@ class SetCooldownModal(nextcord.ui.Modal):
             file=messages.set_cooldown_result(is_valid_cooldown).file,
             ephemeral=True)
 
+
 class SetCooldownView(AdminActionBasicView):
     def __init__(self):
         super().__init__()
@@ -521,6 +526,7 @@ class GiftModal(nextcord.ui.Modal):
             embed=messages.gift_confirmation(self.username.value, int(self.gift_amount.value), is_valid_gift).embed,
             file=messages.gift_confirmation(self.username.value, int(self.gift_amount.value), is_valid_gift).file,
             ephemeral=True)
+
 
 class GiftView(AdminActionBasicView):
     def __init__(self):
