@@ -111,7 +111,7 @@ async def on_application_command_error(interaction: nextcord.Interaction, error)
             embed=messages.admin_option_only_warning().embed,
             file=messages.admin_option_only_warning().file,
             ephemeral=True
-    )
+        )
     else:
         logging.error(f"При использовании команды произошла непредвиденная ошибка: '{error}'")
 
