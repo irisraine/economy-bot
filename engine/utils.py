@@ -81,7 +81,7 @@ def json_safeload(filepath):
         with open(filepath, 'r') as jsonfile:
             return json.load(jsonfile)
     except Exception as error:
-        logging.info(f"Произошла ошибка '{error}' при попытке открытия файла '{filepath}'! Работа бота невозможна")
+        logging.error(f"Произошла ошибка '{error}' при попытке открытия файла '{filepath}'! Работа бота невозможна")
 
 
 def json_safewrite(filepath, data):
@@ -92,7 +92,7 @@ def json_safewrite(filepath, data):
             json.dump(data, temp_jsonfile, indent=4)
         os.replace(temp_jsonfile_name, filepath)
     except Exception as error:
-        logging.info(f"Произошла ошибка '{error}' при попытке записи файла '{filepath}'! Изменения не сохранены.")
+        logging.error(f"Произошла ошибка '{error}' при попытке записи файла '{filepath}'! Изменения не сохранены.")
         if os.path.exists(temp_jsonfile_name):
             os.remove(temp_jsonfile_name)
 
