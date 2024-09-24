@@ -25,6 +25,7 @@ async def catch(interaction: nextcord.Interaction):
             embed=messages.cooldown(delta_time).embed,
             file=messages.cooldown(delta_time).file)
 
+    logging.info(f"Пользователь {interaction.user.name} пытается поймать лягушку.")
     amount_of_caught_frogs = 0
     rand = random.random()
     if rand < config.PROBABILITIES['legendary']:
@@ -39,6 +40,7 @@ async def catch(interaction: nextcord.Interaction):
     sql.set_last_catching_time(interaction.user.id, current_time)
     if amount_of_caught_frogs > 0:
         sql.set_user_balance(interaction.user.id, amount_of_caught_frogs)
+        logging.info(f"Пользователь {interaction.user.name} поймал лягушек в количестве {amount_of_caught_frogs} шт.")
 
     await interaction.response.send_message(
         embed=messages.catch(interaction.user.mention, amount_of_caught_frogs).embed,
@@ -58,10 +60,12 @@ async def balance(interaction: nextcord.Interaction):
 @client.slash_command(description="Подарить лягушек другому участнику")
 async def transfer(
         interaction: nextcord.Interaction,
-        amount: int,
+        amount: int = nextcord.SlashOption(
+                name="amount",
+                description="Количество отдаваемых лягушек"),
         other_user: nextcord.Member = nextcord.SlashOption(
                 name="username",
-                description="Укажите имя пользователя"),
+                description="Имя получателя"),
     ):
         if other_user == interaction.user or other_user.bot:
             fault_message = messages.transfer_failed("to_bot") if other_user.bot else messages.transfer_failed("to_self")
@@ -76,7 +80,7 @@ async def transfer(
             view=views.TransferView(amount, other_user)
         )
 
-@client.slash_command(description="Магазин на болоте")
+@client.slash_command(description="Магазин West Wolves")
 async def shop(interaction: nextcord.Interaction):
         await interaction.response.send_message(
             embed=messages.shop().embed,
@@ -102,7 +106,7 @@ async def on_application_command_error(interaction: nextcord.Interaction, error)
             ephemeral=True
         )
     else:
-        logging.error(f"При использовании команды произошла непредвиденная ошибка: {error}")
+        logging.error(f"При использовании команды произошла непредвиденная ошибка: '{error}'")
 
 @client.event
 async def on_ready():

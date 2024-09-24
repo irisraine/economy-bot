@@ -1,4 +1,5 @@
 import nextcord
+import logging
 import engine.bot as bot
 import engine.sql as sql
 import engine.messages as messages
@@ -69,6 +70,7 @@ class ShopMenuView(nextcord.ui.View):
         await interaction.response.defer()
         await interaction.delete_original_message()
 
+
 class PurchaseView(nextcord.ui.View):
     def __init__(self, price, shop_item):
         super().__init__(timeout=None)
@@ -99,6 +101,7 @@ class PurchaseView(nextcord.ui.View):
             if self.shop_item == "role":
                 premium_role = interaction.guild.get_role(config.PREMIUM_ROLE_ID)
                 await interaction.user.add_roles(premium_role)
+            logging.info(f"Пользователь {interaction.user.name} покупает предмет из категории '{self.shop_item}'")
 
             await interaction.edit_original_message(
                 content=bought_item_message.content,
@@ -115,6 +118,7 @@ class PurchaseView(nextcord.ui.View):
             file=messages.shop().file,
             view=ShopMenuView()
         )
+
 
 class TransferView(nextcord.ui.View):
     def __init__(self, transfer_amount, other_user):
@@ -138,6 +142,8 @@ class TransferView(nextcord.ui.View):
             sql.create_user_balance(self.other_user.id, self.other_user.name)
         sql.set_user_balance(interaction.user.id, -self.transfer_amount)
         sql.set_user_balance(self.other_user.id, self.transfer_amount)
+        logging.info(f"Пользователь {interaction.user.name} переводит пользователю {self.other_user.name} лягушек "
+                     f"в количестве {self.transfer_amount} шт.")
 
         await interaction.edit_original_message(
             embed=messages.transfer_successful(self.other_user, self.transfer_amount).embed,
@@ -298,10 +304,12 @@ class PostNewsWindow(nextcord.ui.Modal):
         await channel.send(
             embed=messages.news_channel_message(self.message_title.value, self.message_description.value).embed,
             file=messages.news_channel_message(self.message_title.value, self.message_description.value).file)
+        logging.info(f"Администратор отправляет сообщение '{self.message_description.value}' в новостной канал.")
         await interaction.followup.send(
             embed=messages.post_news_result().embed,
             file=messages.post_news_result().file,
             ephemeral=True)
+
 
 class PostNewsView(AdminActionBasicView):
     def __init__(self):
@@ -310,6 +318,7 @@ class PostNewsView(AdminActionBasicView):
     @nextcord.ui.button(label="Создать и опубликовать новость", style=nextcord.ButtonStyle.green, emoji="🗞")
     async def send_message_by_bot_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.send_modal(PostNewsWindow())
+
 
 class SetPriceModal(nextcord.ui.Modal):
     def __init__(self, item):
@@ -330,6 +339,8 @@ class SetPriceModal(nextcord.ui.Modal):
         is_valid_price = utils.validate(self.price.value, check_type='price')
         if is_valid_price:
             utils.set_price(self.item, self.price.value)
+        logging.info(f"Администратор устанавливает цену на товар из категории '{self.item}' "
+                     f"равной {self.price.value} лягушек.")
         await interaction.followup.send(
             embed=messages.set_price_result(is_valid_price).embed,
             file=messages.set_price_result(is_valid_price).file,
@@ -350,11 +361,13 @@ class SetPriceView(AdminActionBasicView):
     async def default_prices_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
         utils.set_price(reset=True)
+        logging.info(f"Администратор устанавливает стандартные цены на все товары в магазине.")
         await interaction.followup.send(
             embed=messages.reset_prices_result().embed,
             file=messages.reset_prices_result().file,
             ephemeral=True
         )
+
 
 class SetProbabilitiesModal(nextcord.ui.Modal):
     def __init__(self):
@@ -404,10 +417,16 @@ class SetProbabilitiesModal(nextcord.ui.Modal):
         is_valid_probabilities = utils.validate(updated_probabilities, check_type='probabilities')
         if is_valid_probabilities:
             utils.set_probabilities(updated_probabilities)
+        logging.info(f"Администратор устанавливает новые вероятности отлова лягушек: "
+                     f"стандартный - {self.common.value}%, "
+                     f"редкий - {self.uncommon.value}%, "
+                     f"эпичный - {self.epic.value}%, "
+                     f"легендарный - {self.legendary.value}%. ")
         await interaction.followup.send(
             embed=messages.set_probabilities_result(is_valid_probabilities).embed,
             file=messages.set_probabilities_result(is_valid_probabilities).file,
             ephemeral=True)
+
 
 class SetProbabilitiesView(AdminActionBasicView):
     def __init__(self):
@@ -421,11 +440,13 @@ class SetProbabilitiesView(AdminActionBasicView):
     async def default_probabilities_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
         utils.set_probabilities(reset=True)
+        logging.info("Администратор устанавливает стандартные вероятности отлова лягушек.")
         await interaction.followup.send(
             embed=messages.reset_probabilities_result().embed,
             file=messages.reset_probabilities_result().file,
             ephemeral=True
         )
+
 
 class SetCooldownModal(nextcord.ui.Modal):
     def __init__(self):
@@ -445,6 +466,7 @@ class SetCooldownModal(nextcord.ui.Modal):
         is_valid_cooldown = utils.validate(self.cooldown.value, check_type='cooldown')
         if is_valid_cooldown:
             utils.set_cooldown(self.cooldown.value)
+            logging.info(f"Администратор устанавливает величину кулдауна равной {self.cooldown.value} секунд.")
         await interaction.followup.send(
             embed=messages.set_cooldown_result(is_valid_cooldown).embed,
             file=messages.set_cooldown_result(is_valid_cooldown).file,
@@ -462,11 +484,13 @@ class SetCooldownView(AdminActionBasicView):
     async def default_cooldown_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
         utils.set_cooldown(reset=True)
+        logging.info("Администратор устанавливает стандартную величину кулдауна.")
         await interaction.followup.send(
             embed=messages.reset_cooldown_result().embed,
             file=messages.reset_cooldown_result().file,
             ephemeral=True
         )
+
 
 class GiftModal(nextcord.ui.Modal):
     def __init__(self):
@@ -491,6 +515,8 @@ class GiftModal(nextcord.ui.Modal):
         is_valid_gift = utils.validate(self.gift_amount.value, check_type='gift')
         if is_valid_gift:
             sql.set_user_balance_by_username(self.username.value, int(self.gift_amount.value))
+            logging.info(f"Администратор переводит пользователю {self.username.value} лягушек "
+                         f"в количестве {self.gift_amount.value} шт.")
         await interaction.followup.send(
             embed=messages.gift_confirmation(self.username.value, int(self.gift_amount.value), is_valid_gift).embed,
             file=messages.gift_confirmation(self.username.value, int(self.gift_amount.value), is_valid_gift).file,
