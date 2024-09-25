@@ -144,8 +144,7 @@ class TransferView(nextcord.ui.View):
     @nextcord.ui.button(label="Отказаться от перевода", style=nextcord.ButtonStyle.gray, emoji="❌")
     async def close_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
-        await interaction.delete_original_message(
-        )
+        await interaction.delete_original_message()
 
 
 class AdminMenuView(nextcord.ui.View):
@@ -377,8 +376,7 @@ class SetProbabilitiesView(AdminActionBasicView):
         await interaction.response.defer()
         utils.set_probabilities(reset=True)
         logging.info("Администратор устанавливает стандартные вероятности отлова лягушек.")
-        await interaction.followup.send(
-            **messages.reset_probabilities_confirmation(), ephemeral=True)
+        await interaction.followup.send(**messages.reset_probabilities_confirmation(), ephemeral=True)
 
 
 class SetCooldownModal(nextcord.ui.Modal):

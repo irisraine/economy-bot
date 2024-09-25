@@ -256,6 +256,7 @@ def transfer(other_user, amount):
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
+
 def transfer_confirmation(other_user, amount, is_failed=False):
     if not is_failed:
         title = "Перевод произведен успешно"
