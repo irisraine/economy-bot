@@ -5,6 +5,7 @@ import engine.sql as sql
 import engine.messages as messages
 import engine.utils as utils
 import engine.config as config
+from engine.messages import gift_confirmation
 
 
 def items():
@@ -442,13 +443,16 @@ class GiftModal(nextcord.ui.Modal):
         await interaction.response.defer()
         is_valid = utils.validate(self.gift_amount.value, check_type='gift')
         other_user = nextcord.utils.get(bot.client.get_all_members(), name=self.username.value)
+        gift_confirmation_message = messages.gift_confirmation(other_user, self.gift_amount.value, is_valid)
         if other_user and is_valid:
             if sql.get_user_balance(other_user.id) is None:
                 sql.create_user_balance(other_user.id, self.username.value)
             sql.set_user_balance(other_user.id, int(self.gift_amount.value))
+            await interaction.edit_original_message(**gift_confirmation_message, view=None)
             logging.info(f"Администратор переводит пользователю {self.username.value} лягушек "
                          f"в количестве {self.gift_amount.value} шт.")
-        await interaction.followup.send(**messages.gift_confirmation(other_user, self.gift_amount.value, is_valid))
+        else:
+            await interaction.followup.send(**gift_confirmation_message, ephemeral=True)
 
 
 class GiftView(AdminActionBasicView):

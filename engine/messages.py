@@ -517,24 +517,21 @@ def gift_confirmation(other_user, amount, is_valid=True):
         title = ERROR_HEADER
         description = "Перевод невозможен. Пользователя с таким именем нет на нашем сервере."
         file_path = config.ERROR_IMAGE
-        ephemeral = True
     elif is_valid:
         title = "Перевод от админа произведен успешно"
         description = (f"Вы выпустили **{amount}** {utils.numeral(int(amount))} в пруд, "
                        f"принадлежащий **{other_user.mention}**.")
         file_path = config.GIFT_SUCCESS_IMAGE
-        ephemeral = False
     else:
         title = ERROR_HEADER
         description = "Перевод невозможен. Похоже, вы ошиблись при вводе количества лягушек."
         file_path = config.ERROR_IMAGE
-        ephemeral = True
     embed_message = MessageContainer(
         title=title,
         description=description,
         file_path=file_path
     )
-    return {'embed': embed_message.embed, 'file': embed_message.file, 'ephemeral': ephemeral}
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def role_manage():
