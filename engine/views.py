@@ -9,18 +9,18 @@ import engine.config as config
 
 def items():
     return {
-        "track": {"price": config.PRICES['track'], "description": "Трек про леху"},
-        "frog": {"price": config.PRICES['frog'], "description": "Фото лягушки"},
-        "cite": {"price": config.PRICES['cite'], "description": "Цитата дня"},
-        "animal": {"price": config.PRICES['animal'], "description": "Животное"},
+        "track": {"price": config.PRICES['track'], "description": "Трек про Леху"},
+        "frog": {"price": config.PRICES['frog'], "description": "Лягушку"},
+        "cite": {"price": config.PRICES['cite'], "description": "Мудрую мысль"},
+        "animal": {"price": config.PRICES['animal'], "description": "Питомца"},
         "meme": {"price": config.PRICES['meme'], "description": "Мем"},
-        "food": {"price": config.PRICES['food'], "description": "Еда"},
+        "food": {"price": config.PRICES['food'], "description": "Пищу аристократов"},
         "soundpad": {"price": config.PRICES['soundpad'], "description": "Саундпад"},
-        "drawing": {"price": config.PRICES['drawing'], "description": "Рисунок"},
+        "drawing": {"price": config.PRICES['drawing'], "description": "Скетч"},
         "rain": {"price": config.PRICES['rain'], "description": "Дождь из лягушек"},
         "event": {"price": config.PRICES['event'], "description": "Ивент"},
         "role": {"price": config.PRICES['role'], "description": "Роль"},
-        "band": {"price": config.PRICES['band'], "description": "Банда"},
+        "band": {"price": config.PRICES['band'], "description": "Банду"},
     }
 
 
@@ -83,6 +83,9 @@ class PurchaseView(nextcord.ui.View):
     async def purchase_confirm_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         user_balance = sql.get_user_balance(interaction.user.id)
         await interaction.response.defer()
+        if user_balance is None:
+            sql.create_user_balance(interaction.user.id, interaction.user.name)
+            user_balance = sql.get_user_balance(interaction.user.id)
         if self.price > user_balance:
             await interaction.edit_original_message(
                 **messages.insufficient_balance(),
