@@ -122,7 +122,7 @@ def catch(user, amount):
         },
         "common": {
             "title": "Ура!",
-            "description": f"Поздравляем тебя, {user}! Ты поймал {amount} {utils.numeral(amount)}. "
+            "description": f"Поздравляем тебя, {user}! Ты поймал **{amount}** {utils.numeral(amount)}. "
                            "Это довольно скромный результат, однако ловля лягушек - тяжелый труд, "
                            "поэтому ты можешь гордиться собой.",
             "file_path": config.CATCH_COMMON_IMAGE
@@ -130,18 +130,18 @@ def catch(user, amount):
         "uncommon": {
             "title": "О, нифигасе, класс!",
             "description": f"Поздравляем тебя, {user}! Ты оказался достаточно умелым ловцом, "
-                           f"и поймал {amount} {utils.numeral(amount)}",
+                           f"и поймал **{amount}** {utils.numeral(amount)}.",
             "file_path": config.CATCH_UNCOMMON_IMAGE
         },
         "epic": {
             "title": "Лепота, красота!",
             "description": f"Здорово {user}! Ты поистине превзошел сам себя, далеко не каждому ловцу так везет. "
-                           f"Сегодня тебе удалось поймать аж {amount} {utils.numeral(amount)}",
+                           f"Сегодня тебе удалось поймать аж **{amount}** {utils.numeral(amount)}.",
             "file_path": config.CATCH_EPIC_IMAGE
         },
         "legendary": {
             "title": "Какая красотень!",
-            "description": f"{user}, сегодня тебе невероятно повезло! Ты поймал аж {amount} {utils.numeral(amount)} "
+            "description": f"{user}, сегодня тебе невероятно повезло! Ты поймал аж **{amount}** {utils.numeral(amount)} "
                            "за один раз. О таком грандиозном улове сложат легенды все жители ближайших "
                            "лаграсских деревень.",
             "file_path": config.CATCH_LEGENDARY_IMAGE
@@ -251,7 +251,7 @@ def item_purchased(item):
 def transfer(other_user, amount):
     embed_message = MessageContainer(
         title="Перевод земноводных средств",
-        description=f"Вы собираетесь от чистого сердца подарить {amount} {utils.numeral(amount)} "
+        description=f"Вы собираетесь от чистого сердца подарить **{amount}** {utils.numeral(amount)} "
                     f"пользователю {other_user.mention}.",
         file_path=config.TRANSFER_IMAGE
     )
@@ -261,12 +261,12 @@ def transfer(other_user, amount):
 def transfer_confirmation(other_user, amount, is_failed=False):
     if not is_failed:
         title = "Перевод произведен успешно"
-        description = f"Вы выпустили {amount} {utils.numeral(amount)} в пруд, принадлежащий {other_user.mention}."
+        description = f"Вы выпустили **{amount}** {utils.numeral(amount)} в пруд, принадлежащий {other_user.mention}."
         file_path = config.TRANSFER_SUCCESS_IMAGE
     else:
         title = "Перевод невозможен"
         description = (f"К сожалению, в твоем пруду слишком мало лягушек, и ты не можешь позволить себе "
-                       f"перевести {other_user.mention} целых {amount} {utils.numeral(amount)}.")
+                       f"перевести {other_user.mention} целых **{amount}** {utils.numeral(amount)}.")
         file_path = config.TRANSFER_DENIED_IMAGE
     embed_message = MessageContainer(
         title=title,
