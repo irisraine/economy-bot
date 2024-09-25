@@ -225,8 +225,7 @@ class AdminMenuView(nextcord.ui.View):
         if select.values[0] == "cache":
             files_count_printable = utils.refresh_cache()
             await interaction.edit_original_message(
-                embed=messages.caching_successful(files_count_printable).embed,
-                file=messages.caching_successful(files_count_printable).file,
+                **messages.caching_successful(files_count_printable),
                 view=AdminActionBasicView()
             )
         else:
