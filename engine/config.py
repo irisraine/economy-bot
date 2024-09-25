@@ -48,7 +48,8 @@ SHOP_ENTRANCE_IMAGE = "assets/shop_entrance.jpg"
 SHOP_COUNTER_IMAGE = "assets/shop_counter.jpg"
 
 SHOP_ITEMS_PATH = "shop_items"
-SHOP_ITEMS_CACHE = "settings/cache.json"
+SHOP_ITEMS_CACHE_JSON = "settings/cache.json"
+SHOP_ITEMS_CACHE = utils.json_safeload(SHOP_ITEMS_CACHE_JSON)
 SHOP_ITEMS_SERVICES = {
     "drawing": "assets/drawing.jpg",
     "rain": "assets/rain.jpg",

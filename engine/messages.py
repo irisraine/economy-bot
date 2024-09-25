@@ -24,7 +24,7 @@ class MessageContainer:
         if not file_path:
             file_path = config.SEPARATOR
         if not os.path.isfile(file_path):
-            logging.error(f"Произошла ошибка  при попытке открытия файла '{file_path}'! Файл не найден.")
+            logging.error(f"Произошла ошибка при попытке открытия файла '{file_path}'! Файл не найден.")
             if "shop_items" in file_path:
                 title = ERROR_HEADER
                 description = ERROR_DESCRIPTION_SHOP
@@ -306,7 +306,7 @@ def service_request(user, item):
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def caching_successful(files_count_printable):
+def caching_confirmation(files_count_printable):
     if files_count_printable:
         title = "Кэширование завершено"
         description = f"Количество файлов в папках:\n\n{files_count_printable}"

@@ -91,10 +91,7 @@ async def admin(interaction: nextcord.Interaction):
 @client.event
 async def on_application_command_error(interaction: nextcord.Interaction, error):
     if isinstance(error, application_checks.ApplicationMissingPermissions):
-        await interaction.response.send_message(
-            **messages.admin_option_only_warning(),
-            ephemeral=True
-        )
+        await interaction.response.send_message(**messages.admin_option_only_warning(), ephemeral=True)
     else:
         logging.error(f"При использовании команды произошла непредвиденная ошибка: '{error}'")
 

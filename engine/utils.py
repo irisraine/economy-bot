@@ -82,6 +82,9 @@ def set_cooldown(updated_cooldown=None, reset=False):
 
 
 def json_safeload(filepath):
+    if not os.path.isfile(filepath):
+        logging.error(f"Произошла ошибка при попытке открытия файла '{filepath}'! Файл не найден.")
+        return
     try:
         with open(filepath, 'r') as jsonfile:
             return json.load(jsonfile)
@@ -103,7 +106,7 @@ def json_safewrite(filepath, data):
 
 
 def get_random_shop_item(item):
-    shop_items = json_safeload(config.SHOP_ITEMS_CACHE)
+    shop_items = config.SHOP_ITEMS_CACHE
     try:
         return f"{config.SHOP_ITEMS_PATH}/{item}/{random.choice(shop_items[item])}"
     except Exception as error:
@@ -125,9 +128,10 @@ def refresh_cache():
                 directory_tree[dir_name] = items
                 files_count[dir_name] = len(items)
             break
-    json_safewrite(config.SHOP_ITEMS_CACHE, directory_tree)
+    json_safewrite(config.SHOP_ITEMS_CACHE_JSON, directory_tree)
+    config.SHOP_ITEMS_CACHE = json_safeload(config.SHOP_ITEMS_CACHE_JSON)
     if set(files_count.keys()) == expected_dirs:
-        logging.info(f"Содержимое магазина успешно перекэшировано и записано в файл '{config.SHOP_ITEMS_CACHE}'")
+        logging.info(f"Содержимое магазина успешно перекэшировано и записано в файл '{config.SHOP_ITEMS_CACHE_JSON}'")
         files_count_printable = '\n'.join(f"*{key}*: **{value}**" for key, value in files_count.items())
         return files_count_printable
     else:
