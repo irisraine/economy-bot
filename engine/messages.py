@@ -558,7 +558,7 @@ def role_manage():
                        f"*Если в списке имеются участники, чей срок использования роли истек, "
                        f"снимите с них роль c помощью соответствующей кнопки.*")
     else:
-        description = (f"Еще ни один из участников не смог позволить себе приобрести "
+        description = (f"Еще ни один участник не смог позволить себе приобрести "
                        f"донатную роль <@&{config.PREMIUM_ROLE_ID}>.\n\n")
     embed_message = MessageContainer(
         title="Список обладателей донатной роли",
@@ -575,7 +575,7 @@ def role_expired_and_removed(expired_premium_role_owners_ids):
         file_path = config.ROLE_REMOVAL_IMAGE
     else:
         title = ERROR_HEADER
-        description = "Участники с просроченной донатной ролью отсутствует. Здесь не с кого и нечего снимать!"
+        description = "Участники с просроченной донатной ролью отсутствуют."
         file_path = config.ERROR_IMAGE
     embed_message = MessageContainer(
         title=title,
