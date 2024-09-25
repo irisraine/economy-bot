@@ -445,8 +445,7 @@ class GiftModal(nextcord.ui.Modal):
             sql.set_user_balance(other_user.id, int(self.gift_amount.value))
             logging.info(f"Администратор переводит пользователю {self.username.value} лягушек "
                          f"в количестве {self.gift_amount.value} шт.")
-        await interaction.followup.send(**messages.gift_confirmation(other_user, self.gift_amount.value, is_valid),
-                                        ephemeral=True)
+        await interaction.followup.send(**messages.gift_confirmation(other_user, self.gift_amount.value, is_valid))
 
 
 class GiftView(AdminActionBasicView):

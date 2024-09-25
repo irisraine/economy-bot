@@ -62,9 +62,12 @@ async def transfer(
         name="username",
         description="Имя получателя"),
 ):
-    if other_user == interaction.user or other_user.bot:
-        fault_message = messages.transfer_denied("to_bot") if other_user.bot else messages.transfer_denied("to_self")
-        return await interaction.response.send_message(**fault_message)
+    if amount <= 0:
+        return await interaction.response.send_message(**messages.transfer_denied("non_positive_amount"))
+    elif other_user == interaction.user:
+        return await interaction.response.send_message(**messages.transfer_denied("to_self"))
+    elif other_user.bot:
+        return await interaction.response.send_message(**messages.transfer_denied("to_bot"))
     await interaction.response.send_message(
         **messages.transfer(other_user, amount),
         view=views.TransferView(amount, other_user)

@@ -282,6 +282,9 @@ def transfer_denied(reason):
     elif reason == "to_self":
         description = "Вы не можете подарить лягушек самому себе, в этом нет никакого смысла!"
         file_path = config.TRANSFER_FAILED_TO_SELF_IMAGE
+    elif reason == "non_positive_amount":
+        description = "Количество переводимых лягушек должно быть положительным числом."
+        file_path = config.TRANSFER_DENIED_IMAGE
     embed_message = MessageContainer(
         title="Перевод невозможен",
         description=description,
@@ -508,26 +511,29 @@ def gift():
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def gift_confirmation(other_user=None, amount=None, is_valid=True):
-    if is_valid:
-        title = "Перевод произведен успешно"
-        description = (f"Вы выпустили **{amount}** {utils.numeral(int(amount))} в пруд, "
-                       f"принадлежащий **{other_user.mention}**.")
-        file_path = config.GIFT_SUCCESS_IMAGE
-    elif not other_user:
+def gift_confirmation(other_user, amount, is_valid=True):
+    if not other_user:
         title = ERROR_HEADER
         description = "Перевод невозможен. Пользователя с таким именем нет на нашем сервере."
         file_path = config.ERROR_IMAGE
+        ephemeral = True
+    elif is_valid:
+        title = "Перевод от админа произведен успешно"
+        description = (f"Вы выпустили **{amount}** {utils.numeral(int(amount))} в пруд, "
+                       f"принадлежащий **{other_user.mention}**.")
+        file_path = config.GIFT_SUCCESS_IMAGE
+        ephemeral = False
     else:
         title = ERROR_HEADER
         description = "Перевод невозможен. Похоже, вы ошиблись при вводе количества лягушек."
         file_path = config.ERROR_IMAGE
+        ephemeral = True
     embed_message = MessageContainer(
         title=title,
         description=description,
         file_path=file_path
     )
-    return {'embed': embed_message.embed, 'file': embed_message.file}
+    return {'embed': embed_message.embed, 'file': embed_message.file, 'ephemeral': ephemeral}
 
 
 def role_manage():
