@@ -16,6 +16,3 @@ shop_items/**
 # Do not ignore directories within assets and its .gitkeeps
 !shop_items/**/
 !shop_items/**/.gitkeep
-
-# Ignore current cache
-settings/cache.json
