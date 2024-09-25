@@ -60,7 +60,7 @@ class MessageContainer:
 
 
 def shop():
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="**Добро пожаловать в магазин сервера West Wolves!**",
         description=f"***1. Трек про Леху - {config.PRICES['track']} {config.FROG_EMOJI}*** "
                     "Один из легендарных хитов о величайшей лягушке в мире.\n\n"
@@ -96,6 +96,7 @@ def shop():
                     "Требуется от 7 постоянных участников.\n\n",
         file_path=config.SHOP_ENTRANCE_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def catch(user, amount):
@@ -147,20 +148,22 @@ def catch(user, amount):
             "file_path": config.CATCH_LEGENDARY_IMAGE
         }
     }
-    return MessageContainer(
+    embed_message = MessageContainer(
         title=results[result]['title'],
         description=results[result]['description'],
         file_path=results[result]['file_path']
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def cooldown(delta_time):
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Не так быстро!",
         description=f"Лягушек можно ловить только один раз в **{config.CATCHING_COOLDOWN}** часов. "
                     f"Подожди еще **{datetime.fromtimestamp(config.CATCHING_COOLDOWN * 3600 - delta_time).strftime('%H:%M:%S')}** перед следующей попыткой.",
         file_path=config.COOLDOWN_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def balance(user, user_balance):
@@ -168,28 +171,31 @@ def balance(user, user_balance):
         description = f"{user}, в твоем пруду пока нет ни одной лягушки. Самое время заняться их ловлей!"
     else:
         description = f"{user}, сейчас у тебя в пруду **{user_balance}** {config.FROG_EMOJI}."
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Лягушачий баланс",
         description=description,
         file_path=config.BALANCE_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def insufficient_balance():
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Недостаточно средств",
         description="К сожалению, в твоем пруду слишком мало лягушек, и ты не можешь позволить себе покупку "
                     "данного товара. Недаром говорят, что нищета хуже воровства!",
         file_path=config.TRANSFER_DENIED_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def buying_confirmation(item, price):
-    return MessageContainer(
+def purchasing_confirmation(item, price):
+    embed_message = MessageContainer(
         title="Подтверждение покупки",
         description=f"Вы собираетесь приобрести **{item}** за **{price}** {config.FROG_EMOJI}.",
         file_path=config.SHOP_COUNTER_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def item_purchased(item):
@@ -232,51 +238,54 @@ def item_purchased(item):
         description = ERROR_DESCRIPTION_SHOP
         file_path = config.ERROR_IMAGE
 
-    return MessageContainer(
+    embed_message = MessageContainer(
         title=title,
         description=description,
         file_path=file_path,
     )
+    return {'content': embed_message.content, 'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def transfer(other_user, amount):
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Перевод земноводных средств",
         description=f"Вы собираетесь от чистого сердца подарить {amount} {utils.numeral(amount)} "
                     f"пользователю {other_user.mention}.",
         file_path=config.TRANSFER_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
-
-def transfer_successful(other_user, amount):
-    return MessageContainer(
-        title="Перевод произведен успешно",
-        description=f"Вы выпустили {amount} {utils.numeral(amount)} в пруд, принадлежащий {other_user.mention}.",
-        file_path=config.TRANSFER_SUCCESS_IMAGE
+def transfer_confirmation(other_user, amount, is_failed=False):
+    if not is_failed:
+        title = "Перевод произведен успешно"
+        description = f"Вы выпустили {amount} {utils.numeral(amount)} в пруд, принадлежащий {other_user.mention}."
+        file_path = config.TRANSFER_SUCCESS_IMAGE
+    else:
+        title = "Перевод невозможен"
+        description = (f"К сожалению, в твоем пруду слишком мало лягушек, и ты не можешь позволить себе "
+                       f"перевести {other_user.mention} целых {amount} {utils.numeral(amount)}.")
+        file_path = config.TRANSFER_DENIED_IMAGE
+    embed_message = MessageContainer(
+        title=title,
+        description=description,
+        file_path=file_path
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def transfer_denied(other_user, amount):
-    return MessageContainer(
-        title="Перевод невозможен",
-        description="К сожалению, в твоем пруду слишком мало лягушек, и ты не можешь позволить себе "
-                    f"перевести {other_user.mention} целых {amount} {utils.numeral(amount)}.",
-        file_path=config.TRANSFER_DENIED_IMAGE
-    )
-
-
-def transfer_failed(reason):
+def transfer_denied(reason):
     if reason == "to_bot":
         description = "Вы не можете подарить лягушек боту! Поверьте, он не оценит."
         file_path = config.TRANSFER_FAILED_TO_BOT_IMAGE
     elif reason == "to_self":
         description = "Вы не можете подарить лягушек самому себе, в этом нет никакого смысла!"
         file_path = config.TRANSFER_FAILED_TO_SELF_IMAGE
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Перевод невозможен",
         description=description,
         file_path=file_path
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def service_request(user, item):
@@ -287,11 +296,12 @@ def service_request(user, item):
         "role": "приобрел **роль лягушки**.",
         "band": "запрашивает создание собственной **банды** на сервере.",
     }
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Пользователь приобрел премиум-услугу",
         description=f"Пользователь {user} потратил **{config.PRICES[item]}** {config.FROG_EMOJI}, и {services[item]}",
         file_path=config.SHOP_ITEMS_SERVICES[item]
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def caching_successful(files_count_printable):
@@ -304,31 +314,34 @@ def caching_successful(files_count_printable):
         description = ("Ошибка при кэшировании файлов. Проверьте наличие директории 📁***shop_items*** и всех "
                        "необходимых подпапок с содержимым.")
         file_path = config.ERROR_IMAGE
-    return MessageContainer(
+    embed_message = MessageContainer(
         title=title,
         description=description,
         file_path=file_path
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def admin():
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Админка",
         description="Настройки бота, доступные только для администраторов.",
         file_path=config.ADMIN_MENU_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def set_price():
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Установить новую цену на товар",
         description="Установка цены на товар",
         file_path=config.SET_PRICE_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def set_price_result(valid_price=True):
-    if valid_price:
+def set_price_confirmation(is_valid=True):
+    if is_valid:
         title = SUCCESS_HEADER
         description = "Новая цена установлена!"
         file_path = config.SUCCESS_OPERATION_IMAGE
@@ -336,23 +349,25 @@ def set_price_result(valid_price=True):
         title = ERROR_HEADER
         description = "Вы установили неправильную цену. Цена должна быть целым положительным числом!"
         file_path = config.ERROR_IMAGE
-    return MessageContainer(
+    embed_message = MessageContainer(
         title=title,
         description=description,
         file_path=file_path
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def reset_prices_result():
-    return MessageContainer(
+def reset_prices_confirmation():
+    embed_message = MessageContainer(
         title=SUCCESS_HEADER,
         description="Установлены цены по умолчанию!",
         file_path=config.SUCCESS_OPERATION_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def set_probabilities():
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Установить вероятности отлова",
         description="Задайте в процентах в открывшейся форме вероятности отлова определенного количества лягушек: \n\n"
                     "Обычный улов — **1-2** лягушки\n"
@@ -362,10 +377,11 @@ def set_probabilities():
                     "Имейте в виду, что каждая последующая вероятность должна обязательно быть меньше предыдущей!",
         file_path=config.SET_PROBABILITIES_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def set_probabilities_result(valid_probabilities=True):
-    if valid_probabilities:
+def set_probabilities_confirmation(is_valid=True):
+    if is_valid:
         title = SUCCESS_HEADER
         description = "Новые значения вероятностей отлова установлены!"
         file_path = config.SUCCESS_OPERATION_IMAGE
@@ -374,32 +390,35 @@ def set_probabilities_result(valid_probabilities=True):
         description = ("Вы ошиблись при установке вероятностей. Внимательно перечитайте требования "
                        "к устанавливаемым значениям.")
         file_path = config.ERROR_IMAGE
-    return MessageContainer(
+    embed_message = MessageContainer(
         title=title,
         description=description,
         file_path=file_path
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def reset_probabilities_result():
-    return MessageContainer(
+def reset_probabilities_confirmation():
+    embed_message = MessageContainer(
         title=SUCCESS_HEADER,
         description="Установлены вероятности по умолчанию!",
         file_path=config.SUCCESS_OPERATION_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def set_cooldown():
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Установить новую продолжительность кулдауна",
         description="Укажите длительность промежутка между ловлями лягушек. "
                     "Он должен составлять не менее 1, и не более 24 часов.",
         file_path=config.SET_PRICE_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def set_cooldown_result(valid_cooldown=True):
-    if valid_cooldown:
+def set_cooldown_confirmation(is_valid=True):
+    if is_valid:
         title = SUCCESS_HEADER
         description = "Новое значение кулдауна установлено!"
         file_path = config.SUCCESS_OPERATION_IMAGE
@@ -408,79 +427,87 @@ def set_cooldown_result(valid_cooldown=True):
         description = ("Вы установили ошиблись при установке кулдауна. "
                        "Внимательно перечитайте требования к устанавливаемым значению")
         file_path = config.ERROR_IMAGE
-    return MessageContainer(
+    embed_message = MessageContainer(
         title=title,
         description=description,
         file_path=file_path
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def reset_cooldown_result():
-    return MessageContainer(
+def reset_cooldown_confirmation():
+    embed_message = MessageContainer(
         title=SUCCESS_HEADER,
         description="Установлена продолжительность кулдауна по умолчанию!",
         file_path=config.SUCCESS_OPERATION_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def post_news():
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Отправить сообщение от лица бота",
         description=f"Сообщение будет отправлено в новостной канал <#{config.NEWS_CHANNEL_ID}>.",
         file_path=config.NEWS_POST_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def post_news_result():
-    return MessageContainer(
+def post_news_confirmation():
+    embed_message = MessageContainer(
         title=SUCCESS_HEADER,
         description="Сообщение отправлено!",
         file_path=config.SUCCESS_OPERATION_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
+def news_channel_message(title, description):
+    embed_message = MessageContainer(
+        title=f"**{title}**",
+        description=description,
+        file_path=config.NEWS_POST_IMAGE
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def bank_balance():
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Баланс болотного банка",
         description="Общий объем лягушек в банковском болоте "
                     f"составляет **{sql.get_bank_balance()}** {config.FROG_EMOJI}. "
                     "Именно столько в сумме потратили участники нашего сервера на покупки в магазине!",
         file_path=config.BANK_BALANCE_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def all_users_balances():
     all_users_balances_list = ""
     for i, user_balance in enumerate(sql.get_all_users_balances()):
         all_users_balances_list += f"{i}. {user_balance[0]} — **{user_balance[1]}** {config.FROG_EMOJI}\n"
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Земноводные балансы всех пользователей",
         description="Список балансов пользователей сервера, поймавших и имеющих "
                     "в своем пруду хотя бы одну лягушку: \n\n"
                     f"{all_users_balances_list}",
         file_path=config.ALL_USERS_BALANCES_IMAGE
     )
-
-
-def news_channel_message(title, description):
-    return MessageContainer(
-        title=f"**{title}**",
-        description=description,
-        file_path=config.NEWS_POST_IMAGE
-    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def gift():
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Подарить сокровище от админа",
         description="Вы собираетесь от чистого сердца подарить другому пользователю целое состояние - или одну "
                     "лягушку. Главное, что вы хозяин болота и не ограничены ничем!",
         file_path=config.GIFT_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def gift_confirmation(other_user=None, amount=None, is_valid_transfer=True):
-    if is_valid_transfer:
+def gift_confirmation(other_user=None, amount=None, is_valid=True):
+    if is_valid:
         title = "Перевод произведен успешно"
         description = (f"Вы выпустили **{amount}** {utils.numeral(int(amount))} в пруд, "
                        f"принадлежащий **{other_user.mention}**.")
@@ -493,12 +520,12 @@ def gift_confirmation(other_user=None, amount=None, is_valid_transfer=True):
         title = ERROR_HEADER
         description = "Перевод невозможен. Похоже, вы ошиблись при вводе количества лягушек."
         file_path = config.ERROR_IMAGE
-
-    return MessageContainer(
+    embed_message = MessageContainer(
         title=title,
         description=description,
         file_path=file_path
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def role_manage():
@@ -525,12 +552,12 @@ def role_manage():
     else:
         description = (f"Еще ни один из участников не смог позволить себе приобрести "
                        f"донатную роль <@&{config.PREMIUM_ROLE_ID}>.\n\n")
-
-    return MessageContainer(
+    embed_message = MessageContainer(
         title="Список обладателей донатной роли",
         description=description,
         file_path=config.ROLE_LISTING_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def role_expired_and_removed(expired_premium_role_owners_ids):
@@ -542,16 +569,18 @@ def role_expired_and_removed(expired_premium_role_owners_ids):
         title = ERROR_HEADER
         description = "Участники с просроченной донатной ролью отсутствует. Здесь не с кого и нечего снимать!"
         file_path = config.ERROR_IMAGE
-    return MessageContainer(
+    embed_message = MessageContainer(
         title=title,
         description=description,
         file_path=file_path
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def admin_option_only_warning():
-    return MessageContainer(
+    embed_message = MessageContainer(
         title=ERROR_HEADER,
         description="Использовать опции админ-панели могут только администраторы сервера.",
         file_path=config.ERROR_IMAGE
     )
+    return {'embed': embed_message.embed, 'file': embed_message.file}

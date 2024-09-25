@@ -19,13 +19,10 @@ async def catch(interaction: nextcord.Interaction):
     user_balance = sql.get_user_balance(interaction.user.id)
     if user_balance is None:
         sql.create_user_balance(interaction.user.id, interaction.user.name)
-
     current_time = utils.get_timestamp()
     delta_time = current_time - sql.get_last_catching_time(interaction.user.id)
     if delta_time < config.CATCHING_COOLDOWN * 3600:
-        return await interaction.response.send_message(
-            embed=messages.cooldown(delta_time).embed,
-            file=messages.cooldown(delta_time).file)
+        return await interaction.response.send_message(**messages.cooldown(delta_time))
 
     logging.info(f"Пользователь {interaction.user.name} пытается поймать лягушку.")
     amount_of_caught_frogs = 0
@@ -43,10 +40,7 @@ async def catch(interaction: nextcord.Interaction):
     if amount_of_caught_frogs > 0:
         sql.set_user_balance(interaction.user.id, amount_of_caught_frogs)
         logging.info(f"Пользователь {interaction.user.name} поймал лягушек в количестве {amount_of_caught_frogs} шт.")
-
-    await interaction.response.send_message(
-        embed=messages.catch(interaction.user.mention, amount_of_caught_frogs).embed,
-        file=messages.catch(interaction.user.mention, amount_of_caught_frogs).file)
+    await interaction.response.send_message(**messages.catch(interaction.user.mention, amount_of_caught_frogs))
 
 
 @client.slash_command(description="Посмотреть свой баланс")
@@ -55,10 +49,7 @@ async def balance(interaction: nextcord.Interaction):
     if user_balance is None:
         sql.create_user_balance(interaction.user.id, interaction.user.name)
         user_balance = sql.get_user_balance(interaction.user.id)
-    return await interaction.response.send_message(
-        embed=messages.balance(interaction.user.mention, user_balance).embed,
-        file=messages.balance(interaction.user.mention, user_balance).file
-    )
+    return await interaction.response.send_message(**messages.balance(interaction.user.mention, user_balance))
 
 
 @client.slash_command(description="Подарить лягушек другому участнику")
@@ -72,15 +63,10 @@ async def transfer(
         description="Имя получателя"),
 ):
     if other_user == interaction.user or other_user.bot:
-        fault_message = messages.transfer_failed("to_bot") if other_user.bot else messages.transfer_failed("to_self")
-        return await interaction.response.send_message(
-            embed=fault_message.embed,
-            file=fault_message.file,
-        )
-
+        fault_message = messages.transfer_denied("to_bot") if other_user.bot else messages.transfer_denied("to_self")
+        return await interaction.response.send_message(**fault_message)
     await interaction.response.send_message(
-        embed=messages.transfer(other_user, amount).embed,
-        file=messages.transfer(other_user, amount).file,
+        **messages.transfer(other_user, amount),
         view=views.TransferView(amount, other_user)
     )
 
@@ -88,8 +74,7 @@ async def transfer(
 @client.slash_command(description="Магазин West Wolves")
 async def shop(interaction: nextcord.Interaction):
     await interaction.response.send_message(
-        embed=messages.shop().embed,
-        file=messages.shop().file,
+        **messages.shop(),
         view=views.ShopMenuView()
     )
 
@@ -98,8 +83,7 @@ async def shop(interaction: nextcord.Interaction):
 @application_checks.has_permissions(administrator=True)
 async def admin(interaction: nextcord.Interaction):
     await interaction.response.send_message(
-        embed=messages.admin().embed,
-        file=messages.admin().file,
+        **messages.admin(),
         view=views.AdminMenuView()
     )
 
@@ -108,8 +92,7 @@ async def admin(interaction: nextcord.Interaction):
 async def on_application_command_error(interaction: nextcord.Interaction, error):
     if isinstance(error, application_checks.ApplicationMissingPermissions):
         await interaction.response.send_message(
-            embed=messages.admin_option_only_warning().embed,
-            file=messages.admin_option_only_warning().file,
+            **messages.admin_option_only_warning(),
             ephemeral=True
         )
     else:

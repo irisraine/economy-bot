@@ -63,8 +63,7 @@ class ShopMenuView(nextcord.ui.View):
 
         await interaction.response.defer()
         await interaction.edit_original_message(
-            embed=messages.buying_confirmation(item, price).embed,
-            file=messages.buying_confirmation(item, price).file,
+            **messages.purchasing_confirmation(item, price),
             view=PurchaseView(price, select.values[0])
         )
 
@@ -86,32 +85,24 @@ class PurchaseView(nextcord.ui.View):
         await interaction.response.defer()
         if self.price > user_balance:
             await interaction.edit_original_message(
-                embed=messages.insufficient_balance().embed,
-                file=messages.insufficient_balance().file,
+                **messages.insufficient_balance(),
                 view=None
             )
         else:
             sql.set_user_balance(interaction.user.id, -self.price)
             sql.set_bank_balance(self.price)
-            bought_item_message = messages.item_purchased(self.shop_item)
-
+            purchased_item_message = messages.item_purchased(self.shop_item)
             if self.shop_item in ["drawing", "rain", "event", "role", "band"]:
                 request_to_admin = bot.client.get_user(config.ADMIN_ID)
-                await request_to_admin.send(
-                    embed=messages.service_request(interaction.user.mention, self.shop_item).embed,
-                    file=messages.service_request(interaction.user.mention, self.shop_item).file,
-                )
+                await request_to_admin.send(**messages.service_request(interaction.user.mention, self.shop_item))
             if self.shop_item == "role":
                 premium_role = interaction.guild.get_role(config.PREMIUM_ROLE_ID)
                 expiration_time = utils.get_timestamp() + config.PREMIUM_ROLE_DURATION
                 sql.add_premium_role_owner(interaction.user.id, interaction.user.name, expiration_time)
                 await interaction.user.add_roles(premium_role)
             logging.info(f"Пользователь {interaction.user.name} покупает предмет из категории '{self.shop_item}'.")
-
             await interaction.edit_original_message(
-                content=bought_item_message.content,
-                embed=bought_item_message.embed,
-                file=bought_item_message.file,
+                **purchased_item_message,
                 view=None
             )
 
@@ -119,8 +110,7 @@ class PurchaseView(nextcord.ui.View):
     async def return_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
         await interaction.edit_original_message(
-            embed=messages.shop().embed,
-            file=messages.shop().file,
+            **messages.shop(),
             view=ShopMenuView()
         )
 
@@ -137,21 +127,17 @@ class TransferView(nextcord.ui.View):
         await interaction.response.defer()
         if self.transfer_amount > user_balance:
             return await interaction.edit_original_message(
-                embed=messages.transfer_denied(self.other_user, self.transfer_amount).embed,
-                file=messages.transfer_denied(self.other_user, self.transfer_amount).file,
+                **messages.transfer_confirmation(self.other_user, self.transfer_amount, is_failed=True),
                 view=None
             )
-
         if sql.get_user_balance(self.other_user.id) is None:
             sql.create_user_balance(self.other_user.id, self.other_user.name)
         sql.set_user_balance(interaction.user.id, -self.transfer_amount)
         sql.set_user_balance(self.other_user.id, self.transfer_amount)
         logging.info(f"Пользователь {interaction.user.name} переводит пользователю {self.other_user.name} лягушек "
                      f"в количестве {self.transfer_amount} шт.")
-
         await interaction.edit_original_message(
-            embed=messages.transfer_successful(self.other_user, self.transfer_amount).embed,
-            file=messages.transfer_successful(self.other_user, self.transfer_amount).file,
+            **messages.transfer_confirmation(self.other_user, self.transfer_amount),
             view=None
         )
 
@@ -170,10 +156,7 @@ class AdminMenuView(nextcord.ui.View):
         if interaction.user.guild_permissions.administrator:
             return True
         else:
-            await interaction.response.send_message(
-                embed=messages.admin_option_only_warning().embed,
-                file=messages.admin_option_only_warning().file,
-                ephemeral=True)
+            await interaction.response.send_message(**messages.admin_option_only_warning(), ephemeral=True)
             return False
 
     @nextcord.ui.select(
@@ -248,8 +231,7 @@ class AdminMenuView(nextcord.ui.View):
             )
         else:
             await interaction.edit_original_message(
-                embed=admin_actions[select.values[0]]["message"].embed,
-                file=admin_actions[select.values[0]]["message"].file,
+                **admin_actions[select.values[0]]["message"],
                 view=admin_actions[select.values[0]]["view"]
             )
 
@@ -267,18 +249,14 @@ class AdminActionBasicView(nextcord.ui.View):
         if interaction.user.guild_permissions.administrator:
             return True
         else:
-            await interaction.response.send_message(
-                embed=messages.admin_option_only_warning().embed,
-                file=messages.admin_option_only_warning().file,
-                ephemeral=True)
+            await interaction.response.send_message(**messages.admin_option_only_warning(), ephemeral=True)
             return False
 
     @nextcord.ui.button(label="Вернуться в админку", style=nextcord.ButtonStyle.gray, emoji="◀️", row=2)
     async def return_to_admin_menu_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
         await interaction.edit_original_message(
-            embed=messages.admin().embed,
-            file=messages.admin().file,
+            **messages.admin(),
             view=AdminMenuView()
         )
 
@@ -286,48 +264,6 @@ class AdminActionBasicView(nextcord.ui.View):
     async def close_notify_message_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
         await interaction.delete_original_message()
-
-
-class PostNewsWindow(nextcord.ui.Modal):
-    def __init__(self):
-        super().__init__("Отправка сообщения в новостной канал")
-
-        self.message_title = nextcord.ui.TextInput(
-            label="Заголовок",
-            max_length=100,
-            required=True,
-            placeholder="Текст заголовка",
-            style=nextcord.TextInputStyle.short
-        )
-        self.add_item(self.message_title)
-        self.message_description = nextcord.ui.TextInput(
-            label="Сообщение",
-            required=True,
-            placeholder="Текст сообщения",
-            style=nextcord.TextInputStyle.paragraph
-        )
-        self.add_item(self.message_description)
-
-    async def callback(self, interaction: nextcord.Interaction) -> None:
-        await interaction.response.defer()
-        channel = interaction.guild.get_channel(config.NEWS_CHANNEL_ID)
-        await channel.send(
-            embed=messages.news_channel_message(self.message_title.value, self.message_description.value).embed,
-            file=messages.news_channel_message(self.message_title.value, self.message_description.value).file)
-        logging.info(f"Администратор отправляет сообщение '{self.message_description.value}' в новостной канал.")
-        await interaction.followup.send(
-            embed=messages.post_news_result().embed,
-            file=messages.post_news_result().file,
-            ephemeral=True)
-
-
-class PostNewsView(AdminActionBasicView):
-    def __init__(self):
-        super().__init__()
-
-    @nextcord.ui.button(label="Создать и опубликовать новость", style=nextcord.ButtonStyle.green, emoji="🗞")
-    async def send_message_by_bot_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-        await interaction.response.send_modal(PostNewsWindow())
 
 
 class SetPriceModal(nextcord.ui.Modal):
@@ -346,15 +282,12 @@ class SetPriceModal(nextcord.ui.Modal):
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        is_valid_price = utils.validate(self.price.value, check_type='price')
-        if is_valid_price:
+        is_valid = utils.validate(self.price.value, check_type='price')
+        if is_valid:
             utils.set_price(self.item, self.price.value)
             logging.info(f"Администратор устанавливает цену на товар из категории '{self.item}' "
                          f"равной {self.price.value} лягушек.")
-        await interaction.followup.send(
-            embed=messages.set_price_result(is_valid_price).embed,
-            file=messages.set_price_result(is_valid_price).file,
-            ephemeral=True)
+        await interaction.followup.send(**messages.set_price_confirmation(is_valid), ephemeral=True)
 
 
 class SetPriceView(AdminActionBasicView):
@@ -373,11 +306,7 @@ class SetPriceView(AdminActionBasicView):
         await interaction.response.defer()
         utils.set_price(reset=True)
         logging.info("Администратор устанавливает стандартные цены на все товары в магазине.")
-        await interaction.followup.send(
-            embed=messages.reset_prices_result().embed,
-            file=messages.reset_prices_result().file,
-            ephemeral=True
-        )
+        await interaction.followup.send(**messages.reset_prices_confirmation(), ephemeral=True)
 
 
 class SetProbabilitiesModal(nextcord.ui.Modal):
@@ -425,18 +354,15 @@ class SetProbabilitiesModal(nextcord.ui.Modal):
             "epic": self.epic.value,
             "legendary": self.legendary.value
         }
-        is_valid_probabilities = utils.validate(updated_probabilities, check_type='probabilities')
-        if is_valid_probabilities:
+        is_valid = utils.validate(updated_probabilities, check_type='probabilities')
+        if is_valid:
             utils.set_probabilities(updated_probabilities)
             logging.info("Администратор устанавливает новые вероятности отлова лягушек: "
                          f"стандартный - {self.common.value}%, "
                          f"редкий - {self.uncommon.value}%, "
                          f"эпичный - {self.epic.value}%, "
                          f"легендарный - {self.legendary.value}%. ")
-        await interaction.followup.send(
-            embed=messages.set_probabilities_result(is_valid_probabilities).embed,
-            file=messages.set_probabilities_result(is_valid_probabilities).file,
-            ephemeral=True)
+        await interaction.followup.send(**messages.set_probabilities_confirmation(is_valid), ephemeral=True)
 
 
 class SetProbabilitiesView(AdminActionBasicView):
@@ -453,10 +379,7 @@ class SetProbabilitiesView(AdminActionBasicView):
         utils.set_probabilities(reset=True)
         logging.info("Администратор устанавливает стандартные вероятности отлова лягушек.")
         await interaction.followup.send(
-            embed=messages.reset_probabilities_result().embed,
-            file=messages.reset_probabilities_result().file,
-            ephemeral=True
-        )
+            **messages.reset_probabilities_confirmation(), ephemeral=True)
 
 
 class SetCooldownModal(nextcord.ui.Modal):
@@ -474,14 +397,11 @@ class SetCooldownModal(nextcord.ui.Modal):
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        is_valid_cooldown = utils.validate(self.cooldown.value, check_type='cooldown')
-        if is_valid_cooldown:
+        is_valid = utils.validate(self.cooldown.value, check_type='cooldown')
+        if is_valid:
             utils.set_cooldown(self.cooldown.value)
             logging.info(f"Администратор устанавливает величину кулдауна равной {self.cooldown.value} часов.")
-        await interaction.followup.send(
-            embed=messages.set_cooldown_result(is_valid_cooldown).embed,
-            file=messages.set_cooldown_result(is_valid_cooldown).file,
-            ephemeral=True)
+        await interaction.followup.send(**messages.set_cooldown_confirmation(is_valid), ephemeral=True)
 
 
 class SetCooldownView(AdminActionBasicView):
@@ -497,11 +417,7 @@ class SetCooldownView(AdminActionBasicView):
         await interaction.response.defer()
         utils.set_cooldown(reset=True)
         logging.info("Администратор устанавливает стандартную величину кулдауна.")
-        await interaction.followup.send(
-            embed=messages.reset_cooldown_result().embed,
-            file=messages.reset_cooldown_result().file,
-            ephemeral=True
-        )
+        await interaction.followup.send(**messages.reset_cooldown_confirmation(), ephemeral=True)
 
 
 class GiftModal(nextcord.ui.Modal):
@@ -524,18 +440,16 @@ class GiftModal(nextcord.ui.Modal):
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        is_valid_gift = utils.validate(self.gift_amount.value, check_type='gift')
+        is_valid = utils.validate(self.gift_amount.value, check_type='gift')
         other_user = nextcord.utils.get(bot.client.get_all_members(), name=self.username.value)
-        if other_user and is_valid_gift:
-            if not sql.get_user_balance(other_user.id):
+        if other_user and is_valid:
+            if sql.get_user_balance(other_user.id) is None:
                 sql.create_user_balance(other_user.id, self.username.value)
             sql.set_user_balance(other_user.id, int(self.gift_amount.value))
             logging.info(f"Администратор переводит пользователю {self.username.value} лягушек "
                          f"в количестве {self.gift_amount.value} шт.")
-        await interaction.followup.send(
-            embed=messages.gift_confirmation(other_user, self.gift_amount.value, is_valid_gift).embed,
-            file=messages.gift_confirmation(other_user, self.gift_amount.value, is_valid_gift).file,
-            ephemeral=True)
+        await interaction.followup.send(**messages.gift_confirmation(other_user, self.gift_amount.value, is_valid),
+                                        ephemeral=True)
 
 
 class GiftView(AdminActionBasicView):
@@ -545,6 +459,43 @@ class GiftView(AdminActionBasicView):
     @nextcord.ui.button(label="Сделать подарок с барского плеча", style=nextcord.ButtonStyle.green, emoji="💰")
     async def gift_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.send_modal(GiftModal())
+
+
+class PostNewsWindow(nextcord.ui.Modal):
+    def __init__(self):
+        super().__init__("Отправка сообщения в новостной канал")
+
+        self.message_title = nextcord.ui.TextInput(
+            label="Заголовок",
+            max_length=100,
+            required=True,
+            placeholder="Текст заголовка",
+            style=nextcord.TextInputStyle.short
+        )
+        self.add_item(self.message_title)
+        self.message_description = nextcord.ui.TextInput(
+            label="Сообщение",
+            required=True,
+            placeholder="Текст сообщения",
+            style=nextcord.TextInputStyle.paragraph
+        )
+        self.add_item(self.message_description)
+
+    async def callback(self, interaction: nextcord.Interaction) -> None:
+        await interaction.response.defer()
+        channel = interaction.guild.get_channel(config.NEWS_CHANNEL_ID)
+        await channel.send(**messages.news_channel_message(self.message_title.value, self.message_description.value))
+        logging.info(f"Администратор отправляет сообщение '{self.message_description.value}' в новостной канал.")
+        await interaction.followup.send(**messages.post_news_confirmation(), ephemeral=True)
+
+
+class PostNewsView(AdminActionBasicView):
+    def __init__(self):
+        super().__init__()
+
+    @nextcord.ui.button(label="Создать и опубликовать новость", style=nextcord.ButtonStyle.green, emoji="🗞")
+    async def send_message_by_bot_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        await interaction.response.send_modal(PostNewsWindow())
 
 
 class RoleManageView(AdminActionBasicView):
@@ -561,8 +512,5 @@ class RoleManageView(AdminActionBasicView):
                 expired_premium_role_owner = interaction.guild.get_member(expired_premium_role_owner_id[0])
                 await expired_premium_role_owner.remove_roles(premium_role)
             logging.info("Администратор снимает с участников роли, срок использования которых истек.")
-        await interaction.followup.send(
-            embed=messages.role_expired_and_removed(expired_premium_role_owners_ids).embed,
-            file=messages.role_expired_and_removed(expired_premium_role_owners_ids).file,
-            ephemeral=True
-        )
+        await interaction.followup.send(**messages.role_expired_and_removed(expired_premium_role_owners_ids),
+                                        ephemeral=True)
