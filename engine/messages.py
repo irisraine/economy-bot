@@ -2,7 +2,6 @@ import nextcord
 import os
 import logging
 import engine.config as config
-from datetime import datetime
 import engine.utils as utils
 import engine.sql as sql
 
@@ -160,7 +159,8 @@ def cooldown(delta_time):
     embed_message = MessageContainer(
         title="Не так быстро!",
         description=f"Лягушек можно ловить только один раз в **{config.CATCHING_COOLDOWN}** часов. "
-                    f"Подожди еще **{datetime.fromtimestamp(config.CATCHING_COOLDOWN * 3600 - delta_time).strftime('%H:%M:%S')}** перед следующей попыткой.",
+                    f"Подожди еще **{utils.from_timestamp(config.CATCHING_COOLDOWN * 3600 - delta_time)}** "
+                    f"перед следующей попыткой.",
         file_path=config.COOLDOWN_IMAGE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
@@ -545,7 +545,7 @@ def role_manage():
             if expiration_time - current_time < 86400:
                 expire = "истекает **сегодня!**"
             else:
-                expiration_date = datetime.fromtimestamp(expiration_time).strftime('%d/%m/%Y')
+                expiration_date = utils.from_timestamp(expiration_time, mode="date")
                 expire = f"истекает **{expiration_date}**."
         else:
             expire = "**уже истекла!**"

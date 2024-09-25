@@ -11,6 +11,11 @@ def get_timestamp():
     return int(datetime.now().timestamp())
 
 
+def from_timestamp(timestamp, mode="time"):
+    pattern = '%d/%m/%Y' if mode == "date" else '%H:%M:%S'
+    return datetime.fromtimestamp(timestamp).strftime(pattern)
+
+
 def numeral(amount):
     if 11 <= amount % 100 <= 14:
         return "лягушек"
