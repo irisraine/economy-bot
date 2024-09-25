@@ -10,9 +10,5 @@ logs
 # Ignore all temporary *.pyc files in any project's directiories
 *.pyc
 
-# Ignore all files in the assets directory
+# Ignore all files in the items directory
 shop_items/**
-
-# Do not ignore directories within assets and its .gitkeeps
-!shop_items/**/
-!shop_items/**/.gitkeep
