@@ -19,7 +19,7 @@ def items():
         "drawing": {"price": config.PRICES['drawing'], "description": "Скетч"},
         "rain": {"price": config.PRICES['rain'], "description": "Дождь из лягушек"},
         "event": {"price": config.PRICES['event'], "description": "Ивент"},
-        "role": {"price": config.PRICES['role'], "description": "Роль"},
+        "role": {"price": config.PRICES['role'], "description": "Роль лягушки"},
         "band": {"price": config.PRICES['band'], "description": "Банду"},
     }
 
