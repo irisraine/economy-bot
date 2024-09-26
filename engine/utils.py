@@ -3,17 +3,17 @@ import tempfile
 import json
 import random
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 import engine.config as config
 
 
 def get_timestamp():
-    return int(datetime.now().timestamp())
+    return int(datetime.now(timezone.utc).timestamp())
 
 
 def from_timestamp(timestamp, mode="time"):
     pattern = '%d/%m/%Y' if mode == "date" else '%H:%M:%S'
-    return datetime.fromtimestamp(timestamp).strftime(pattern)
+    return datetime.utcfromtimestamp(timestamp).strftime(pattern)
 
 
 def numeral(amount):
