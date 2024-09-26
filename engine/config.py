@@ -11,6 +11,8 @@ ADMIN_ID = int(os.getenv('ADMIN_ID'))
 NEWS_CHANNEL_ID = int(os.getenv('NEWS_CHANNEL_ID'))
 PREMIUM_ROLE_ID = int(os.getenv('PREMIUM_ROLE_ID'))
 
+DATABASE_PATH = "database/vault.db"
+
 BASIC_COLOR_CODE = (97, 194, 0)
 
 CATCHING_COOLDOWN_JSON = "settings/cooldown.json"

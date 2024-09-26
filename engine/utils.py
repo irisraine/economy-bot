@@ -5,6 +5,7 @@ import random
 import logging
 from datetime import datetime, timezone
 import engine.config as config
+import engine.sql as sql
 
 
 def get_timestamp():
@@ -148,3 +149,14 @@ def refresh_cache():
     else:
         logging.error("Ошибка при кэшировании файлов. Проверьте наличие директории shop_items и всех "
                       "необходимых подпапок с содержимым.")
+
+
+def reset_database():
+    try:
+        if os.path.exists(config.DATABASE_PATH):
+            os.remove(config.DATABASE_PATH)
+        sql.create_tables()
+        logging.info("База данных была обнулена и инициализирована повторно.")
+        return True
+    except Exception as error:
+        logging.error(f"Ошибка '{error}' при попытке обнуления базы данных.")

@@ -209,6 +209,11 @@ class AdminMenuView(nextcord.ui.View):
                 value="role_manage",
                 description="Кому и сколько еще осталось квакать",
                 emoji="👑"),
+            nextcord.SelectOption(
+                label="Обнулить базу данных",
+                value="reset_database",
+                description="Устроить финансовый апокалипсис",
+                emoji="🔪"),
         ]
     )
     async def select_admin_menu_callback(self, select, interaction: nextcord.Interaction):
@@ -221,6 +226,7 @@ class AdminMenuView(nextcord.ui.View):
             "cooldown": {"message": messages.set_cooldown(), "view": SetCooldownView()},
             "post_news": {"message": messages.post_news(), "view": PostNewsView()},
             "role_manage": {"message": messages.role_manage(), "view": RoleManageView()},
+            "reset_database": {"message": messages.reset_database(), "view": ResetDatabaseView()},
         }
         await interaction.response.defer()
 
@@ -517,3 +523,31 @@ class RoleManageView(AdminActionBasicView):
             logging.info("Администратор снимает с участников роли, срок использования которых истек.")
         await interaction.followup.send(**messages.role_expired_and_removed(expired_premium_role_owners_ids),
                                         ephemeral=True)
+
+
+class ResetDatabaseModal(nextcord.ui.Modal):
+    def __init__(self):
+        super().__init__("Обнулить базу данных")
+
+        self.database_path = nextcord.ui.TextInput(
+            label="Путь к базе данных",
+            required=True,
+            style=nextcord.TextInputStyle.short
+        )
+        self.add_item(self.database_path)
+
+    async def callback(self, interaction: nextcord.Interaction) -> None:
+        await interaction.response.defer()
+        is_valid = False
+        if self.database_path.value == config.DATABASE_PATH:
+            is_valid = utils.reset_database()
+        await interaction.followup.send(**messages.reset_database_confirmation(is_valid), ephemeral=True)
+
+
+class ResetDatabaseView(AdminActionBasicView):
+    def __init__(self):
+        super().__init__()
+
+    @nextcord.ui.button(label="Пусть все горит", style=nextcord.ButtonStyle.red, emoji="🔥")
+    async def reset_database_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        await interaction.response.send_modal(ResetDatabaseModal())

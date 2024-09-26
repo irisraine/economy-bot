@@ -584,6 +584,40 @@ def role_expired_and_removed(expired_premium_role_owners_ids):
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
+def reset_database():
+    embed_message = MessageContainer(
+        title="Обнуление базы данных",
+        description="**Шутки кончились.** \n\n "
+                    "Вы собираетесь удалить существующую базу данных и заменить ее на обнуленную. "
+                    "Это эквивалентно финансовому апокалипсису, дефолту, мировому кризису и прочим "
+                    "экономическим бедам вместе взятым. Все пойманные игроками лягушки, весь тяжелый труд на "
+                    "протяжении сотен часов, баланс всемирного болотного банка - все это перестанет существовать "
+                    "после нажатия на красную кнопку. \n Это ядерная бомба, взорванная в болоте. \n"
+                    "Пожалуйста, тысячу раз подумайте о том, что вы собираетесь делать и зачем!\n\n"
+                    "*В целях безопасности вы должны ввести корректный путь к файлу базы данных, "
+                    "и лишь после этого обнуление и реинициализация будут осуществлены.*",
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
+def reset_database_confirmation(is_valid=True):
+    if not is_valid:
+        title = ERROR_HEADER
+        description = "Вы ввели неправильный путь к базе данных. Удаление базы данных запрещено!"
+        file_path = config.ERROR_IMAGE
+    else:
+        title = SUCCESS_HEADER
+        description = "База данных успешно обнулена и инициализирована повторно."
+        file_path = config.SUCCESS_OPERATION_IMAGE
+
+    embed_message = MessageContainer(
+        title=title,
+        description=description,
+        file_path=file_path
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
 def admin_option_only_warning():
     embed_message = MessageContainer(
         title=ERROR_HEADER,
