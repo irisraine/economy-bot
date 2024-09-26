@@ -5,7 +5,6 @@ import engine.sql as sql
 import engine.messages as messages
 import engine.utils as utils
 import engine.config as config
-from engine.messages import gift_confirmation
 
 
 def items():
