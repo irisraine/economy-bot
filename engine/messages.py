@@ -158,7 +158,8 @@ def catch(user, amount):
 def cooldown(delta_time):
     embed_message = MessageContainer(
         title="Не так быстро!",
-        description=f"Лягушек можно ловить только один раз в **{config.CATCHING_COOLDOWN}** часов. "
+        description=f"Лягушек можно ловить только один раз "
+                    f"в **{config.CATCHING_COOLDOWN}** {utils.numeral(config.CATCHING_COOLDOWN, value_type='hours')}. "
                     f"Подожди еще **{utils.from_timestamp(config.CATCHING_COOLDOWN * 3600 - delta_time)}** "
                     f"перед следующей попыткой.",
         file_path=config.COOLDOWN_IMAGE

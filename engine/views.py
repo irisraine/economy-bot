@@ -391,7 +391,8 @@ class SetCooldownModal(nextcord.ui.Modal):
             label="Кулдаун",
             max_length=2,
             required=True,
-            placeholder=f"Текущая продолжительность: {config.CATCHING_COOLDOWN} часов",
+            placeholder=f"Текущая продолжительность: "
+                        f"{config.CATCHING_COOLDOWN} {utils.numeral(config.CATCHING_COOLDOWN, value_type='hours')}",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.cooldown)
@@ -401,7 +402,7 @@ class SetCooldownModal(nextcord.ui.Modal):
         is_valid = utils.validate(self.cooldown.value, check_type='cooldown')
         if is_valid:
             utils.set_cooldown(self.cooldown.value)
-            logging.info(f"Администратор устанавливает величину кулдауна равной {self.cooldown.value} часов.")
+            logging.info(f"Администратор устанавливает величину кулдауна равной {self.cooldown.value} ч.")
         await interaction.followup.send(**messages.set_cooldown_confirmation(is_valid), ephemeral=True)
 
 

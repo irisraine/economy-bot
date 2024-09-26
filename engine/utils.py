@@ -16,16 +16,22 @@ def from_timestamp(timestamp, mode="time"):
     return datetime.utcfromtimestamp(timestamp).strftime(pattern)
 
 
-def numeral(amount):
-    if 11 <= amount % 100 <= 14:
-        return "лягушек"
-    last_digit = amount % 10
-    if last_digit == 1:
-        return "лягушку"
-    elif 2 <= last_digit <= 4:
-        return "лягушки"
-    else:
-        return "лягушек"
+def numeral(value, value_type="frogs"):
+    def get_numeral(value, singular, few, many):
+        if 11 <= value % 100 <= 14:
+            return many
+        last_digit = value % 10
+        if last_digit == 1:
+            return singular
+        elif 2 <= last_digit <= 4:
+            return few
+        else:
+            return many
+
+    if value_type == "frogs":
+        return get_numeral(value, "лягушку", "лягушки", "лягушек")
+    elif value_type == "hours":
+        return get_numeral(value, "час", "часа", "часов")
 
 
 def validate(value, check_type):
