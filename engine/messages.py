@@ -490,17 +490,42 @@ def bank_balance():
 
 
 def all_users_balances():
-    all_users_balances_list = ""
-    for i, user_balance in enumerate(sql.get_all_users_balances()):
-        all_users_balances_list += f"{i}. {user_balance[0]} — **{user_balance[1]}** {config.FROG_EMOJI}\n"
-    embed_message = MessageContainer(
-        title="Земноводные балансы всех пользователей",
-        description="Список балансов пользователей сервера, поймавших и имеющих "
-                    "в своем пруду хотя бы одну лягушку: \n\n"
-                    f"{all_users_balances_list}",
-        file_path=config.ALL_USERS_BALANCES_IMAGE
-    )
-    return {'embed': embed_message.embed, 'file': embed_message.file}
+    max_users = 50
+    embed_messages = []
+    all_users_balances_list = sql.get_all_users_balances()
+    number_of_users = len(all_users_balances_list)
+    if number_of_users == 0:
+        embed_message = MessageContainer(
+            title="Земноводные балансы всех пользователей",
+            description="В это верится с трудом, но в целом мире еще никто не поймал ни одной лягушки :(. "
+                        "Либо же все ловцы умудрились одновременно растратить свои состояния.",
+            file_path=config.ALL_USERS_BALANCES_IMAGE
+        )
+        return {'embed': embed_message.embed, 'file': embed_message.file}
+    number_of_embeds = (number_of_users + max_users - 1) // max_users
+    for i in range(number_of_embeds):
+        start = max_users * i
+        end = start + max_users
+        users_slice = all_users_balances_list[start:end]
+        description = "\n".join([
+            f"{index + 1}. {user_balance[0]} — {user_balance[1]} {config.FROG_EMOJI}"
+            for index, user_balance in enumerate(users_slice, start=start)
+        ])
+        title = "Земноводные балансы всех пользователей" if i == 0 else None
+        file_path = config.ALL_USERS_BALANCES_IMAGE if i == (number_of_embeds - 1) else None
+        if i == 0:
+            description = ("Список балансов пользователей сервера, поймавших и имеющих "
+                           "в своем пруду хотя бы одну лягушку: \n\n") + description
+        embed_message = MessageContainer(
+            title=title,
+            description=description,
+            file_path=file_path
+        )
+        embed_messages.append(embed_message)
+    return {
+        'embeds': [embed_message.embed for embed_message in embed_messages],
+        'files': [embed_message.file for embed_message in embed_messages]
+    }
 
 
 def gift():
