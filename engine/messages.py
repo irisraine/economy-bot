@@ -239,7 +239,7 @@ def item_purchased(item):
     if file_path is None:
         title = ERROR_HEADER
         description = ERROR_DESCRIPTION_SHOP
-        file_path = config.ERROR_IMAGE
+        file_path = config.ERROR_SHOP_IMAGE
 
     embed_message = MessageContainer(
         title=title,
