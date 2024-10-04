@@ -13,6 +13,8 @@ import engine.utils as utils
 intents = nextcord.Intents.all()
 client = commands.Bot(command_prefix=';', intents=intents, default_guild_ids=[config.GUILD_ID])
 
+current_quiz = None
+
 
 @client.slash_command(description="Поймать лягушку")
 async def catch(interaction: nextcord.Interaction):
@@ -80,6 +82,32 @@ async def shop(interaction: nextcord.Interaction):
         **messages.shop(),
         view=views.ShopMenuView()
     )
+
+@client.slash_command(description="Провести викторину")
+async def quiz(interaction: nextcord.Interaction):
+    await interaction.response.send_modal(views.QuizModal())
+
+
+@client.slash_command(description="Выдать награду победителю викторины")
+async def prize(
+        interaction: nextcord.Interaction,
+        quiz_winner: nextcord.Member = nextcord.SlashOption(
+            name="username",
+            description="Имя победителя викторины")
+):
+    if not current_quiz or not current_quiz.is_active:
+        return await interaction.response.send_message(**messages.quiz_error("no_active_quiz"), ephemeral=True)
+    elif quiz_winner.bot:
+        return await interaction.response.send_message(**messages.quiz_error("to_bot"), ephemeral=True)
+    elif current_quiz.in_progress:
+        return await interaction.response.send_message(**messages.quiz_error("in_progress"), ephemeral=True)
+    if sql.get_user_balance(quiz_winner.id) is None:
+        sql.create_user_balance(quiz_winner.id, quiz_winner.name)
+    sql.set_user_balance(quiz_winner.id, current_quiz.prize_amount)
+    current_quiz.close_quiz()
+    logging.info(f"Пользователь {quiz_winner.name} становится победителем викторины и получает в награду "
+                 f"лягушек в количестве {current_quiz.prize_amount} шт.")
+    await interaction.response.send_message(**messages.quiz_prize(quiz_winner, **current_quiz.get_contents()))
 
 
 @client.slash_command(description="Админка")

@@ -643,6 +643,57 @@ def reset_database_confirmation(is_valid=True):
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
+def quiz(question):
+    embed_message = MessageContainer(
+        title="Викторина!",
+        description=f"Вопрос к знатокам в зале: **{question}?** \n\n"
+                    f"Время размышления - _1 минута_.",
+        file_path = config.QUIZ_IMAGE
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
+def quiz_error(reason):
+    if reason == "incorrect_prize_amount":
+        description = "Ошибка при создании раунда викторины. Похоже, вы ошиблись при вводе размера награды, "
+        "она должна быть целым положительным числом."
+    elif reason == "no_active_quiz":
+        description = "Викторина еще не начата, либо уже завершилась."
+    elif reason == "in_progress":
+        description = "Данное участникам время на размышления еще не вышло."
+    elif reason == "to_bot":
+        description = "Боты не могут быть ни участниками, ни тем более победителями викторины."
+    embed_message = MessageContainer(
+        title=ERROR_HEADER,
+        description=description,
+        file_path = config.ERROR_IMAGE
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+def quiz_time_up(answer):
+    embed_message = MessageContainer(
+        title="Викторина",
+        description=f"Время на раздумье истекло. \n\nПравильный ответ: **{answer}**.",
+        file_path=config.QUIZ_IMAGE
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
+def quiz_prize(winner, question, prize_amount, prize_special=False):
+    description = (f"{winner.mention},  ты дал верный ответ на вопрос «*{question}*». \n\n"
+                   f"Маладэц!\n Твои познания вознаграждены - ты получаешь **{prize_amount}** {config.FROG_EMOJI}.\n")
+    if prize_special:
+        description += (f"Ответив на столь каверзный вопрос, ты также удостоился специального "
+                        f"приза, и это - **{prize_special}**! За его получением обратись к администратору.")
+
+    embed_message = MessageContainer(
+        title="Чвяк чвяк!",
+        description=description,
+        file_path=config.QUIZ_IMAGE
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
 def admin_option_only_warning():
     embed_message = MessageContainer(
         title=ERROR_HEADER,

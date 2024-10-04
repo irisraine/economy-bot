@@ -1,10 +1,12 @@
 import nextcord
 import logging
+import asyncio
 import engine.bot as bot
 import engine.sql as sql
 import engine.messages as messages
 import engine.utils as utils
 import engine.config as config
+from engine.addon import Quiz
 
 
 def items():
@@ -551,3 +553,61 @@ class ResetDatabaseView(AdminActionBasicView):
     @nextcord.ui.button(label="Пусть все горит", style=nextcord.ButtonStyle.red, emoji="🔥")
     async def reset_database_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.send_modal(ResetDatabaseModal())
+
+
+class QuizModal(nextcord.ui.Modal):
+    def __init__(self):
+        super().__init__("Начать викторину!")
+
+        self.question = nextcord.ui.TextInput(
+            label="Вопрос",
+            placeholder="Текст вопроса викторины",
+            required=True,
+            style=nextcord.TextInputStyle.paragraph
+        )
+        self.add_item(self.question)
+
+        self.answer = nextcord.ui.TextInput(
+            label="Ответ",
+            placeholder="Правильный ответ",
+            required=True,
+            style=nextcord.TextInputStyle.short
+        )
+        self.add_item(self.answer)
+
+        self.prize_amount = nextcord.ui.TextInput(
+            label="Размер награды в лягушках",
+            max_length=3,
+            required=True,
+            default_value="1",
+            style=nextcord.TextInputStyle.short
+        )
+        self.add_item(self.prize_amount)
+
+        self.prize_special = nextcord.ui.TextInput(
+            label="Особая награда",
+            placeholder="Только для знатоков высшей лиги!",
+            required=False,
+            style=nextcord.TextInputStyle.short
+        )
+        self.add_item(self.prize_special)
+
+    async def callback(self, interaction: nextcord.Interaction) -> None:
+        await interaction.response.defer()
+        is_valid = utils.validate(self.prize_amount.value, check_type='quiz')
+        if not is_valid:
+            return await interaction.followup.send(
+                **messages.quiz_error(reason="incorrect_prize_amount"),
+                ephemeral=True
+            )
+        bot.current_quiz = Quiz(
+            self.question.value,
+            self.answer.value,
+            self.prize_amount.value,
+            self.prize_special.value
+        )
+        logging.info("Администратор начинает викторину.")
+        await interaction.followup.send(**messages.quiz(self.question.value))
+        await asyncio.sleep(config.QUIZ_ROUND_TIME)
+        bot.current_quiz.stop_quiz()
+        await interaction.followup.send(**messages.quiz_time_up(self.answer.value))

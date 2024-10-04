@@ -24,6 +24,8 @@ PROBABILITIES = utils.json_safeload(PROBABILITIES_JSON)['current']
 
 PREMIUM_ROLE_DURATION = 2592000
 
+QUIZ_ROUND_TIME = 60
+
 FROG_EMOJI = "<:1fha:1227748132868194346>"
 
 ITEMS_EMOJI = {
@@ -93,3 +95,5 @@ ROLE_LISTING_IMAGE = "assets/role_listing.jpg"
 ROLE_REMOVAL_IMAGE = "assets/role_removal.jpg"
 
 NEWS_POST_IMAGE = "assets/post_news.jpg"
+
+QUIZ_IMAGE = "assets/quiz.jpg"

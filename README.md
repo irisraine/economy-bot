@@ -19,7 +19,9 @@ users can enjoy a dynamic and interactive experience.
 - `/shop`: Access the shop to browse and purchase items.
 - `/catch`: Attempt to catch a frog in the swamp.
 - `/balance`: Check your current frog balance.
-- `/transfer` <amount> <user>: Transfer a specified amount of frogs to another user.
+- `/transfer <amount> <user>`: Transfer a specified amount of frogs to another user.
+- `/quiz`: Set and start interactive quiz.
+- `/prize <username>`: Give a reward for quiz winner.
 - `/admin`: Access special admin options to adjust prices and configure other settings.
 
 ## Usage

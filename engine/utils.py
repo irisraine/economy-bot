@@ -41,7 +41,7 @@ def validate(value, check_type):
             return 0 < int(value) <= 24
         return False
 
-    elif check_type in ['price', 'gift']:
+    elif check_type in ['price', 'gift', 'quiz']:
         if value.isdigit():
             return int(value) > 0
         return False
