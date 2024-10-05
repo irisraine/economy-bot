@@ -32,6 +32,12 @@ def create_tables():
             user_discord_name TEXT NOT NULL,
             expiration_time INTEGER NOT NULL
             )""")
+        cursor.execute("""CREATE TABLE IF NOT EXISTS premium_role_lite_owners (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_discord_id INTEGER NOT NULL,
+            user_discord_name TEXT NOT NULL,
+            expiration_time INTEGER NOT NULL
+            )""")
         cursor.execute("""INSERT INTO bank_balance (balance)
             SELECT 0
             WHERE NOT EXISTS (SELECT 1 FROM bank_balance
@@ -106,37 +112,39 @@ def set_bank_balance(amount):
 
 
 @catch_sql_exceptions
-def add_premium_role_owner(user_discord_id, user_discord_name, expiration_time):
+def add_premium_role_owner(user_discord_id, user_discord_name, expiration_time, lite=False):
+    premium_table = "premium_role_owners" if not lite else "premium_role_lite_owners"
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute("SELECT COUNT(*) FROM premium_role_owners WHERE user_discord_id = ?",
+        cursor.execute(f"SELECT COUNT(*) FROM {premium_table} WHERE user_discord_id = ?",
                        (user_discord_id,))
         user_exists = cursor.fetchone()[0]
         if user_exists:
-            cursor.execute("""
-                        UPDATE premium_role_owners SET user_discord_name = ?, expiration_time = ?WHERE user_discord_id = ?""",
+            cursor.execute(f"UPDATE {premium_table} SET user_discord_name = ?, expiration_time = ? WHERE user_discord_id = ?",
                            (user_discord_name, expiration_time, user_discord_id))
         else:
-            cursor.execute("INSERT INTO premium_role_owners (user_discord_id, user_discord_name, expiration_time) VALUES (?, ?, ?)",
+            cursor.execute(f"INSERT INTO {premium_table} (user_discord_id, user_discord_name, expiration_time) VALUES (?, ?, ?)",
                            (user_discord_id, user_discord_name, expiration_time))
 
 
 @catch_sql_exceptions
-def get_all_premium_role_owners():
+def get_all_premium_role_owners(lite=False):
+    premium_table = "premium_role_owners" if not lite else "premium_role_lite_owners"
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute("SELECT user_discord_name, expiration_time FROM premium_role_owners")
+        cursor.execute(f"SELECT user_discord_name, expiration_time FROM {premium_table}")
         return cursor.fetchall()
 
 
 @catch_sql_exceptions
-def remove_expired_premium_role_owners(current_time):
+def remove_expired_premium_role_owners(current_time, lite=False):
+    premium_table = "premium_role_owners" if not lite else "premium_role_lite_owners"
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute("SELECT user_discord_id FROM premium_role_owners WHERE expiration_time < ?",
+        cursor.execute(f"SELECT user_discord_id FROM {premium_table} WHERE expiration_time < ?",
                        (current_time,))
         expired_premium_role_owners_ids = cursor.fetchall()
         if expired_premium_role_owners_ids:
-            cursor.execute("DELETE FROM premium_role_owners WHERE expiration_time < ?",
+            cursor.execute(f"DELETE FROM {premium_table} WHERE expiration_time < ?",
                            (current_time, ))
             return expired_premium_role_owners_ids

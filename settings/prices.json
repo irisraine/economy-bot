@@ -6,10 +6,10 @@
         "animal": 10,
         "meme": 15,
         "food": 20,
-        "soundpad": 30,
+        "soundpad": 35,
         "drawing": 55,
         "rain": 100,
-        "event": 120,
+        "role_lite": 300,
         "role": 600,
         "band": 1000
     },
@@ -23,7 +23,7 @@
         "soundpad": 35,
         "drawing": 55,
         "rain": 100,
-        "event": 120,
+        "role_lite": 300,
         "role": 600,
         "band": 1000
     }

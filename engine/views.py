@@ -20,7 +20,7 @@ def items():
         "soundpad": {"price": config.PRICES['soundpad'], "description": "Саундпад"},
         "drawing": {"price": config.PRICES['drawing'], "description": "Скетч"},
         "rain": {"price": config.PRICES['rain'], "description": "Дождь из лягушек"},
-        "event": {"price": config.PRICES['event'], "description": "Ивент"},
+        "role_lite": {"price": config.PRICES['role_lite'], "description": "Роль лягушонка"},
         "role": {"price": config.PRICES['role'], "description": "Роль лягушки"},
         "band": {"price": config.PRICES['band'], "description": "Банду"},
     }
@@ -45,7 +45,7 @@ options = [
     nextcord.SelectOption(label="Случайный саундпад Лехи", value="soundpad", emoji=f"{config.ITEMS_EMOJI['soundpad']}"),
     nextcord.SelectOption(label="Авторский скетч", value="drawing", emoji=f"{config.ITEMS_EMOJI['drawing']}"),
     nextcord.SelectOption(label="Дождь из лягушек", value="rain", emoji=f"{config.ITEMS_EMOJI['rain']}"),
-    nextcord.SelectOption(label="Ивент", value="event", emoji=f"{config.ITEMS_EMOJI['event']}"),
+    nextcord.SelectOption(label="Роль «Лягушонок» на 1 месяц", value="role_lite", emoji=f"{config.ITEMS_EMOJI['role_lite']}"),
     nextcord.SelectOption(label="Роль «Легушька» на 1 месяц", value="role", emoji=f"{config.ITEMS_EMOJI['role']}"),
     nextcord.SelectOption(label="Создать свою банду", value="band", emoji=f"{config.ITEMS_EMOJI['band']}"),
 ]
@@ -97,9 +97,14 @@ class PurchaseView(nextcord.ui.View):
             sql.set_user_balance(interaction.user.id, -self.price)
             sql.set_bank_balance(self.price)
             purchased_item_message = messages.item_purchased(self.shop_item)
-            if self.shop_item in ["drawing", "rain", "event", "role", "band"]:
+            if self.shop_item in ["drawing", "rain", "role_lite", "role", "band"]:
                 request_to_admin = bot.client.get_user(config.ADMIN_ID)
                 await request_to_admin.send(**messages.service_request(interaction.user.mention, self.shop_item))
+            if self.shop_item == "role_lite":
+                premium_lite_role = interaction.guild.get_role(config.PREMIUM_ROLE_LITE_ID)
+                expiration_time = utils.get_timestamp() + config.PREMIUM_ROLE_DURATION
+                sql.add_premium_role_owner(interaction.user.id, interaction.user.name, expiration_time, lite=True)
+                await interaction.user.add_roles(premium_lite_role)
             if self.shop_item == "role":
                 premium_role = interaction.guild.get_role(config.PREMIUM_ROLE_ID)
                 expiration_time = utils.get_timestamp() + config.PREMIUM_ROLE_DURATION
@@ -207,7 +212,7 @@ class AdminMenuView(nextcord.ui.View):
                 description="Говорить от имени лягушачьего предводителя",
                 emoji="💬"),
             nextcord.SelectOption(
-                label="Проверить статусы обладателей роли лягушки",
+                label="Проверить статусы обладателей ролей лягушонка и лягушки",
                 value="role_manage",
                 description="Кому и сколько еще осталось квакать",
                 emoji="👑"),
@@ -516,13 +521,20 @@ class RoleManageView(AdminActionBasicView):
     @nextcord.ui.button(label="Снять просроченные роли", style=nextcord.ButtonStyle.green, emoji="➖")
     async def remove_expired_roles_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
+        expired_premium_role_lite_owners_ids = sql.remove_expired_premium_role_owners(utils.get_timestamp(), lite=True)
         expired_premium_role_owners_ids = sql.remove_expired_premium_role_owners(utils.get_timestamp())
+        if expired_premium_role_lite_owners_ids:
+            premium_lite_role = interaction.guild.get_role(config.PREMIUM_ROLE_LITE_ID)
+            for expired_premium_role_lite_owners_id in expired_premium_role_lite_owners_ids:
+                expired_premium_role_lite_owner = interaction.guild.get_member(expired_premium_role_lite_owners_id[0])
+                await expired_premium_role_lite_owner.remove_roles(premium_lite_role)
+            logging.info("Администратор снимает с участников роли лягушонка, срок использования которых истек.")
         if expired_premium_role_owners_ids:
             premium_role = interaction.guild.get_role(config.PREMIUM_ROLE_ID)
             for expired_premium_role_owner_id in expired_premium_role_owners_ids:
                 expired_premium_role_owner = interaction.guild.get_member(expired_premium_role_owner_id[0])
                 await expired_premium_role_owner.remove_roles(premium_role)
-            logging.info("Администратор снимает с участников роли, срок использования которых истек.")
+            logging.info("Администратор снимает с участников роли лягушки, срок использования которых истек.")
         await interaction.followup.send(**messages.role_expired_and_removed(expired_premium_role_owners_ids),
                                         ephemeral=True)
 

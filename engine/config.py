@@ -10,6 +10,7 @@ GUILD_ID = int(os.getenv('GUILD_ID'))
 ADMIN_ID = int(os.getenv('ADMIN_ID'))
 NEWS_CHANNEL_ID = int(os.getenv('NEWS_CHANNEL_ID'))
 PREMIUM_ROLE_ID = int(os.getenv('PREMIUM_ROLE_ID'))
+PREMIUM_ROLE_LITE_ID = int(os.getenv('PREMIUM_ROLE_LITE_ID'))
 
 DATABASE_PATH = "database/vault.db"
 
@@ -26,7 +27,8 @@ PREMIUM_ROLE_DURATION = 2592000
 
 QUIZ_ROUND_TIME = 60
 
-FROG_EMOJI = "<:1fha:1227748132868194346>"
+FROG_EMOJI = "<:1frg:1286272480083836970>"
+# FROG_EMOJI = "<:1fha:1227748132868194346>"
 
 ITEMS_EMOJI = {
     "track": "<:1bne:1133866946094440598>",
@@ -38,7 +40,7 @@ ITEMS_EMOJI = {
     "soundpad": "🔊",
     "drawing": "🏞️",
     "rain": "🌧️",
-    "event": "<:1be:1132997104458006539>",
+    "role_lite": "<:1fhc:1237130954368356393>",
     "role": "<:1ba:1132997121725976626>",
     "band": "<:1bf:1132997100687339621>",
 }
@@ -57,7 +59,7 @@ SHOP_ITEMS_CACHE = utils.json_safeload(SHOP_ITEMS_CACHE_JSON)
 SHOP_ITEMS_SERVICES = {
     "drawing": "assets/drawing.jpg",
     "rain": "assets/rain.jpg",
-    "event": "assets/event.jpg",
+    "role_lite": "assets/role_lite.jpg",
     "role": "assets/role.jpg",
     "band": "assets/band.jpg",
 }

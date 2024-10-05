@@ -84,12 +84,14 @@ def shop():
                     "Устрой апокалипсис! Простри руку твою с жезлом твоим на реки, на потоки и на озера и выведи "
                     "лягух на землю Лаграсскую. Алексей простёр руку свою на воды Камассы; и вышли лягушки и "
                     "покрыли землю Лаграсскую.\n\n"
-                    f"***10. Ивент - {config.PRICES['event']} {config.FROG_EMOJI}***"
-                    "Стань организатором своего собственного ивента. Давно мечтал о том, чтобы сотни людей "
-                    "поучаствовали в твоем диком и безумном квесте? Сейчас самое время!\n\n"
+                    f"***10. Роль «Лягушонок» на 1 месяц - {config.PRICES['role_lite']} {config.FROG_EMOJI}***"
+                    f"Донатная роль <@&{config.PREMIUM_ROLE_LITE_ID}>. Первая ступень элитной земноводной иерархии "
+                    "сервера. С ней тебе будет доступен ряд небольших привилегий: уникальная роль, приватный "
+                    "голосовой чат и дождь из лягушек.\n\n"
                     f"***11. Роль «Легушька» на 1 месяц - {config.PRICES['role']} {config.FROG_EMOJI}***"
                     f"Донатная роль <@&{config.PREMIUM_ROLE_ID}>, доступная только состоятельным людям и дающая "
-                    "доступ в приватный голосовой чат сервера и иные привилегии, теперь станет твоей.\n\n"
+                    "доступ в приватный голосовой чат сервера, дождь из лягушек, билет на караван без повозки и "
+                    "скетч в антропоморфном стиле, теперь станет твоей.\n\n"
                     f"***12. Банда - {config.PRICES['band']} {config.FROG_EMOJI}***"
                     "Создай свою собственную банду, слава о которой прогремит по всему Дикому Западу. "
                     "Требуется от 7 постоянных участников.\n\n",
@@ -215,19 +217,19 @@ def item_purchased(item):
         "rain": "*Сообщение о покупке услуги отправлено администратору.* \n\n"
                 "Волшебники Изумрудного города уже раскочегаривают свои адские машины, чтобы обрушить "
                 "апокалиптический лягушачий дождь на грешный мир. Не спасется никто!",
-        "event": "*Сообщение о покупке услуги отправлено администратору.* \n\n"
-                 f"Дело за малым - изложите <@{config.ADMIN_ID}> свои безумные планы, и в ближайшее время на сервере "
-                 "появится объявление о вашей задумке.\n\n"
-                 "`Потраченные средства являются залогом! Они вернутся вам после успешно проведенного ивента.`",
         "role": "*Теперь вы принадлежите к земноводной элите этого сервера.* \n\n"
                 "Лягушек слышите, как квакают? Это другие посвященные, готовые принять в свой тесный круг болотной "
                 "элиты, ожидают вас.\n\n"
+                "`Роль выдается на 30 календарных дней с момента покупки.`",
+        "role_lite": "*Теперь ты лягушонок! Маленький, но очень важный.* \n\n"
+                "Теперь вместе со своими земноводными братьями ты отправишься в дивное, объятое мглой чудес болото. "
+                "И в этой исконной обители лягушек обретешь новую, славную и чудесную жизнь.\n\n"
                 "`Роль выдается на 30 календарных дней с момента покупки.`",
         "band": "*Сообщение о покупке услуги отправлено администратору.* \n\n"
                 "Собирай людей под свои знамена. Отныне вы банда! Сообщи администраторам, и они создадут для тебя "
                 "и твоих друзей закрытый канал, чат и дадут собственную уникальную роль.",
     }
-    service = True if (item in ["drawing", "rain", "event", "role", "band"]) else False
+    service = True if (item in ["drawing", "rain", "role_lite", "role", "band"]) else False
 
     title = "Премиум-услуга приобретена!" if service else None
     description = items[item]
@@ -299,7 +301,7 @@ def service_request(user, item):
     services = {
         "drawing": "просит нарисовать для него **авторский рисунок**.",
         "rain": "вызывает **дождь из лягушек**.",
-        "event": "хочет организовать на сервере уникальный **ивент**.",
+        "role_lite": "приобрел **роль лягушонка**.",
         "role": "приобрел **роль лягушки**.",
         "band": "запрашивает создание собственной **банды** на сервере.",
     }
@@ -561,31 +563,39 @@ def gift_confirmation(other_user, amount, is_valid=True):
 
 
 def role_manage():
-    premium_role_owners = ""
-    current_time = utils.get_timestamp()
-    for i, premium_role_owner in enumerate(sql.get_all_premium_role_owners()):
-        expiration_time = premium_role_owner[1]
-        if expiration_time > current_time:
-            if expiration_time - current_time < 86400:
-                expire = "истекает **сегодня!**"
+    def get_role_owners_description(role_owners, current_time, role_id):
+        description = ""
+        for i, role_owner in enumerate(role_owners):
+            expiration_time = role_owner[1]
+            if expiration_time > current_time:
+                if expiration_time - current_time < 86400:
+                    expire = "истекает **сегодня!**"
+                else:
+                    expiration_date = utils.from_timestamp(expiration_time, mode="date")
+                    expire = f"истекает **{expiration_date}**."
             else:
-                expiration_date = utils.from_timestamp(expiration_time, mode="date")
-                expire = f"истекает **{expiration_date}**."
-        else:
-            expire = "**уже истекла!**"
-        premium_role_owners += f"{i}. {premium_role_owner[0]} — {expire}\n"
+                expire = "**уже истекла!**"
+            description += f"{i}. {role_owner[0]} — {expire}\n"
 
-    if premium_role_owners:
-        description = (f"Нижеприведенные участники на данный момент обладают "
-                       f"донатной ролью <@&{config.PREMIUM_ROLE_ID}>:\n\n "
-                       f"{premium_role_owners}\n"
-                       f"*Если в списке имеются участники, чей срок использования роли истек, "
-                       f"снимите с них роль c помощью соответствующей кнопки.*")
-    else:
-        description = (f"Еще ни один участник не смог позволить себе приобрести "
-                       f"донатную роль <@&{config.PREMIUM_ROLE_ID}>.\n\n")
+        if description:
+            return (f"Нижеприведенные участники на данный момент обладают "
+                    f"донатной ролью <@&{role_id}>:\n\n{description}\n")
+        else:
+            return (f"Еще ни один участник не смог позволить себе приобрести "
+                    f"донатную роль <@&{role_id}>.\n\n")
+
+    current_time = utils.get_timestamp()
+    description = ""
+    premium_role_lite_owners = sql.get_all_premium_role_owners(lite=True)
+    premium_role_owners = sql.get_all_premium_role_owners()
+    description += get_role_owners_description(premium_role_lite_owners, current_time, config.PREMIUM_ROLE_LITE_ID)
+    description += get_role_owners_description(premium_role_owners, current_time, config.PREMIUM_ROLE_ID)
+    if premium_role_owners or premium_role_lite_owners:
+        description += (f"*Если в списке имеются участники, чей срок использования роли истек, "
+                        f"снимите с них роль c помощью соответствующей кнопки.*")
+
     embed_message = MessageContainer(
-        title="Список обладателей донатной роли",
+        title="Список обладателей донатных ролей",
         description=description,
         file_path=config.ROLE_LISTING_IMAGE
     )

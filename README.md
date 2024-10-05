@@ -39,8 +39,9 @@ GUILD_ID = 0000000000000000000
 ADMIN_ID = 0000000000000000000
 # ID of news channel available to bot
 NEWS_CHANNEL_ID = 0000000000000000000
-# ID of special role obtaining in the shop
+# ID of special roles obtaining in the shop
 PREMIUM_ROLE_ID = 0000000000000000000
+PREMIUM_ROLE_LITE_ID = 0000000000000000000
 ```
 
 Directory `shop_items` must have `animal, cite, food, frog, meme, soundpad, track` subdirectories, 
