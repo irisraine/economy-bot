@@ -94,12 +94,12 @@ class PurchaseView(nextcord.ui.View):
                 view=None
             )
         if self.shop_item in ["role_lite", "role"]:
-            premium_roles = {
-                "premium_role": nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE_ID),
-                "premium_role_lite": nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE_LITE_ID),
-                "premium_role_max": nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE_MAX_ID)
-            }
-            user_premium_role = next((role for role in premium_roles.values() if role in interaction.user.roles), None)
+            premium_roles = [
+                nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE_ID),
+                nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE_LITE_ID),
+                nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE_MAX_ID)
+            ]
+            user_premium_role = next((role for role in premium_roles if role in interaction.user.roles), None)
             if user_premium_role:
                 return await interaction.edit_original_message(
                     **messages.already_has_premium_role(interaction.user, user_premium_role),
@@ -546,7 +546,8 @@ class RoleManageView(AdminActionBasicView):
                 expired_premium_role_owner = interaction.guild.get_member(expired_premium_role_owner_id[0])
                 await expired_premium_role_owner.remove_roles(premium_role)
             logging.info("Администратор снимает с участников роли лягушки, срок использования которых истек.")
-        await interaction.followup.send(**messages.role_expired_and_removed(expired_premium_role_owners_ids),
+        is_expired_role_owners = expired_premium_role_owners_ids or expired_premium_role_lite_owners_ids
+        await interaction.followup.send(**messages.role_expired_and_removed(is_expired_role_owners),
                                         ephemeral=True)
 
 

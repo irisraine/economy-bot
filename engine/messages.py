@@ -613,8 +613,8 @@ def role_manage():
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def role_expired_and_removed(expired_premium_role_owners_ids):
-    if expired_premium_role_owners_ids:
+def role_expired_and_removed(is_expired_role_owners):
+    if is_expired_role_owners:
         title = SUCCESS_HEADER
         description = "Участники с просроченными донатными ролями лишились их."
         file_path = config.ROLE_REMOVAL_IMAGE
