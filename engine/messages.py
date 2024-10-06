@@ -331,6 +331,17 @@ def caching_confirmation(files_count_printable):
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
+def already_has_premium_role(user, premium_role):
+    embed_message = MessageContainer(
+        title="Роль уже назначена ранее",
+        description=f"{user.mention}, ты уже принадлежишь к земноводной элите, обладаешь "
+                    f"донатной ролью {premium_role.mention} и живешь в болоте, как царь. Дождись завершения "
+                    f"срока подписки перед тем, как совершить покупку.",
+        file_path=config.ROLE_LISTING_IMAGE
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
 def admin():
     embed_message = MessageContainer(
         title="Админка",

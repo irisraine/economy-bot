@@ -11,6 +11,7 @@ ADMIN_ID = int(os.getenv('ADMIN_ID'))
 NEWS_CHANNEL_ID = int(os.getenv('NEWS_CHANNEL_ID'))
 PREMIUM_ROLE_ID = int(os.getenv('PREMIUM_ROLE_ID'))
 PREMIUM_ROLE_LITE_ID = int(os.getenv('PREMIUM_ROLE_LITE_ID'))
+PREMIUM_ROLE_MAX_ID = int(os.getenv('PREMIUM_ROLE_MAX_ID'))
 
 DATABASE_PATH = "database/vault.db"
 

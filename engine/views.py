@@ -89,32 +89,43 @@ class PurchaseView(nextcord.ui.View):
             sql.create_user_balance(interaction.user.id, interaction.user.name)
             user_balance = sql.get_user_balance(interaction.user.id)
         if self.price > user_balance:
-            await interaction.edit_original_message(
+            return await interaction.edit_original_message(
                 **messages.insufficient_balance(),
                 view=None
             )
-        else:
-            sql.set_user_balance(interaction.user.id, -self.price)
-            sql.set_bank_balance(self.price)
-            purchased_item_message = messages.item_purchased(self.shop_item)
-            if self.shop_item in ["drawing", "rain", "role_lite", "role", "band"]:
-                request_to_admin = bot.client.get_user(config.ADMIN_ID)
-                await request_to_admin.send(**messages.service_request(interaction.user.mention, self.shop_item))
-            if self.shop_item == "role_lite":
-                premium_lite_role = interaction.guild.get_role(config.PREMIUM_ROLE_LITE_ID)
-                expiration_time = utils.get_timestamp() + config.PREMIUM_ROLE_DURATION
-                sql.add_premium_role_owner(interaction.user.id, interaction.user.name, expiration_time, lite=True)
-                await interaction.user.add_roles(premium_lite_role)
-            if self.shop_item == "role":
-                premium_role = interaction.guild.get_role(config.PREMIUM_ROLE_ID)
-                expiration_time = utils.get_timestamp() + config.PREMIUM_ROLE_DURATION
-                sql.add_premium_role_owner(interaction.user.id, interaction.user.name, expiration_time)
-                await interaction.user.add_roles(premium_role)
-            logging.info(f"Пользователь {interaction.user.name} покупает предмет из категории '{self.shop_item}'.")
-            await interaction.edit_original_message(
-                **purchased_item_message,
-                view=None
-            )
+        if self.shop_item in ["role_lite", "role"]:
+            premium_roles = {
+                "premium_role": nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE_ID),
+                "premium_role_lite": nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE_LITE_ID),
+                "premium_role_max": nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE_MAX_ID)
+            }
+            user_premium_role = next((role for role in premium_roles.values() if role in interaction.user.roles), None)
+            if user_premium_role:
+                return await interaction.edit_original_message(
+                    **messages.already_has_premium_role(interaction.user, user_premium_role),
+                    view=None
+                )
+        sql.set_user_balance(interaction.user.id, -self.price)
+        sql.set_bank_balance(self.price)
+        purchased_item_message = messages.item_purchased(self.shop_item)
+        if self.shop_item in ["drawing", "rain", "role_lite", "role", "band"]:
+            request_to_admin = bot.client.get_user(config.ADMIN_ID)
+            await request_to_admin.send(**messages.service_request(interaction.user.mention, self.shop_item))
+        if self.shop_item == "role_lite":
+            premium_lite_role = interaction.guild.get_role(config.PREMIUM_ROLE_LITE_ID)
+            expiration_time = utils.get_timestamp() + config.PREMIUM_ROLE_DURATION
+            sql.add_premium_role_owner(interaction.user.id, interaction.user.name, expiration_time, lite=True)
+            await interaction.user.add_roles(premium_lite_role)
+        if self.shop_item == "role":
+            premium_role = interaction.guild.get_role(config.PREMIUM_ROLE_ID)
+            expiration_time = utils.get_timestamp() + config.PREMIUM_ROLE_DURATION
+            sql.add_premium_role_owner(interaction.user.id, interaction.user.name, expiration_time)
+            await interaction.user.add_roles(premium_role)
+        logging.info(f"Пользователь {interaction.user.name} покупает предмет из категории '{self.shop_item}'.")
+        await interaction.edit_original_message(
+            **purchased_item_message,
+            view=None
+        )
 
     @nextcord.ui.button(label="Вернуться к прилавку", style=nextcord.ButtonStyle.gray, emoji="◀️")
     async def return_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
