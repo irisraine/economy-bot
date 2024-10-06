@@ -83,6 +83,7 @@ async def shop(interaction: nextcord.Interaction):
         view=views.ShopMenuView()
     )
 
+
 @client.slash_command(description="Провести викторину")
 async def quiz(interaction: nextcord.Interaction):
     await interaction.response.send_modal(views.QuizModal())
