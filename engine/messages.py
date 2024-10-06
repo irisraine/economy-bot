@@ -591,8 +591,8 @@ def role_manage():
     description += get_role_owners_description(premium_role_lite_owners, current_time, config.PREMIUM_ROLE_LITE_ID)
     description += get_role_owners_description(premium_role_owners, current_time, config.PREMIUM_ROLE_ID)
     if premium_role_owners or premium_role_lite_owners:
-        description += (f"*Если в списке имеются участники, чей срок использования роли истек, "
-                        f"снимите с них роль c помощью соответствующей кнопки.*")
+        description += ("*Если в списке имеются участники, чей срок использования роли истек, "
+                        "снимите с них роль c помощью соответствующей кнопки.*")
 
     embed_message = MessageContainer(
         title="Список обладателей донатных ролей",
@@ -658,7 +658,7 @@ def quiz(question):
         title="Викторина!",
         description=f"Вопрос к знатокам в зале: **{question}?** \n\n"
                     f"Время размышления - _1 минута_.",
-        file_path = config.QUIZ_IMAGE
+        file_path=config.QUIZ_IMAGE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
@@ -676,15 +676,16 @@ def quiz_error(reason):
     embed_message = MessageContainer(
         title=ERROR_HEADER,
         description=description,
-        file_path = config.ERROR_IMAGE
+        file_path=config.ERROR_IMAGE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
+
 
 def quiz_time_up(answer):
     embed_message = MessageContainer(
         title="Викторина",
         description=f"Время на раздумье истекло. \n\nПравильный ответ: **{answer}**.",
-        file_path=config.QUIZ_IMAGE
+        file_path=config.QUIZ_TIME_UP
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
@@ -692,14 +693,16 @@ def quiz_time_up(answer):
 def quiz_prize(winner, question, prize_amount, prize_special=False):
     description = (f"{winner.mention},  ты дал верный ответ на вопрос «*{question}*». \n\n"
                    f"Маладэц!\n Твои познания вознаграждены - ты получаешь **{prize_amount}** {config.FROG_EMOJI}.\n")
+    file_path = config.QUIZ_PRIZE_BASIC
     if prize_special:
         description += (f"Ответив на столь каверзный вопрос, ты также удостоился специального "
                         f"приза, и это - **{prize_special}**! За его получением обратись к администратору.")
+        file_path = config.QUIZ_PRIZE_SPECIAL
 
     embed_message = MessageContainer(
         title="Чвяк чвяк!",
         description=description,
-        file_path=config.QUIZ_IMAGE
+        file_path=file_path
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 

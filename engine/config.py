@@ -98,3 +98,6 @@ ROLE_REMOVAL_IMAGE = "assets/role_removal.jpg"
 NEWS_POST_IMAGE = "assets/post_news.jpg"
 
 QUIZ_IMAGE = "assets/quiz.jpg"
+QUIZ_TIME_UP = "assets/quiz_time_up.jpg"
+QUIZ_PRIZE_BASIC = "assets/quiz_prize_basic.jpg"
+QUIZ_PRIZE_SPECIAL = "assets/quiz_prize_special.jpg"
