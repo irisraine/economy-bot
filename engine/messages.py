@@ -665,13 +665,14 @@ def reset_database_confirmation(is_valid=True):
 
 
 def quiz(question):
+    content = f"<@&{config.QUIZ_PARTICIPANT_ID}>"
     embed_message = MessageContainer(
         title="Викторина!",
         description=f"Вопрос к знатокам в зале: **{question}?** \n\n"
                     f"Время размышления - _1 минута_.",
         file_path=config.QUIZ_IMAGE
     )
-    return {'embed': embed_message.embed, 'file': embed_message.file}
+    return {'content': content, 'embed': embed_message.embed, 'file': embed_message.file}
 
 
 def quiz_error(reason):

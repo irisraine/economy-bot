@@ -631,7 +631,10 @@ class QuizModal(nextcord.ui.Modal):
             self.prize_special.value
         )
         logging.info("Администратор начинает викторину.")
-        await interaction.followup.send(**messages.quiz(self.question.value))
+        await interaction.followup.send(
+            **messages.quiz(self.question.value),
+            allowed_mentions=nextcord.AllowedMentions(roles=True)
+        )
         await asyncio.sleep(config.QUIZ_ROUND_TIME)
         bot.current_quiz.stop_quiz()
         await interaction.followup.send(**messages.quiz_time_up(self.answer.value))
