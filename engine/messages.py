@@ -1,5 +1,6 @@
 import nextcord
 import os
+import io
 import logging
 import engine.config as config
 import engine.utils as utils
@@ -17,23 +18,27 @@ ERROR_DESCRIPTION_GENERAL = ("Что-то пошло не так. :(\n "
 
 
 class MessageContainer:
-    def __init__(self, title=None, description=None, file_path=None):
+    def __init__(self, title=None, description=None, file_path=None, image_binary_data=None):
         self.__content = None
         self.__embed = None
-        if not file_path:
-            file_path = config.SEPARATOR
-        if not os.path.isfile(file_path):
-            logging.error(f"Произошла ошибка при попытке открытия файла '{file_path}'! Файл не найден.")
-            if "shop_items" in file_path:
-                title = ERROR_HEADER
-                description = ERROR_DESCRIPTION_SHOP
-                file_path = config.ERROR_SHOP_IMAGE
-            else:
-                title = ERROR_HEADER
-                description = ERROR_DESCRIPTION_GENERAL
-                file_path = config.ERROR_IMAGE
+        if image_binary_data:
+            fp = io.BytesIO(image_binary_data)
+        else:
+            if not file_path:
+                file_path = config.SEPARATOR
+            if not os.path.isfile(file_path):
+                logging.error(f"Произошла ошибка при попытке открытия файла '{file_path}'! Файл не найден.")
+                if "shop_items" in file_path:
+                    title = ERROR_HEADER
+                    description = ERROR_DESCRIPTION_SHOP
+                    file_path = config.ERROR_SHOP_IMAGE
+                else:
+                    title = ERROR_HEADER
+                    description = ERROR_DESCRIPTION_GENERAL
+                    file_path = config.ERROR_IMAGE
+            fp = file_path
         file_name = file_path.split('/')[-1]
-        if file_name.split('.')[-1] in ['jpg', 'jpeg', 'png']:
+        if file_name.split('.')[-1] in ['jpg', 'jpeg', 'png', 'gif']:
             self.__embed = nextcord.Embed(
                 title=title,
                 description=description,
@@ -43,7 +48,7 @@ class MessageContainer:
             self.__embed.set_image(url=image_attachment)
         else:
             self.__content = description
-        self.__file = nextcord.File(file_path, filename=file_name)
+        self.__file = nextcord.File(fp=fp, filename=file_name)
 
     @property
     def content(self):
@@ -664,13 +669,15 @@ def reset_database_confirmation(is_valid=True):
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def quiz(question):
+def quiz(question, image_binary_data=None, image_filename=None):
     content = f"<@&{config.QUIZ_PARTICIPANT_ID}>"
+    file_path = image_filename if image_filename else config.QUIZ_IMAGE
     embed_message = MessageContainer(
         title="Викторина!",
         description=f"Вопрос к знатокам в зале: **{question}?** \n\n"
                     f"Время размышления - _1 минута_.",
-        file_path=config.QUIZ_IMAGE
+        file_path=file_path,
+        image_binary_data=image_binary_data
     )
     return {'content': content, 'embed': embed_message.embed, 'file': embed_message.file}
 

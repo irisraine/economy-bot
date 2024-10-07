@@ -616,6 +616,14 @@ class QuizModal(nextcord.ui.Modal):
         )
         self.add_item(self.prize_special)
 
+        self.image_url = nextcord.ui.TextInput(
+            label="Изображение",
+            placeholder="(опционально, в форматах jpg/png/gif)",
+            required=False,
+            style=nextcord.TextInputStyle.short
+        )
+        self.add_item(self.image_url)
+
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
         is_valid = utils.validate(self.prize_amount.value, check_type='quiz')
@@ -631,8 +639,9 @@ class QuizModal(nextcord.ui.Modal):
             self.prize_special.value
         )
         logging.info("Администратор начинает викторину.")
+        image_binary_data, image_filename = utils.image_download(self.image_url.value)
         await interaction.followup.send(
-            **messages.quiz(self.question.value),
+            **messages.quiz(self.question.value, image_binary_data, image_filename),
             allowed_mentions=nextcord.AllowedMentions(roles=True)
         )
         await asyncio.sleep(config.QUIZ_ROUND_TIME)

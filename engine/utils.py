@@ -3,6 +3,7 @@ import tempfile
 import json
 import random
 import logging
+import requests
 from datetime import datetime, timezone
 import engine.config as config
 import engine.sql as sql
@@ -150,6 +151,28 @@ def refresh_cache():
         logging.error("Ошибка при кэшировании файлов. Проверьте наличие директории shop_items и всех "
                       "необходимых подпапок с содержимым.")
 
+
+def image_download(url):
+    if not url:
+        return None, None
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        content_type = response.headers['Content-Type']
+        if 'image/jpeg' in content_type:
+            extension = '.jpg'
+        elif 'image/png' in content_type:
+            extension = '.png'
+        elif 'image/gif' in content_type:
+            extension = '.gif'
+        else:
+            return None, None
+        image_binary_data = response.content
+        current_unix_time = get_timestamp()
+        image_filename = f'{current_unix_time}{extension}'
+        return image_binary_data, image_filename
+    except requests.exceptions.RequestException:
+        return None, None
 
 def reset_database():
     try:
