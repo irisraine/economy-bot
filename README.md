@@ -12,6 +12,7 @@ users can enjoy a dynamic and interactive experience.
 - **Shop**: Spend your frogs on a variety of items including songs, soundpads, art, memes, wise quotes, premium roles, and more.
 - **Catch Frogs**: Try your luck in the swamp to catch frogs with a certain probability.
 - **Transfer Frogs**: Easily transfer frogs to other users.
+- **Hold Quizzes**: Create and hold quizzes and thereby allowing members of your server to demonstrate their erudition.
 - **Admin Controls**: Special options for admins to adjust prices and configure settings.
 
 ## Commands
@@ -42,6 +43,9 @@ NEWS_CHANNEL_ID = 0000000000000000000
 # ID of special roles obtaining in the shop
 PREMIUM_ROLE_ID = 0000000000000000000
 PREMIUM_ROLE_LITE_ID = 0000000000000000000
+PREMIUM_ROLE_MAX_ID = 0000000000000000000
+# ID of quiz participants role
+QUIZ_PARTICIPANT_ID = 0000000000000000000
 ```
 
 Directory `shop_items` must have `animal, cite, food, frog, meme, soundpad, track` subdirectories, 
