@@ -487,11 +487,13 @@ def post_news_confirmation():
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def news_channel_message(title, description):
+def news_channel_message(title, description, image_binary_data=None, image_filename=None):
+    file_path = image_filename if image_filename else config.NEWS_POST_IMAGE
     embed_message = MessageContainer(
         title=f"**{title}**",
         description=description,
-        file_path=config.NEWS_POST_IMAGE
+        file_path=file_path,
+        image_binary_data=image_binary_data
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
@@ -722,6 +724,19 @@ def quiz_prize(winner, question, prize_amount, prize_special=False):
         title="Чвяк чвяк!",
         description=description,
         file_path=file_path
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
+def image_url_error():
+    embed_message = MessageContainer(
+        title=ERROR_HEADER,
+        description="Изображение по ссылке не может быть получено.\n"
+                    "Причиной этого может быть неправильно записанная ссылка, неподходящий формат "
+                    "изображения или слишком длительное время загрузки. Вам необходимо заполнить форму заново. "
+                    "Если эта ошибка будет повторяться, используйте другую ссылку. Либо запостите сообщение "
+                    "со стандартным изображением, оставив поле для ссылки пустым.",
+        file_path=config.ERROR_IMAGE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 

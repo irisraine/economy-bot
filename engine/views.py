@@ -507,11 +507,25 @@ class PostNewsWindow(nextcord.ui.Modal):
             style=nextcord.TextInputStyle.paragraph
         )
         self.add_item(self.message_description)
+        self.image_url = nextcord.ui.TextInput(
+            label="Изображение",
+            placeholder="(опционально, в форматах jpg/png/gif)",
+            required=False,
+            style=nextcord.TextInputStyle.short
+        )
+        self.add_item(self.image_url)
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
+        image_binary_data, image_filename = utils.image_download(self.image_url.value)
+        if self.image_url.value and not image_binary_data:
+            return await interaction.followup.send(
+                **messages.image_url_error(),
+                ephemeral=True
+            )
         channel = interaction.guild.get_channel(config.NEWS_CHANNEL_ID)
-        await channel.send(**messages.news_channel_message(self.message_title.value, self.message_description.value))
+        await channel.send(**messages.news_channel_message(
+            self.message_title.value, self.message_description.value, image_binary_data, image_filename))
         logging.info(f"Администратор отправляет сообщение '{self.message_description.value}' в новостной канал.")
         await interaction.followup.send(**messages.post_news_confirmation(), ephemeral=True)
 
@@ -590,7 +604,6 @@ class QuizModal(nextcord.ui.Modal):
             style=nextcord.TextInputStyle.paragraph
         )
         self.add_item(self.question)
-
         self.answer = nextcord.ui.TextInput(
             label="Ответ",
             placeholder="Правильный ответ",
@@ -598,7 +611,6 @@ class QuizModal(nextcord.ui.Modal):
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.answer)
-
         self.prize_amount = nextcord.ui.TextInput(
             label="Размер награды в лягушках",
             max_length=3,
@@ -607,7 +619,6 @@ class QuizModal(nextcord.ui.Modal):
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.prize_amount)
-
         self.prize_special = nextcord.ui.TextInput(
             label="Особая награда",
             placeholder="Только для знатоков высшей лиги!",
@@ -615,7 +626,6 @@ class QuizModal(nextcord.ui.Modal):
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.prize_special)
-
         self.image_url = nextcord.ui.TextInput(
             label="Изображение",
             placeholder="(опционально, в форматах jpg/png/gif)",
@@ -632,6 +642,12 @@ class QuizModal(nextcord.ui.Modal):
                 **messages.quiz_error(reason="incorrect_prize_amount"),
                 ephemeral=True
             )
+        image_binary_data, image_filename = utils.image_download(self.image_url.value)
+        if self.image_url.value and not image_binary_data:
+            return await interaction.followup.send(
+                **messages.image_url_error(),
+                ephemeral=True
+            )
         bot.current_quiz = Quiz(
             self.question.value,
             self.answer.value,
@@ -639,7 +655,6 @@ class QuizModal(nextcord.ui.Modal):
             self.prize_special.value
         )
         logging.info("Администратор начинает викторину.")
-        image_binary_data, image_filename = utils.image_download(self.image_url.value)
         await interaction.followup.send(
             **messages.quiz(self.question.value, image_binary_data, image_filename),
             allowed_mentions=nextcord.AllowedMentions(roles=True)

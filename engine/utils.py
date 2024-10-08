@@ -174,6 +174,7 @@ def image_download(url):
     except requests.exceptions.RequestException:
         return None, None
 
+
 def reset_database():
     try:
         if os.path.exists(config.DATABASE_PATH):
