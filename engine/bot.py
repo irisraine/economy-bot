@@ -18,6 +18,7 @@ current_quiz = None
 
 @client.slash_command(description="Поймать лягушку")
 async def catch(interaction: nextcord.Interaction):
+    user_balance = sql.get_user_balance(interaction.user)
     current_time = utils.get_timestamp()
     delta_time = current_time - sql.get_last_catching_time(interaction.user)
     if delta_time < config.CATCHING_COOLDOWN * 3600:
@@ -39,6 +40,8 @@ async def catch(interaction: nextcord.Interaction):
     if amount_of_caught_frogs > 0:
         sql.set_user_balance(interaction.user, amount_of_caught_frogs)
         logging.info(f"Пользователь {interaction.user.name} поймал лягушек в количестве {amount_of_caught_frogs} шт.")
+        logging.info(f"Текущее количество лягушек на балансе пользователя {interaction.user.name} составляет "
+                     f"{user_balance + amount_of_caught_frogs} шт.")
     await interaction.response.send_message(**messages.catch(interaction.user.mention, amount_of_caught_frogs))
 
 
