@@ -34,6 +34,21 @@ class Quiz:
         return get_timestamp() - self.start_time < config.QUIZ_ACTIVE_TIME
 
 
+def catch_attempt():
+    rand = random.random()
+    if rand < config.PROBABILITIES['legendary']:
+        amount_of_caught_frogs = random.randint(7, 45)
+    elif rand < config.PROBABILITIES['epic']:
+        amount_of_caught_frogs = random.choice([5, 6])
+    elif rand < config.PROBABILITIES['uncommon']:
+        amount_of_caught_frogs = random.choice([3, 4])
+    elif rand < config.PROBABILITIES['common']:
+        amount_of_caught_frogs = random.choice([1, 2])
+    else:
+        amount_of_caught_frogs = 0
+    return amount_of_caught_frogs
+
+
 def get_timestamp():
     return int(datetime.now(timezone.utc).timestamp())
 

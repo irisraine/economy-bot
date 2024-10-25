@@ -2,7 +2,6 @@ import nextcord
 from nextcord.ext import commands, application_checks
 import os
 import logging
-import random
 import engine.config as config
 import engine.sql as sql
 import engine.views as views
@@ -23,24 +22,13 @@ async def catch(interaction: nextcord.Interaction):
     delta_time = current_time - sql.get_last_catching_time(interaction.user)
     if delta_time < config.CATCHING_COOLDOWN * 3600:
         return await interaction.response.send_message(**messages.cooldown(delta_time))
-
-    logging.info(f"Пользователь {interaction.user.name} пытается поймать лягушку.")
-    amount_of_caught_frogs = 0
-    rand = random.random()
-    if rand < config.PROBABILITIES['legendary']:
-        amount_of_caught_frogs = random.randint(7, 45)
-    elif rand < config.PROBABILITIES['epic']:
-        amount_of_caught_frogs = random.choice([5, 6])
-    elif rand < config.PROBABILITIES['uncommon']:
-        amount_of_caught_frogs = random.choice([3, 4])
-    elif rand < config.PROBABILITIES['common']:
-        amount_of_caught_frogs = random.choice([1, 2])
-
+    amount_of_caught_frogs = utils.catch_attempt()
     sql.set_last_catching_time(interaction.user, current_time)
+    logging.info(f"Пользователь {interaction.user.name} пытается поймать лягушку.")
     if amount_of_caught_frogs > 0:
         sql.set_user_balance(interaction.user, amount_of_caught_frogs)
-        logging.info(f"Пользователь {interaction.user.name} поймал лягушек в количестве {amount_of_caught_frogs} шт.")
-        logging.info(f"Текущее количество лягушек на балансе пользователя {interaction.user.name} составляет "
+        logging.info(f"Пользователь {interaction.user.name} поймал лягушек в количестве {amount_of_caught_frogs} шт. "
+                     f"Текущее количество лягушек на его балансе составляет "
                      f"{user_balance + amount_of_caught_frogs} шт.")
     await interaction.response.send_message(**messages.catch(interaction.user.mention, amount_of_caught_frogs))
 
