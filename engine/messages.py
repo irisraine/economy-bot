@@ -28,12 +28,11 @@ class MessageContainer:
                 file_path = config.SEPARATOR
             if not os.path.isfile(file_path):
                 logging.error(f"Произошла ошибка при попытке открытия файла '{file_path}'! Файл не найден.")
+                title = ERROR_HEADER
                 if "shop_items" in file_path:
-                    title = ERROR_HEADER
                     description = ERROR_DESCRIPTION_SHOP
                     file_path = config.ERROR_SHOP_IMAGE
                 else:
-                    title = ERROR_HEADER
                     description = ERROR_DESCRIPTION_GENERAL
                     file_path = config.ERROR_IMAGE
             fp = file_path
@@ -66,7 +65,7 @@ class MessageContainer:
 def shop():
     embed_message = MessageContainer(
         title="**Добро пожаловать в магазин сервера West Wolves!**",
-        description=f"***1. Трек про Леху - {config.PRICES['track']} {config.FROG_EMOJI}*** "
+        description=f"***1. Трек про Леху - {config.PRICES['track']} {config.FROG_EMOJI}***"
                     "Один из легендарных хитов о величайшей лягушке в мире.\n\n"
                     f"***2. Лягушка - {config.PRICES['frog']} {config.FROG_EMOJI}***"
                     "Профессиональная фотография одной из прекрасных представительниц отряда земноводных. "
@@ -90,11 +89,11 @@ def shop():
                     "лягух на землю Лаграсскую. Алексей простёр руку свою на воды Камассы; и вышли лягушки и "
                     "покрыли землю Лаграсскую.\n\n"
                     f"***10. Роль «Лягушонок» на 1 месяц - {config.PRICES['role_lite']} {config.FROG_EMOJI}***"
-                    f"Донатная роль <@&{config.PREMIUM_ROLE_LITE_ID}>. Первая ступень элитной земноводной иерархии "
+                    f"Донатная роль <@&{config.PREMIUM_ROLE['lite']}>. Первая ступень элитной земноводной иерархии "
                     "сервера. С ней тебе будет доступен ряд небольших привилегий: уникальная роль, приватный "
                     "голосовой чат и дождь из лягушек.\n\n"
                     f"***11. Роль «Легушька» на 1 месяц - {config.PRICES['role']} {config.FROG_EMOJI}***"
-                    f"Донатная роль <@&{config.PREMIUM_ROLE_ID}>, доступная только состоятельным людям и дающая "
+                    f"Донатная роль <@&{config.PREMIUM_ROLE['basic']}>, доступная только состоятельным людям и дающая "
                     "доступ в приватный голосовой чат сервера, дождь из лягушек, билет на караван без повозки и "
                     "скетч в антропоморфном стиле, теперь станет твоей.\n\n"
                     f"***12. Банда - {config.PRICES['band']} {config.FROG_EMOJI}***"
@@ -148,9 +147,9 @@ def catch(user, amount):
         },
         "legendary": {
             "title": "Какая красотень!",
-            "description": f"{user}, сегодня тебе невероятно повезло! Ты поймал аж **{amount}** {utils.numeral(amount)} "
-                           "за один раз. О таком грандиозном улове сложат легенды все жители ближайших "
-                           "лаграсских деревень.",
+            "description": f"{user}, сегодня тебе невероятно повезло! Ты поймал "
+                           f"целых **{amount}** {utils.numeral(amount)} за один раз. "
+                           f"О таком грандиозном улове сложат легенды все жители ближайших лаграсских деревень.",
             "file_path": config.CATCH_LEGENDARY_IMAGE
         }
     }
@@ -606,8 +605,8 @@ def role_manage():
     description = ""
     premium_role_lite_owners = sql.get_all_premium_role_owners(lite=True)
     premium_role_owners = sql.get_all_premium_role_owners()
-    description += get_role_owners_description(premium_role_lite_owners, current_time, config.PREMIUM_ROLE_LITE_ID)
-    description += get_role_owners_description(premium_role_owners, current_time, config.PREMIUM_ROLE_ID)
+    description += get_role_owners_description(premium_role_lite_owners, current_time, config.PREMIUM_ROLE['lite'])
+    description += get_role_owners_description(premium_role_owners, current_time, config.PREMIUM_ROLE['basic'])
     if premium_role_owners or premium_role_lite_owners:
         description += ("*Если в списке имеются участники, чей срок использования роли истек, "
                         "снимите с них роль c помощью соответствующей кнопки.*")
@@ -686,10 +685,11 @@ def quiz(question, image_binary_data=None, image_filename=None):
 
 def quiz_error(reason):
     if reason == "incorrect_prize_amount":
-        description = "Ошибка при создании раунда викторины. Похоже, вы ошиблись при вводе размера награды, "
-        "она должна быть целым положительным числом."
+        description = ("Ошибка при создании раунда викторины. Похоже, вы ошиблись при вводе размера награды, "
+                       "она должна быть целым положительным числом.")
     elif reason == "no_active_quiz":
-        description = "Викторина еще не начата, либо уже завершилась."
+        description = ("Викторина еще не начата, либо уже завершилась, либо прошло уже более 30 минут после ее начала, "
+                       "и время для вручения приза вышло.")
     elif reason == "in_progress":
         description = "Данное участникам время на размышления еще не вышло."
     elif reason == "to_bot":

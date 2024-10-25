@@ -18,11 +18,8 @@ current_quiz = None
 
 @client.slash_command(description="Поймать лягушку")
 async def catch(interaction: nextcord.Interaction):
-    user_balance = sql.get_user_balance(interaction.user.id)
-    if user_balance is None:
-        sql.create_user_balance(interaction.user.id, interaction.user.name)
     current_time = utils.get_timestamp()
-    delta_time = current_time - sql.get_last_catching_time(interaction.user.id)
+    delta_time = current_time - sql.get_last_catching_time(interaction.user)
     if delta_time < config.CATCHING_COOLDOWN * 3600:
         return await interaction.response.send_message(**messages.cooldown(delta_time))
 
@@ -38,19 +35,16 @@ async def catch(interaction: nextcord.Interaction):
     elif rand < config.PROBABILITIES['common']:
         amount_of_caught_frogs = random.choice([1, 2])
 
-    sql.set_last_catching_time(interaction.user.id, current_time)
+    sql.set_last_catching_time(interaction.user, current_time)
     if amount_of_caught_frogs > 0:
-        sql.set_user_balance(interaction.user.id, amount_of_caught_frogs)
+        sql.set_user_balance(interaction.user, amount_of_caught_frogs)
         logging.info(f"Пользователь {interaction.user.name} поймал лягушек в количестве {amount_of_caught_frogs} шт.")
     await interaction.response.send_message(**messages.catch(interaction.user.mention, amount_of_caught_frogs))
 
 
 @client.slash_command(description="Посмотреть свой баланс")
 async def balance(interaction: nextcord.Interaction):
-    user_balance = sql.get_user_balance(interaction.user.id)
-    if user_balance is None:
-        sql.create_user_balance(interaction.user.id, interaction.user.name)
-        user_balance = sql.get_user_balance(interaction.user.id)
+    user_balance = sql.get_user_balance(interaction.user)
     return await interaction.response.send_message(**messages.balance(interaction.user.mention, user_balance))
 
 
@@ -85,27 +79,27 @@ async def shop(interaction: nextcord.Interaction):
 
 
 @client.slash_command(description="Провести викторину")
+@application_checks.has_permissions(administrator=True)
 async def quiz(interaction: nextcord.Interaction):
     await interaction.response.send_modal(views.QuizModal())
 
 
 @client.slash_command(description="Выдать награду победителю викторины")
+@application_checks.has_permissions(administrator=True)
 async def prize(
         interaction: nextcord.Interaction,
         quiz_winner: nextcord.Member = nextcord.SlashOption(
             name="username",
             description="Имя победителя викторины")
 ):
-    if not current_quiz or not current_quiz.is_active:
+    if not current_quiz or not current_quiz.is_active():
         return await interaction.response.send_message(**messages.quiz_error("no_active_quiz"), ephemeral=True)
     elif quiz_winner.bot:
         return await interaction.response.send_message(**messages.quiz_error("to_bot"), ephemeral=True)
-    elif current_quiz.in_progress:
+    elif current_quiz.in_progress():
         return await interaction.response.send_message(**messages.quiz_error("in_progress"), ephemeral=True)
-    if sql.get_user_balance(quiz_winner.id) is None:
-        sql.create_user_balance(quiz_winner.id, quiz_winner.name)
-    sql.set_user_balance(quiz_winner.id, current_quiz.prize_amount)
-    current_quiz.close_quiz()
+    sql.set_user_balance(quiz_winner, current_quiz.prize_amount)
+    current_quiz.close()
     logging.info(f"Пользователь {quiz_winner.name} становится победителем викторины и получает в награду "
                  f"лягушек в количестве {current_quiz.prize_amount} шт.")
     await interaction.response.send_message(**messages.quiz_prize(quiz_winner, **current_quiz.get_contents()))

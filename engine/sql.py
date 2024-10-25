@@ -45,21 +45,17 @@ def create_tables():
 
 
 @catch_sql_exceptions
-def create_user_balance(user_discord_id, user_discord_name):
-    with sqlite3.connect(config.DATABASE_PATH) as db_connect:
-        cursor = db_connect.cursor()
-        cursor.execute("INSERT INTO user_balances (user_discord_id, user_discord_name) VALUES (?, ?)",
-                       (user_discord_id, user_discord_name))
-
-
-@catch_sql_exceptions
-def get_user_balance(user_discord_id):
+def get_user_balance(user):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
         cursor.execute("SELECT balance FROM user_balances WHERE user_discord_id = ?",
-                       (user_discord_id,))
+                       (user.id,))
         row = cursor.fetchone()
-        return row[0] if row else None
+        if row is None:
+            cursor.execute("INSERT INTO user_balances (user_discord_id, user_discord_name) VALUES (?, ?)",
+                           (user.id, user.name))
+            return 0
+        return row[0]
 
 
 @catch_sql_exceptions
@@ -71,28 +67,32 @@ def get_all_users_balances():
 
 
 @catch_sql_exceptions
-def get_last_catching_time(user_discord_id):
+def get_last_catching_time(user):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
         cursor.execute("SELECT last_catching_time FROM user_balances WHERE user_discord_id = ?",
-                       (user_discord_id,))
+                       (user.id,))
         return cursor.fetchone()[0]
 
 
 @catch_sql_exceptions
-def set_user_balance(user_discord_id, amount):
+def set_user_balance(user, amount):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
+        cursor.execute("SELECT balance FROM user_balances WHERE user_discord_id = ?", (user.id,))
+        if cursor.fetchone() is None:
+            cursor.execute("INSERT INTO user_balances (user_discord_id, user_discord_name) VALUES (?, ?)",
+                           (user.id, user.name))
         cursor.execute("UPDATE user_balances SET balance = balance + ? WHERE user_discord_id = ?",
-                       (amount, user_discord_id,))
+                       (amount, user.id,))
 
 
 @catch_sql_exceptions
-def set_last_catching_time(user_discord_id, current_time):
+def set_last_catching_time(user, current_time):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
         cursor.execute("UPDATE user_balances SET last_catching_time = ? WHERE user_discord_id = ?",
-                       (current_time, user_discord_id,))
+                       (current_time, user.id,))
 
 
 @catch_sql_exceptions
@@ -112,19 +112,19 @@ def set_bank_balance(amount):
 
 
 @catch_sql_exceptions
-def add_premium_role_owner(user_discord_id, user_discord_name, expiration_time, lite=False):
+def add_premium_role_owner(user, expiration_time, lite=False):
     premium_table = "premium_role_owners" if not lite else "premium_role_lite_owners"
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
         cursor.execute(f"SELECT COUNT(*) FROM {premium_table} WHERE user_discord_id = ?",
-                       (user_discord_id,))
+                       (user.id,))
         user_exists = cursor.fetchone()[0]
         if user_exists:
             cursor.execute(f"UPDATE {premium_table} SET user_discord_name = ?, expiration_time = ? WHERE user_discord_id = ?",
-                           (user_discord_name, expiration_time, user_discord_id))
+                           (user.name, expiration_time, user.id))
         else:
             cursor.execute(f"INSERT INTO {premium_table} (user_discord_id, user_discord_name, expiration_time) VALUES (?, ?, ?)",
-                           (user_discord_id, user_discord_name, expiration_time))
+                           (user.id, user.name, expiration_time))
 
 
 @catch_sql_exceptions

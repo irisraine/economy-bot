@@ -9,9 +9,13 @@ DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 GUILD_ID = int(os.getenv('GUILD_ID'))
 ADMIN_ID = int(os.getenv('ADMIN_ID'))
 NEWS_CHANNEL_ID = int(os.getenv('NEWS_CHANNEL_ID'))
-PREMIUM_ROLE_ID = int(os.getenv('PREMIUM_ROLE_ID'))
-PREMIUM_ROLE_LITE_ID = int(os.getenv('PREMIUM_ROLE_LITE_ID'))
-PREMIUM_ROLE_MAX_ID = int(os.getenv('PREMIUM_ROLE_MAX_ID'))
+
+PREMIUM_ROLE = {
+    'lite': int(os.getenv('PREMIUM_ROLE_LITE_ID')),
+    'basic': int(os.getenv('PREMIUM_ROLE_ID')),
+    'max': int(os.getenv('PREMIUM_ROLE_MAX_ID'))
+}
+
 QUIZ_PARTICIPANT_ID = int(os.getenv('QUIZ_PARTICIPANT_ID'))
 
 DATABASE_PATH = "database/vault.db"
@@ -28,6 +32,7 @@ PROBABILITIES = utils.json_safeload(PROBABILITIES_JSON)['current']
 PREMIUM_ROLE_DURATION = 2592000
 
 QUIZ_ROUND_TIME = 60
+QUIZ_ACTIVE_TIME = 1800
 
 FROG_EMOJI = "<:1fha:1227748132868194346>"
 

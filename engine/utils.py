@@ -9,6 +9,31 @@ import engine.config as config
 import engine.sql as sql
 
 
+class Quiz:
+    def __init__(self, question, answer, prize_amount, prize_special=None):
+        self.start_time = get_timestamp()
+        self.question = question
+        self.answer = answer
+        self.prize_amount = int(prize_amount)
+        self.prize_special = prize_special
+
+    def get_contents(self):
+        return {
+            "question": self.question,
+            "prize_amount": self.prize_amount,
+            "prize_special": self.prize_special,
+        }
+
+    def close(self):
+        self.start_time = 0
+
+    def in_progress(self):
+        return get_timestamp() - self.start_time < config.QUIZ_ROUND_TIME
+
+    def is_active(self):
+        return get_timestamp() - self.start_time < config.QUIZ_ACTIVE_TIME
+
+
 def get_timestamp():
     return int(datetime.now(timezone.utc).timestamp())
 

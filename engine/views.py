@@ -6,7 +6,6 @@ import engine.sql as sql
 import engine.messages as messages
 import engine.utils as utils
 import engine.config as config
-from engine.addon import Quiz
 
 
 def items():
@@ -83,11 +82,8 @@ class PurchaseView(nextcord.ui.View):
 
     @nextcord.ui.button(label="Приобрести товар", style=nextcord.ButtonStyle.green, emoji="💵")
     async def purchase_confirm_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-        user_balance = sql.get_user_balance(interaction.user.id)
+        user_balance = sql.get_user_balance(interaction.user)
         await interaction.response.defer()
-        if user_balance is None:
-            sql.create_user_balance(interaction.user.id, interaction.user.name)
-            user_balance = sql.get_user_balance(interaction.user.id)
         if self.price > user_balance:
             return await interaction.edit_original_message(
                 **messages.insufficient_balance(),
@@ -95,9 +91,9 @@ class PurchaseView(nextcord.ui.View):
             )
         if self.shop_item in ["role_lite", "role"]:
             premium_roles = [
-                nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE_ID),
-                nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE_LITE_ID),
-                nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE_MAX_ID)
+                nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE['lite']),
+                nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE['basic']),
+                nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE['max'])
             ]
             user_premium_role = next((role for role in premium_roles if role in interaction.user.roles), None)
             if user_premium_role:
@@ -105,21 +101,21 @@ class PurchaseView(nextcord.ui.View):
                     **messages.already_has_premium_role(interaction.user, user_premium_role),
                     view=None
                 )
-        sql.set_user_balance(interaction.user.id, -self.price)
+        sql.set_user_balance(interaction.user, -self.price)
         sql.set_bank_balance(self.price)
         purchased_item_message = messages.item_purchased(self.shop_item)
         if self.shop_item in ["drawing", "rain", "role_lite", "role", "band"]:
             request_to_admin = bot.client.get_user(config.ADMIN_ID)
             await request_to_admin.send(**messages.service_request(interaction.user.mention, self.shop_item))
         if self.shop_item == "role_lite":
-            premium_lite_role = interaction.guild.get_role(config.PREMIUM_ROLE_LITE_ID)
+            premium_lite_role = interaction.guild.get_role(config.PREMIUM_ROLE['lite'])
             expiration_time = utils.get_timestamp() + config.PREMIUM_ROLE_DURATION
-            sql.add_premium_role_owner(interaction.user.id, interaction.user.name, expiration_time, lite=True)
+            sql.add_premium_role_owner(interaction.user, expiration_time, lite=True)
             await interaction.user.add_roles(premium_lite_role)
         if self.shop_item == "role":
-            premium_role = interaction.guild.get_role(config.PREMIUM_ROLE_ID)
+            premium_role = interaction.guild.get_role(config.PREMIUM_ROLE['basic'])
             expiration_time = utils.get_timestamp() + config.PREMIUM_ROLE_DURATION
-            sql.add_premium_role_owner(interaction.user.id, interaction.user.name, expiration_time)
+            sql.add_premium_role_owner(interaction.user, expiration_time)
             await interaction.user.add_roles(premium_role)
         logging.info(f"Пользователь {interaction.user.name} покупает предмет из категории '{self.shop_item}'.")
         await interaction.edit_original_message(
@@ -144,17 +140,15 @@ class TransferView(nextcord.ui.View):
 
     @nextcord.ui.button(label="Подтвердить перевод", style=nextcord.ButtonStyle.green, emoji="✅")
     async def transfer_confirm_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-        user_balance = sql.get_user_balance(interaction.user.id)
+        user_balance = sql.get_user_balance(interaction.user)
         await interaction.response.defer()
         if self.transfer_amount > user_balance:
             return await interaction.edit_original_message(
                 **messages.transfer_confirmation(self.other_user, self.transfer_amount, is_failed=True),
                 view=None
             )
-        if sql.get_user_balance(self.other_user.id) is None:
-            sql.create_user_balance(self.other_user.id, self.other_user.name)
-        sql.set_user_balance(interaction.user.id, -self.transfer_amount)
-        sql.set_user_balance(self.other_user.id, self.transfer_amount)
+        sql.set_user_balance(interaction.user, -self.transfer_amount)
+        sql.set_user_balance(self.other_user, self.transfer_amount)
         logging.info(f"Пользователь {interaction.user.name} переводит пользователю {self.other_user.name} лягушек "
                      f"в количестве {self.transfer_amount} шт.")
         await interaction.edit_original_message(
@@ -236,8 +230,8 @@ class AdminMenuView(nextcord.ui.View):
     )
     async def select_admin_menu_callback(self, select, interaction: nextcord.Interaction):
         admin_actions = {
-            "bank_balance": {"message": messages.bank_balance(), "view": AdminActionBasicView()},
-            "all_users_balance": {"message": messages.all_users_balances(), "view": AdminActionBasicView()},
+            "bank_balance": {"message": messages.bank_balance(), "view": None},
+            "all_users_balance": {"message": messages.all_users_balances(), "view": None},
             "gift": {"message": messages.gift(), "view": GiftView()},
             "prices": {"message": messages.set_price(), "view": SetPriceView()},
             "probabilities": {"message": messages.set_probabilities(), "view": SetProbabilitiesView()},
@@ -469,9 +463,7 @@ class GiftModal(nextcord.ui.Modal):
         other_user = nextcord.utils.get(bot.client.get_all_members(), name=self.username.value)
         gift_confirmation_message = messages.gift_confirmation(other_user, self.gift_amount.value, is_valid)
         if other_user and is_valid:
-            if sql.get_user_balance(other_user.id) is None:
-                sql.create_user_balance(other_user.id, self.username.value)
-            sql.set_user_balance(other_user.id, int(self.gift_amount.value))
+            sql.set_user_balance(other_user, int(self.gift_amount.value))
             await interaction.edit_original_message(**gift_confirmation_message, view=None)
             logging.info(f"Администратор переводит пользователю {self.username.value} лягушек "
                          f"в количестве {self.gift_amount.value} шт.")
@@ -549,13 +541,13 @@ class RoleManageView(AdminActionBasicView):
         expired_premium_role_lite_owners_ids = sql.remove_expired_premium_role_owners(utils.get_timestamp(), lite=True)
         expired_premium_role_owners_ids = sql.remove_expired_premium_role_owners(utils.get_timestamp())
         if expired_premium_role_lite_owners_ids:
-            premium_lite_role = interaction.guild.get_role(config.PREMIUM_ROLE_LITE_ID)
+            premium_lite_role = interaction.guild.get_role(config.PREMIUM_ROLE['lite'])
             for expired_premium_role_lite_owners_id in expired_premium_role_lite_owners_ids:
                 expired_premium_role_lite_owner = interaction.guild.get_member(expired_premium_role_lite_owners_id[0])
                 await expired_premium_role_lite_owner.remove_roles(premium_lite_role)
             logging.info("Администратор снимает с участников роли лягушонка, срок использования которых истек.")
         if expired_premium_role_owners_ids:
-            premium_role = interaction.guild.get_role(config.PREMIUM_ROLE_ID)
+            premium_role = interaction.guild.get_role(config.PREMIUM_ROLE['basic'])
             for expired_premium_role_owner_id in expired_premium_role_owners_ids:
                 expired_premium_role_owner = interaction.guild.get_member(expired_premium_role_owner_id[0])
                 await expired_premium_role_owner.remove_roles(premium_role)
@@ -648,7 +640,7 @@ class QuizModal(nextcord.ui.Modal):
                 **messages.image_url_error(),
                 ephemeral=True
             )
-        bot.current_quiz = Quiz(
+        bot.current_quiz = utils.Quiz(
             self.question.value,
             self.answer.value,
             self.prize_amount.value,
@@ -660,5 +652,4 @@ class QuizModal(nextcord.ui.Modal):
             allowed_mentions=nextcord.AllowedMentions(roles=True)
         )
         await asyncio.sleep(config.QUIZ_ROUND_TIME)
-        bot.current_quiz.stop_quiz()
         await interaction.followup.send(**messages.quiz_time_up(self.answer.value))
