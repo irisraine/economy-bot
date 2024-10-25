@@ -5,15 +5,46 @@ import engine.utils as utils
 
 load_dotenv()
 
+LOGGING_SETTINGS = {
+        'version': 1,
+        'disable_existing_loggers': True,
+        'formatters': {
+            'standard': {
+                'format': '[%(asctime)s][%(levelname)s] : %(message)s',
+                'datefmt': '%d-%m-%Y %H:%M:%S'
+            },
+        },
+        'handlers': {
+            'console': {
+                'level': 'INFO',
+                'formatter': 'standard',
+                'class': 'logging.StreamHandler',
+            },
+            'file': {
+                'level': 'INFO',
+                'formatter': 'standard',
+                'class': 'logging.FileHandler',
+                'filename': 'logs/economy-bot.log',
+                'mode': 'a',
+            },
+        },
+        'loggers': {
+            '': {
+                'handlers': ['console', 'file'],
+                'level': 'INFO',
+            },
+        }
+    }
+
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 GUILD_ID = int(os.getenv('GUILD_ID'))
 ADMIN_ID = int(os.getenv('ADMIN_ID'))
 NEWS_CHANNEL_ID = int(os.getenv('NEWS_CHANNEL_ID'))
 
 PREMIUM_ROLE = {
-    'lite': int(os.getenv('PREMIUM_ROLE_LITE_ID')),
-    'basic': int(os.getenv('PREMIUM_ROLE_ID')),
-    'max': int(os.getenv('PREMIUM_ROLE_MAX_ID'))
+    "lite": int(os.getenv('PREMIUM_ROLE_LITE_ID')),
+    "basic": int(os.getenv('PREMIUM_ROLE_ID')),
+    "max": int(os.getenv('PREMIUM_ROLE_MAX_ID'))
 }
 
 QUIZ_PARTICIPANT_ID = int(os.getenv('QUIZ_PARTICIPANT_ID'))
