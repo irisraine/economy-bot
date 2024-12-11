@@ -54,7 +54,7 @@ async def transfer(
         return await interaction.response.send_message(**messages.transfer_denied("to_bot"))
     await interaction.response.send_message(
         **messages.transfer(other_user, amount),
-        view=views.TransferView(amount, other_user)
+        view=views.TransferView(amount, other_user, interaction.user)
     )
 
 

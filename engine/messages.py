@@ -527,7 +527,7 @@ def all_users_balances():
         end = start + max_users
         users_slice = all_users_balances_list[start:end]
         description = "\n".join([
-            f"{index + 1}. {user_balance[0]} — {user_balance[1]} {config.FROG_EMOJI}"
+            f"{index + 1}. {user_balance[0]} — {user_balance[1]}"
             for index, user_balance in enumerate(users_slice, start=start)
         ])
         title = "Земноводные балансы всех пользователей" if i == 0 else None
@@ -737,6 +737,15 @@ def image_url_error():
                     "Если эта ошибка будет повторяться, используйте другую ссылку. Либо запостите сообщение "
                     "со стандартным изображением, оставив поле для ссылки пустым.",
         file_path=config.ERROR_IMAGE
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
+def other_user_transfer_error():
+    embed_message = MessageContainer(
+        title=ERROR_HEADER,
+        description="Вы не можете сделать перевод, поскольку эта транзакция принадлежит не вам!",
+        file_path=config.TRANSFER_DENIED_IMAGE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 

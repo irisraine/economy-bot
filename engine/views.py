@@ -133,15 +133,21 @@ class PurchaseView(nextcord.ui.View):
 
 
 class TransferView(nextcord.ui.View):
-    def __init__(self, transfer_amount, other_user):
+    def __init__(self, transfer_amount, other_user, original_user):
         super().__init__(timeout=None)
         self.transfer_amount = transfer_amount
         self.other_user = other_user
+        self.original_user = original_user
 
     @nextcord.ui.button(label="Подтвердить перевод", style=nextcord.ButtonStyle.green, emoji="✅")
     async def transfer_confirm_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-        user_balance = sql.get_user_balance(interaction.user)
         await interaction.response.defer()
+        if interaction.user.id != self.original_user.id:
+            return await interaction.edit_original_message(
+                **messages.other_user_transfer_error(),
+                view=None
+            )
+        user_balance = sql.get_user_balance(interaction.user)
         if self.transfer_amount > user_balance:
             return await interaction.edit_original_message(
                 **messages.transfer_confirmation(self.other_user, self.transfer_amount, is_failed=True),
