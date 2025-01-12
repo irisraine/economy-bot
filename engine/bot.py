@@ -12,6 +12,7 @@ intents = nextcord.Intents.all()
 client = commands.Bot(command_prefix=';', intents=intents, default_guild_ids=[config.GUILD_ID])
 
 current_quiz = None
+gambling_pool = {}
 
 
 @client.slash_command(description="Поймать лягушку")
@@ -99,6 +100,20 @@ async def admin(interaction: nextcord.Interaction):
     await interaction.response.send_message(
         **messages.admin(),
         view=views.AdminMenuView()
+    )
+
+
+@client.slash_command(description="Казино «Три лягушки»")
+async def casino(interaction: nextcord.Interaction):
+    gambling_pool.setdefault(interaction.user,
+                             {
+                                 "slot_machine": None,
+                                 "roulette": None,
+                                 "yahtzee": None}
+                             )
+    await interaction.response.send_message(
+        **messages.casino(),
+        view=views.CasinoMenuView(interaction.user)
     )
 
 

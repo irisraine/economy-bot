@@ -65,7 +65,18 @@ PREMIUM_ROLE_DURATION = 2592000
 QUIZ_ROUND_TIME = 60
 QUIZ_ACTIVE_TIME = 1800
 
-FROG_EMOJI = "<:1fha:1227748132868194346>"
+FROG_EMOJI = "<:1frg:1286272480083836970>"
+
+EMOJI = {
+    'gold': "<:gold:1327365509359997039>",
+    'cart': "<:cart:1327365671218057307>",
+    'star': "<:str:1327365588535742666>",
+    'horseshoe': "<:horseshoe:1327365621259829349>",
+    'moonshine': "<:moonshine:1327365697906544751>",
+    'frog_green': "<:1frg:1286272480083836970>",
+    'frog_orange': "<:2frg:1327365446361415791>",
+    'frog_white': "<:3frg:1327365491781799978>",
+}
 
 ITEMS_EMOJI = {
     "track": "<:1bne:1133866946094440598>",
@@ -139,3 +150,13 @@ QUIZ_IMAGE = "assets/quiz.jpg"
 QUIZ_TIME_UP = "assets/quiz_time_up.jpg"
 QUIZ_PRIZE_BASIC = "assets/quiz_prize_basic.jpg"
 QUIZ_PRIZE_SPECIAL = "assets/quiz_prize_special.jpg"
+
+CASINO_ENTRANCE = "assets/casino/entrance.jpg"
+ROULETTE = "assets/casino/roulette.jpg"
+ROULETTE_TABLE = "assets/casino/roulette_table.jpg"
+ROULETTE_RESULT_WIN = "assets/casino/roulette_result_win.jpg"
+ROULETTE_RESULT_LOSE = "assets/casino/roulette_result_lose.jpg"
+SLOT_MACHINE = "assets/casino/slot_machine.jpg"
+SLOT_MACHINE_RESULT = "assets/casino/slot_machine_reels.jpg"
+YAHTZEE = "assets/casino/yahtzee.jpg"
+YAHTZEE_RESULT = "assets/casino/yahtzee_table.jpg"
