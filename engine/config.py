@@ -159,4 +159,14 @@ ROULETTE_RESULT_LOSE = "assets/casino/roulette_result_lose.jpg"
 SLOT_MACHINE = "assets/casino/slot_machine.jpg"
 SLOT_MACHINE_RESULT = "assets/casino/slot_machine_reels.jpg"
 YAHTZEE = "assets/casino/yahtzee.jpg"
-YAHTZEE_RESULT = "assets/casino/yahtzee_table.jpg"
+YAHTZEE_TABLE = "assets/casino/yahtzee_table.jpg"
+YAHTZEE_DICE = {
+    1: "assets/casino/yahtzee_dice_1.png",
+    2: "assets/casino/yahtzee_dice_2.png",
+    3: "assets/casino/yahtzee_dice_3.png",
+    4: "assets/casino/yahtzee_dice_4.png",
+    5: "assets/casino/yahtzee_dice_5.png",
+    6: "assets/casino/yahtzee_dice_6.png",
+}
+YAHTZEE_RESULT = "assets/casino/yahtzee_result.jpg"
+CASINO_FRAUD_BAN = "assets/casino/fraud_ban.jpg"

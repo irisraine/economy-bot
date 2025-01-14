@@ -1,5 +1,7 @@
 import random
 from collections import Counter
+from PIL import Image
+import engine.config as config
 
 
 class SlotMachine:
@@ -297,3 +299,26 @@ class Yahtzee:
 
     def calculate_winnings(self):
         self.winnings = int(self.bet * self.WINNING_COMBINATIONS[self.winning_combination])
+
+    def draw(self):
+        desk = Image.open(config.YAHTZEE_TABLE)
+        desk_width, desk_height = desk.size
+
+        dice_images = [Image.open(config.YAHTZEE_DICE[i]) for i in range(1, 7)]
+
+        dice_width, dice_height = dice_images[0].size
+
+        total_dice_width = len(self.dice) * dice_width
+        start_x = (desk_width - total_dice_width) // 2
+        start_y = (desk_height - dice_height) // 2
+
+        for i, die in enumerate(self.dice):
+            x_offset = start_x + i * dice_width
+            y_offset = start_y
+
+            die_image = dice_images[die - 1]
+
+            desk.paste(die_image, (x_offset, y_offset), die_image)
+
+        desk.save(config.YAHTZEE_RESULT)
+

@@ -12,6 +12,7 @@ logging==0.4.9.6
 mccabe==0.7.0
 multidict==6.1.0
 nextcord==2.6.0
+pillow==11.1.0
 pycodestyle==2.12.1
 pyflakes==3.2.0
 python-dotenv==1.0.1

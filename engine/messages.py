@@ -936,6 +936,7 @@ def balance_error():
                     "параллельно с текущей игрой играл в другую игру, совершил покупки или перевод средств другому "
                     "участнику. Данное поведение запрещено правилами казино, и за это ты будешь подвергнут наказанию. "
                     "Бот уже сообщил о твоем проступке администрации. Готовь жопу!",
+        file_path=config.CASINO_FRAUD_BAN
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
@@ -1172,7 +1173,7 @@ def yahtzee_roll_result_winning(player, winning_combination, bet, winnings, dice
     }
     if winning_combination in winning_type['small']:
         description = (f"Кости с глухим стуком ударились о стол и замерли, показывая скромную, но выигрышную комбинацию:\n\n "
-                       f"**{'-'.join(map(str, dice))}**\n"
+                       f"**{'-'.join(map(str, sorted(dice)))}**\n"
                        f"(*{winning_name[winning_combination]}*)\n\n"
                        f"<@{player.id}>, ты выиграл **{winnings}** {config.FROG_EMOJI}.\n💰 **С учетом ставки твоя "
                        f"чистая прибыль составила {winnings - bet} {config.FROG_EMOJI}**\n\n"
@@ -1183,7 +1184,7 @@ def yahtzee_roll_result_winning(player, winning_combination, bet, winnings, dice
     if winning_combination in winning_type['large']:
         description = ("Кубики прыгали по столу, как будто решая твою судьбу. Сердце замерло, когда они остановились, "
                        "и вот — идеальная комбинация: "
-                       f"**{'-'.join(map(str, dice))}**\n"
+                       f"**{'-'.join(map(str, sorted(dice)))}**\n"
                        f"(*{winning_name[winning_combination]}*)\n\n"
                        f"<@{player.id}>, ты выиграл баснословные **{winnings}** {config.FROG_EMOJI}.\n💰 **С учетом ставки твоя "
                        f"чистая прибыль составила {winnings - bet} {config.FROG_EMOJI}**\n\n"

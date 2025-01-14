@@ -1067,6 +1067,7 @@ class YahtzeeView(nextcord.ui.View):
         self.yahtzee_game.roll_dice()
         logging.info(f"Пользователь {self.player.name} играет в покер на костях.")
         first_roll_result = self.yahtzee_game.dice
+        self.yahtzee_game.draw()
         self.yahtzee_game.check_winning_combinations()
         winning_combination = self.yahtzee_game.winning_combination
         if not winning_combination:
@@ -1190,6 +1191,7 @@ class YahtzeeRerollView(nextcord.ui.View):
             return await interaction.edit_original_message(**messages.balance_error(), view=None)
         self.yahtzee_game.reroll_dice()
         final_roll_result = self.yahtzee_game.dice
+        self.yahtzee_game.draw()
         self.yahtzee_game.check_winning_combinations()
         winning_combination = self.yahtzee_game.winning_combination
         if not winning_combination:
