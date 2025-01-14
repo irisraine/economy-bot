@@ -156,8 +156,22 @@ ROULETTE = "assets/casino/roulette.jpg"
 ROULETTE_TABLE = "assets/casino/roulette_table.jpg"
 ROULETTE_RESULT_WIN = "assets/casino/roulette_result_win.jpg"
 ROULETTE_RESULT_LOSE = "assets/casino/roulette_result_lose.jpg"
+
 SLOT_MACHINE = "assets/casino/slot_machine.jpg"
-SLOT_MACHINE_RESULT = "assets/casino/slot_machine_reels.jpg"
+SLOT_MACHINE_BLANK_REELS = "assets/casino/slot_machine_blank_reels.jpg"
+SLOT_MACHINE_SYMBOLS = {
+    "gold": "assets/casino/slot_machine_reel_gold.png",
+    "cart": "assets/casino/slot_machine_reel_cart.png",
+    "star": "assets/casino/slot_machine_reel_star.png",
+    "horseshoe": "assets/casino/slot_machine_reel_horseshoe.png",
+    "moonshine": "assets/casino/slot_machine_reel_moonshine.png",
+    "frog_green": "assets/casino/slot_machine_reel_frog_green.png",
+    "frog_orange": "assets/casino/slot_machine_reel_frog_orange.png",
+    "frog_white": "assets/casino/slot_machine_reel_frog_white.png",
+}
+SLOT_MACHINE_CENTRAL_LINE = "assets/casino/slot_machine_reels_line.png"
+SLOT_MACHINE_RESULT = "assets/casino/slot_machine_result.jpg"
+
 YAHTZEE = "assets/casino/yahtzee.jpg"
 YAHTZEE_TABLE = "assets/casino/yahtzee_table.jpg"
 YAHTZEE_DICE = {

@@ -16,3 +16,5 @@ shop_items/**
 
 # Ignore current game results
 assets/casino/yahtzee_result.jpg
+assets/casino/slot_machine_result.jpg
+assets/casino/roulette_placed_bets.jpg

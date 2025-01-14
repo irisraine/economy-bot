@@ -848,11 +848,7 @@ def slot_machine_result(player, reels, central_line, payout):
                    "Улыбка не сходит с твоего лица: удача сегодня была на твоей стороне!")
     description = ("Машина оживает от твоего прикосновения, и барабаны начинают своё вращение, словно в ритме твоего "
                    "пульса. Ты наблюдаешь за мелькающими символами, чувствуя, как напряжение нарастает. И вот барабаны "
-                   "замедляются, один за другим встают на место - и ты видишь результат: \n\n")
-    description += (f"{config.EMOJI[reels[0][0]]} {config.EMOJI[reels[0][1]]} {config.EMOJI[reels[0][2]]}\n"
-                   f"{config.EMOJI[reels[1][0]]} {config.EMOJI[reels[1][1]]} {config.EMOJI[reels[1][2]]}\n"
-                   f"{config.EMOJI[reels[2][0]]} {config.EMOJI[reels[2][1]]} {config.EMOJI[reels[2][2]]}\n\n")
-    description += result
+                   f"замедляются, один за другим встают на место - и ты видишь результат. \n\n {result}")
 
     embed_message = MessageContainer(
         title=title,

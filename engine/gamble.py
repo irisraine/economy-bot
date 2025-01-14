@@ -123,22 +123,53 @@ class SlotMachine:
             return self.WINNINGS["three_frogs_all_colors"]
         return 0
 
+
     def draw(self):
-        pass
+        slot_size = 64
+        horizontal_margin = 10
+        left_margin = 58
+        right_margin = 62
+        crop_top = 27
+        crop_bottom = 24
+        grid_x_offset = 240
+        grid_y_offset = 110
+        central_line_x_offset = 220
+        central_line_y_offset = 185
+
+        slot_machine_bg = Image.open(config.SLOT_MACHINE_BLANK_REELS)
+        central_line = Image.open(config.SLOT_MACHINE_CENTRAL_LINE)
+        symbols = {
+            "gold": Image.open(config.SLOT_MACHINE_SYMBOLS["gold"]),
+            "cart": Image.open(config.SLOT_MACHINE_SYMBOLS["cart"]),
+            "star": Image.open(config.SLOT_MACHINE_SYMBOLS["star"]),
+            "horseshoe": Image.open(config.SLOT_MACHINE_SYMBOLS["horseshoe"]),
+            "moonshine": Image.open(config.SLOT_MACHINE_SYMBOLS["moonshine"]),
+            "frog_green": Image.open(config.SLOT_MACHINE_SYMBOLS["frog_green"]),
+            "frog_orange": Image.open(config.SLOT_MACHINE_SYMBOLS["frog_orange"]),
+            "frog_white": Image.open(config.SLOT_MACHINE_SYMBOLS["frog_white"]),
+        }
+
+        temp_grid_width = slot_size * 3 + left_margin + right_margin
+        temp_grid_height = slot_size * 3 + horizontal_margin * 2
+        temp_grid = Image.new("RGBA", (temp_grid_width, temp_grid_height), (0, 0, 0, 0))
+
+        for row in range(3):
+            for col in range(3):
+                x_offset = col * slot_size + (left_margin if col == 1 else (left_margin + right_margin if col == 2 else 0))
+                y_offset = row * (slot_size + horizontal_margin)
+
+                temp_grid.paste(symbols[self.reels[row][col]], (x_offset, y_offset))
+
+        cropped_grid = temp_grid.crop((0, crop_top, temp_grid_width, temp_grid_height - crop_bottom))
+        slot_machine_bg.paste(cropped_grid, (grid_x_offset, grid_y_offset), cropped_grid)
+        slot_machine_bg.paste(central_line, (central_line_x_offset, central_line_y_offset), central_line)
+        slot_machine_bg.save(config.SLOT_MACHINE_RESULT)
 
     def play(self):
         self.reels = [] #убрать после тестов
         self.spin()
+        self.draw()
         self.winning = self.calculate_winnings(self.reels)
-
-        # print("Slot Machine Result:")
-        # for row in self.reels:
-        #     print(" | ".join(row))
-        #
-        # if self.winning > 0:
-        #     print(f"Congratulations! You won {self.winning} credits!")
-        # else:
-        #     print("No luck this time! Try again.")
         return self.winning
 
 
@@ -240,6 +271,7 @@ class Roulette:
             return amount * self.MULTIPLIERS["sixline"] if self.result in self.SIXLINE_RANGES.get(value) else 0
         return 0
 
+
 class Yahtzee:
     WINNING_COMBINATIONS = {
             "yahtzee": 25,
@@ -321,4 +353,3 @@ class Yahtzee:
             desk.paste(die_image, (x_offset, y_offset), die_image)
 
         desk.save(config.YAHTZEE_RESULT)
-
