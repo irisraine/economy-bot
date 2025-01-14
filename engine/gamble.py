@@ -1,6 +1,6 @@
 import random
 from collections import Counter
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import engine.config as config
 
 
@@ -174,6 +174,7 @@ class SlotMachine:
 
 
 class Roulette:
+    NUMBERS = list(range(0, 37))
     COLORS = {
         0: 'green', 1: 'red', 2: 'black', 3: 'red', 4: 'black', 5: 'red', 6: 'black',
         7: 'red', 8: 'black', 9: 'red', 10: 'black', 11: 'black', 12: 'red',
@@ -213,7 +214,6 @@ class Roulette:
 
     def __init__(self, player):
         self.player = player
-        self.numbers = list(range(0, 37))
         self.bets = []
         self.result = None
 
@@ -224,7 +224,7 @@ class Roulette:
         return sum(bet["amount"] for bet in self.bets)
 
     def spin(self):
-        self.result = random.choice(self.numbers)
+        self.result = random.choice(self.NUMBERS)
 
     def calculate_payout(self):
         payout = {
@@ -233,7 +233,7 @@ class Roulette:
         }
 
         for bet in self.bets:
-            winnings = self._calculate_individual_payout(bet)
+            winnings = self.__calculate_individual_payout(bet)
             if winnings > 0:
                 payout["total_winnings"] += winnings
                 payout["winning_bets"].append({
@@ -244,7 +244,7 @@ class Roulette:
                 })
         return payout
 
-    def _calculate_individual_payout(self, bet):
+    def __calculate_individual_payout(self, bet):
         category = bet["category"]
         value = bet["value"]
         amount = bet["amount"]
@@ -270,6 +270,76 @@ class Roulette:
         if category == "sixline":
             return amount * self.MULTIPLIERS["sixline"] if self.result in self.SIXLINE_RANGES.get(value) else 0
         return 0
+
+    def draw(self):
+        # offset = {
+        #     "straight": {
+        #         0: (20, 150),
+        #         1: (72, 218), 2: (72, 150), 3: (72, 82), 4: (122, 218), 5: (122, 150), 6: (122, 82),
+        #         7: (172, 218), 8: (172, 150), 9: (172, 82), 10: (222, 218), 11: (222, 150), 12: (222, 82),
+        #         13: (272, 218), 14: (272, 150), 15: (272, 82), 16: (322, 218), 17: (322, 150), 18: (322, 82),
+        #         19: (372, 218), 20: (372, 150), 21: (372, 82), 22: (422, 218), 23: (422, 150), 24: (422, 82),
+        #         25: (472, 218), 26: (472, 150), 27: (472, 82), 28: (522, 218), 29: (522, 150), 30: (522, 82),
+        #         31: (572, 218), 32: (572, 150), 33: (572, 82), 34: (622, 218), 35: (622, 150), 36: (622, 82)
+        #     },
+        #     "color": {
+        #         "red": (297, 332), "black": (397, 332)
+        #     },
+        #     "even_odd": {
+        #         "even": (197, 332), "odd": (497, 332)
+        #     },
+        #     "high_low": {
+        #         "high": (597, 332), "low": (97, 332)
+        #     },
+        #     "dozen": {
+        #         1: (145, 279), 2: (345, 279), 3: (545, 279)
+        #     },
+        #     "row": {
+        #         1: (672, 218), 2: (672, 150), 3: (672, 82)
+        #     },
+        #     "sixline": {
+        #         1: (97, 252), 2: (197, 252), 3: (297, 252), 4: (397, 252), 5: (497, 252), 6: (597, 252)
+        #     },
+        # }
+        offset = {
+            "straight":
+                {i: (72 + ((i - 1) // 3) * 50, [218, 150, 82][(i - 1) % 3]) for i in range(1, 37)} | {0: (20, 150)},
+            "color":
+                {"red": (297, 332), "black": (397, 332)},
+            "even_odd":
+                {"even": (197, 332), "odd": (497, 332)},
+            "high_low":
+                {"high": (597, 332), "low": (97, 332)},
+            "dozen":
+                {i: (145 + (i - 1) * 200, 279) for i in range(1, 4)},
+            "row":
+                {i: (672, [218, 150, 82][i - 1]) for i in range(1, 4)},
+            "sixline":
+                {i: (97 + (i - 1) * 100, 252) for i in range(1, 7)},
+        }
+        table = Image.open(config.ROULETTE_TABLE)
+        chip = Image.open(config.ROULETTE_CHIP)
+        font = ImageFont.truetype("arial.ttf", 20)
+        for bet in self.bets:
+            category = bet["category"]
+            value = bet["value"]
+            amount = bet["amount"]
+
+            position = offset.get(category, {}).get(value, None)
+
+            chip_with_text = chip.copy()
+            draw = ImageDraw.Draw(chip_with_text)
+            text = str(amount)
+            text_width = int(draw.textlength(text, font))
+            text_height = font.size
+            text_x = (chip_with_text.width - text_width) // 2
+            text_y = (chip_with_text.height - text_height) // 2
+            draw.text((text_x - 0, text_y - 1), text, fill="white", font=font)
+
+            x, y = position
+            table.paste(chip_with_text, (x, y), chip_with_text)
+
+        table.save(config.ROULETTE_TABLE_ALL_BETS)
 
 
 class Yahtzee:
@@ -323,11 +393,11 @@ class Yahtzee:
         elif sorted(counts_values) == [2, 3]:
             self.winning_combination = "full-house"
 
-        elif any(all(x in unique_values for x in straight) for straight in [[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]]):
-            self.winning_combination = "small-straight"
-
         elif unique_values == [1, 2, 3, 4, 5] or unique_values == [2, 3, 4, 5, 6]:
             self.winning_combination = "large-straight"
+
+        elif any(all(x in unique_values for x in straight) for straight in [[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]]):
+            self.winning_combination = "small-straight"
 
     def calculate_winnings(self):
         self.winnings = int(self.bet * self.WINNING_COMBINATIONS[self.winning_combination])
@@ -337,19 +407,16 @@ class Yahtzee:
         desk_width, desk_height = desk.size
 
         dice_images = [Image.open(config.YAHTZEE_DICE[i]) for i in range(1, 7)]
+        dice_size, _ = dice_images[0].size
 
-        dice_width, dice_height = dice_images[0].size
-
-        total_dice_width = len(self.dice) * dice_width
+        total_dice_width = len(self.dice) * dice_size
         start_x = (desk_width - total_dice_width) // 2
-        start_y = (desk_height - dice_height) // 2
+        start_y = (desk_height - dice_size) // 2
 
         for i, die in enumerate(self.dice):
-            x_offset = start_x + i * dice_width
+            x_offset = start_x + i * dice_size
             y_offset = start_y
-
             die_image = dice_images[die - 1]
-
             desk.paste(die_image, (x_offset, y_offset), die_image)
 
         desk.save(config.YAHTZEE_RESULT)

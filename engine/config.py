@@ -152,8 +152,12 @@ QUIZ_PRIZE_BASIC = "assets/quiz_prize_basic.jpg"
 QUIZ_PRIZE_SPECIAL = "assets/quiz_prize_special.jpg"
 
 CASINO_ENTRANCE = "assets/casino/entrance.jpg"
+CASINO_FRAUD_BAN = "assets/casino/fraud_ban.jpg"
+
 ROULETTE = "assets/casino/roulette.jpg"
 ROULETTE_TABLE = "assets/casino/roulette_table.jpg"
+ROULETTE_TABLE_ALL_BETS = "assets/casino/roulette_all_bets.jpg"
+ROULETTE_CHIP = "assets/casino/roulette_chip.png"
 ROULETTE_RESULT_WIN = "assets/casino/roulette_result_win.jpg"
 ROULETTE_RESULT_LOSE = "assets/casino/roulette_result_lose.jpg"
 
@@ -183,4 +187,3 @@ YAHTZEE_DICE = {
     6: "assets/casino/yahtzee_dice_6.png",
 }
 YAHTZEE_RESULT = "assets/casino/yahtzee_result.jpg"
-CASINO_FRAUD_BAN = "assets/casino/fraud_ban.jpg"

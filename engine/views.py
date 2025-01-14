@@ -754,6 +754,7 @@ class RouletteBetsView(nextcord.ui.View):
         if not total_bets:
             return await interaction.followup.send(
                 **messages.roulette_no_bets_error(), ephemeral=True)
+        self.roulette_game.draw()
         await interaction.edit_original_message(
             **messages.roulette_all_bets_listing(self.roulette_game.bets, total_bets),
             view=RouletteBetsConfirmView(self.player, self.roulette_game)
