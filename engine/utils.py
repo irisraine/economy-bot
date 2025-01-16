@@ -226,26 +226,26 @@ def reset_database():
         logging.error(f"Ошибка '{error}' при попытке обнуления базы данных.")
 
 # CASINO STUFF
-
-def get_valid_field(field, field_type="sector"):
-    try:
-        int_field = int(field)
-        if field_type == "sector":
-            return int_field if 0 <= int_field <= 36 else False
-        elif field_type == "trinary":
-            return int_field if 1 <= int_field <= 3 else False
-        elif field_type == "sixline":
-            return int_field if 1 <= int_field <= 6 else False
-    except (ValueError, TypeError):
-        return False
-
-def get_valid_bet(bet, lower_limit=1, limit=1):
-    try:
-        int_bet = int(bet)
-        if lower_limit <= int_bet <= limit:
-            return int_bet
-    except (ValueError, TypeError):
-        return False
-
-def is_enough_balance(player, bet, overall_bets=0):
-    return sql.get_user_balance(player) >= bet + overall_bets
+#
+# def get_valid_field(field, field_type="sector"):
+#     try:
+#         int_field = int(field)
+#         if field_type == "sector":
+#             return int_field if 0 <= int_field <= 36 else False
+#         elif field_type == "trinary":
+#             return int_field if 1 <= int_field <= 3 else False
+#         elif field_type == "sixline":
+#             return int_field if 1 <= int_field <= 6 else False
+#     except (ValueError, TypeError):
+#         return False
+#
+# def get_valid_bet(bet, lower_limit=1, limit=1):
+#     try:
+#         int_bet = int(bet)
+#         if lower_limit <= int_bet <= limit:
+#             return int_bet
+#     except (ValueError, TypeError):
+#         return False
+#
+# def is_enough_balance(player, bet, overall_bets=0):
+#     return sql.get_user_balance(player) >= bet + overall_bets
