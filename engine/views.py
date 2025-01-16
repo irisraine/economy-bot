@@ -756,7 +756,7 @@ class RouletteBetsView(nextcord.ui.View):
                 **messages.roulette_no_bets_error(), ephemeral=True)
         self.roulette_game.draw()
         await interaction.edit_original_message(
-            **messages.roulette_all_bets_listing(self.roulette_game.bets, total_bets),
+            **messages.roulette_all_bets_listing(self.roulette_game.bets, total_bets, image_binary_data=self.roulette_game.image),
             view=RouletteBetsConfirmView(self.player, self.roulette_game)
         )
 
@@ -1020,9 +1020,9 @@ class SlotMachineView(nextcord.ui.View):
         self.slot_machine_game.play()
         winning = self.slot_machine_game.winning
         reels = self.slot_machine_game.reels
-        central_line = reels[1]
         await interaction.edit_original_message(
-            **messages.slot_machine_result(self.player, reels, central_line, winning), view=None
+            **messages.slot_machine_result(self.player, reels, winning, image_binary_data=self.slot_machine_game.image),
+            view=None
         )
 
     @nextcord.ui.button(label="Отчаянный ковбой", style=nextcord.ButtonStyle.blurple, emoji="💰")
@@ -1033,9 +1033,9 @@ class SlotMachineView(nextcord.ui.View):
         self.slot_machine_game.play()
         winning = self.slot_machine_game.winning
         reels = self.slot_machine_game.reels
-        central_line = reels[1]
         await interaction.edit_original_message(
-            **messages.slot_machine_result(self.player, reels, central_line, winning), view=None
+            **messages.slot_machine_result(self.player, reels, winning, image_binary_data=self.slot_machine_game.image),
+            view=None
         )
 
     @nextcord.ui.button(label="Отказаться от игры", style=nextcord.ButtonStyle.gray, emoji="❌")
@@ -1073,7 +1073,7 @@ class YahtzeeView(nextcord.ui.View):
         winning_combination = self.yahtzee_game.winning_combination
         if not winning_combination:
             await interaction.edit_original_message(
-                **messages.yahtzee_roll_result_no_winning(final_roll=False, dice=first_roll_result),
+                **messages.yahtzee_roll_result_no_winning(final_roll=False, dice=first_roll_result, image_binary_data=self.yahtzee_game.image),
                 view=YahtzeeRerollView(self.player, self.yahtzee_game))
         else:
             self.yahtzee_game.calculate_winnings()
@@ -1081,7 +1081,9 @@ class YahtzeeView(nextcord.ui.View):
             sql.set_user_balance(self.player, winnings)
             logging.info(f"Пользователь {self.player.name} выиграл в покер на костях лягушек в количестве {winnings - self.yahtzee_game.bet} шт.")
             return await interaction.edit_original_message(
-                **messages.yahtzee_roll_result_winning(self.player, winning_combination, self.yahtzee_game.bet, winnings, first_roll_result), view=None)
+                **messages.yahtzee_roll_result_winning(self.player, winning_combination, self.yahtzee_game.bet,
+                                                       winnings, first_roll_result, image_binary_data=self.yahtzee_game.image),
+                view=None)
 
     @nextcord.ui.button(label="Отказаться от игры", style=nextcord.ButtonStyle.gray, emoji="❌")
     async def close_yahtzee_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
@@ -1198,7 +1200,8 @@ class YahtzeeRerollView(nextcord.ui.View):
         if not winning_combination:
             logging.info(f"Пользователь {self.player.name} проиграл в покер на костях лягушек в количестве {self.yahtzee_game.bet} шт.")
             await interaction.edit_original_message(
-                **messages.yahtzee_roll_result_no_winning(self.player, final_roll=True, bet=self.yahtzee_game.bet, dice=final_roll_result),
+                **messages.yahtzee_roll_result_no_winning(self.player, final_roll=True, bet=self.yahtzee_game.bet,
+                                                          dice=final_roll_result, image_binary_data=self.yahtzee_game.image),
                 view=None)
         else:
             self.yahtzee_game.calculate_winnings()
@@ -1206,7 +1209,8 @@ class YahtzeeRerollView(nextcord.ui.View):
             sql.set_user_balance(self.player, winnings)
             return await interaction.edit_original_message(
                 **messages.yahtzee_roll_result_winning(self.player, winning_combination, self.yahtzee_game.bet,
-                                                       winnings, final_roll_result), view=None)
+                                                       winnings, final_roll_result, image_binary_data=self.yahtzee_game.image),
+                view=None)
 
     @nextcord.ui.button(label="Сдаться и уйти", style=nextcord.ButtonStyle.gray, emoji="❌", row=4)
     async def close_yahtzee_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):

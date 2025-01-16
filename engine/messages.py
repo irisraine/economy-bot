@@ -827,7 +827,7 @@ def slot_machine():
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
-def slot_machine_result(player, reels, central_line, payout):
+def slot_machine_result(player, reels, payout, image_binary_data=None):
     if payout == 0:
         title = "Увы и ах, сегодня тебе не повезло!"
         result = (f"К сожалению, символы центральной линии не сложились ни в одну из выигрышных комбинаций! <@{player.id}>, ты чувствуешь разочарование, "
@@ -853,7 +853,8 @@ def slot_machine_result(player, reels, central_line, payout):
     embed_message = MessageContainer(
         title=title,
         description=description,
-        file_path=config.SLOT_MACHINE_RESULT
+        file_path="slot_machine_result.jpg",
+        image_binary_data=image_binary_data.getvalue()
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
@@ -935,7 +936,7 @@ def balance_error():
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
-def roulette_all_bets_listing(bets, overall_bet):
+def roulette_all_bets_listing(bets, overall_bet, image_binary_data=None):
     def bet_value_transcript(bet_category, value):
         if bet_category == "straight":
             return f"сектор {value}"
@@ -974,7 +975,8 @@ def roulette_all_bets_listing(bets, overall_bet):
     embed_message = MessageContainer(
         title="Список всех ставок",
         description=description,
-        file_path=config.ROULETTE_TABLE_ALL_BETS
+        file_path="roulette_table_all_bets.jpg",
+        image_binary_data=image_binary_data.getvalue()
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
@@ -1132,7 +1134,7 @@ def yahtzee_reroll_set(dice_index):
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
-def yahtzee_roll_result_no_winning(player=None, final_roll=False, bet=0, dice=None):
+def yahtzee_roll_result_no_winning(player=None, final_roll=False, bet=0, dice=None, image_binary_data=None):
     title = "Нет выигрышных комбинаций"
     description = ("Приглушенный свет ламп в зале скользил по поверхности стола, где ты с напряжением наблюдал "
                    "за результатом броска костей. Увы кубики, словно насмехаясь, остановились на комбинации, "
@@ -1149,11 +1151,12 @@ def yahtzee_roll_result_no_winning(player=None, final_roll=False, bet=0, dice=No
     embed_message = MessageContainer(
         title=title,
         description=description,
-        file_path=config.YAHTZEE_RESULT
+        file_path="yahtzee_result.jpg",
+        image_binary_data=image_binary_data.getvalue()
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
-def yahtzee_roll_result_winning(player, winning_combination, bet, winnings, dice=None):
+def yahtzee_roll_result_winning(player, winning_combination, bet, winnings, dice=None, image_binary_data=None):
     winning_type = {
         'small': ["three-of-a-kind", "four-of-a-kind", "full-house", "small-straight"],
         'large': ["large-straight", "yahtzee"]
@@ -1190,6 +1193,7 @@ def yahtzee_roll_result_winning(player, winning_combination, bet, winnings, dice
     embed_message = MessageContainer(
         title="Это победа! Болотные сокровища теперь твои!",
         description=description,
-        file_path=config.YAHTZEE_RESULT
+        file_path="yahtzee_result.jpg",
+        image_binary_data=image_binary_data.getvalue()
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}

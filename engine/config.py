@@ -174,7 +174,6 @@ SLOT_MACHINE_SYMBOLS = {
     "frog_white": "assets/casino/slot_machine_reel_frog_white.png",
 }
 SLOT_MACHINE_CENTRAL_LINE = "assets/casino/slot_machine_reels_line.png"
-SLOT_MACHINE_RESULT = "assets/casino/slot_machine_result.jpg"
 
 YAHTZEE = "assets/casino/yahtzee.jpg"
 YAHTZEE_TABLE = "assets/casino/yahtzee_table.jpg"
@@ -186,4 +185,3 @@ YAHTZEE_DICE = {
     5: "assets/casino/yahtzee_dice_5.png",
     6: "assets/casino/yahtzee_dice_6.png",
 }
-YAHTZEE_RESULT = "assets/casino/yahtzee_result.jpg"

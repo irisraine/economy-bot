@@ -1,4 +1,5 @@
 import random
+import io
 from collections import Counter
 from PIL import Image, ImageDraw, ImageFont
 import engine.config as config
@@ -52,6 +53,7 @@ class SlotMachine:
         self.bet = None
         self.reels = []
         self.winning = 0
+        self.image = None
 
     def place_bet(self, bet):
         self.bet = bet
@@ -163,7 +165,9 @@ class SlotMachine:
         cropped_grid = temp_grid.crop((0, crop_top, temp_grid_width, temp_grid_height - crop_bottom))
         slot_machine_bg.paste(cropped_grid, (grid_x_offset, grid_y_offset), cropped_grid)
         slot_machine_bg.paste(central_line, (central_line_x_offset, central_line_y_offset), central_line)
-        slot_machine_bg.save(config.SLOT_MACHINE_RESULT)
+
+        self.image = io.BytesIO()
+        slot_machine_bg.save(self.image, format='JPEG')
 
     def play(self):
         self.reels = [] #убрать после тестов
@@ -216,6 +220,7 @@ class Roulette:
         self.player = player
         self.bets = []
         self.result = None
+        self.image = None
 
     def place_bet(self, category, value, amount):
         self.bets.append({"category": category, "value": value, "amount": amount})
@@ -272,35 +277,6 @@ class Roulette:
         return 0
 
     def draw(self):
-        # offset = {
-        #     "straight": {
-        #         0: (20, 150),
-        #         1: (72, 218), 2: (72, 150), 3: (72, 82), 4: (122, 218), 5: (122, 150), 6: (122, 82),
-        #         7: (172, 218), 8: (172, 150), 9: (172, 82), 10: (222, 218), 11: (222, 150), 12: (222, 82),
-        #         13: (272, 218), 14: (272, 150), 15: (272, 82), 16: (322, 218), 17: (322, 150), 18: (322, 82),
-        #         19: (372, 218), 20: (372, 150), 21: (372, 82), 22: (422, 218), 23: (422, 150), 24: (422, 82),
-        #         25: (472, 218), 26: (472, 150), 27: (472, 82), 28: (522, 218), 29: (522, 150), 30: (522, 82),
-        #         31: (572, 218), 32: (572, 150), 33: (572, 82), 34: (622, 218), 35: (622, 150), 36: (622, 82)
-        #     },
-        #     "color": {
-        #         "red": (297, 332), "black": (397, 332)
-        #     },
-        #     "even_odd": {
-        #         "even": (197, 332), "odd": (497, 332)
-        #     },
-        #     "high_low": {
-        #         "high": (597, 332), "low": (97, 332)
-        #     },
-        #     "dozen": {
-        #         1: (145, 279), 2: (345, 279), 3: (545, 279)
-        #     },
-        #     "row": {
-        #         1: (672, 218), 2: (672, 150), 3: (672, 82)
-        #     },
-        #     "sixline": {
-        #         1: (97, 252), 2: (197, 252), 3: (297, 252), 4: (397, 252), 5: (497, 252), 6: (597, 252)
-        #     },
-        # }
         offset = {
             "straight":
                 {i: (72 + ((i - 1) // 3) * 50, [218, 150, 82][(i - 1) % 3]) for i in range(1, 37)} | {0: (20, 150)},
@@ -339,7 +315,8 @@ class Roulette:
             x, y = position
             table.paste(chip_with_text, (x, y), chip_with_text)
 
-        table.save(config.ROULETTE_TABLE_ALL_BETS)
+        self.image = io.BytesIO()
+        table.save(self.image, format='JPEG')
 
 
 class Yahtzee:
@@ -359,6 +336,7 @@ class Yahtzee:
         self.reroll_indexes = []
         self.winning_combination = None
         self.winnings = 0
+        self.image = None
 
 
     def place_bet(self, amount):
@@ -419,4 +397,5 @@ class Yahtzee:
             die_image = dice_images[die - 1]
             desk.paste(die_image, (x_offset, y_offset), die_image)
 
-        desk.save(config.YAHTZEE_RESULT)
+        self.image = io.BytesIO()
+        desk.save(self.image, format='JPEG')
