@@ -129,17 +129,13 @@ class SlotMachine:
     def draw(self):
         slot_size = 64
         horizontal_margin = 10
-        left_margin = 58
-        right_margin = 62
-        crop_top = 27
-        crop_bottom = 24
-        grid_x_offset = 240
-        grid_y_offset = 110
-        central_line_x_offset = 220
-        central_line_y_offset = 185
+        left_margin, right_margin = 58, 62
+        crop_top, crop_bottom = 27, 24
+        grid_x_offset, grid_y_offset = 240, 110
+        payline_x_offset, payline_y_offset = 220, 185
 
         slot_machine_bg = Image.open(config.SLOT_MACHINE_BLANK_REELS)
-        central_line = Image.open(config.SLOT_MACHINE_CENTRAL_LINE)
+        payline = Image.open(config.SLOT_MACHINE_PAYLINE)
         symbols = {
             "gold": Image.open(config.SLOT_MACHINE_SYMBOLS["gold"]),
             "cart": Image.open(config.SLOT_MACHINE_SYMBOLS["cart"]),
@@ -159,12 +155,11 @@ class SlotMachine:
             for col in range(3):
                 x_offset = col * slot_size + (left_margin if col == 1 else (left_margin + right_margin if col == 2 else 0))
                 y_offset = row * (slot_size + horizontal_margin)
-
                 temp_grid.paste(symbols[self.reels[row][col]], (x_offset, y_offset))
 
         cropped_grid = temp_grid.crop((0, crop_top, temp_grid_width, temp_grid_height - crop_bottom))
         slot_machine_bg.paste(cropped_grid, (grid_x_offset, grid_y_offset), cropped_grid)
-        slot_machine_bg.paste(central_line, (central_line_x_offset, central_line_y_offset), central_line)
+        slot_machine_bg.paste(payline, (payline_x_offset, payline_y_offset), payline)
 
         self.image = io.BytesIO()
         slot_machine_bg.save(self.image, format='JPEG')
@@ -223,6 +218,10 @@ class Roulette:
         self.image = None
 
     def place_bet(self, category, value, amount):
+        for bet in self.bets:
+            if bet["category"] == category and bet["value"] == value:
+                bet["amount"] = amount
+                return
         self.bets.append({"category": category, "value": value, "amount": amount})
 
     def overall_bet(self):
@@ -277,21 +276,52 @@ class Roulette:
         return 0
 
     def draw(self):
-        offset = {
+        zero_x_position, zero_y_position = 20, 150
+        first_line_x_position = 72
+        line_x_offset = 50
+        rows_x_position = 672
+        first_row_y_position, second_row_y_position, third_row_y_position = 218, 150, 82
+        dozen_x_position, dozen_y_position = 145, 279
+        dozen_x_offset = 200
+        binary_x_position, binary_y_position = 97, 332
+        binary_x_offset = 100
+        sixline_x_position, sixline_y_position = 97, 252
+        sixline_x_offset = 100
+
+        positions = {
             "straight":
-                {i: (72 + ((i - 1) // 3) * 50, [218, 150, 82][(i - 1) % 3]) for i in range(1, 37)} | {0: (20, 150)},
+                {
+                    i: (
+                        first_line_x_position + ((i - 1) // 3) * line_x_offset,
+                        [first_row_y_position, second_row_y_position, third_row_y_position][(i - 1) % 3]
+                    ) for i in range(1, 37)
+                } | {0: (zero_x_position, zero_y_position)},
             "color":
-                {"red": (297, 332), "black": (397, 332)},
+                {
+                    "red": (binary_x_position + binary_x_offset * 2, binary_y_position),
+                    "black": (binary_x_position + binary_x_offset * 3, binary_y_position)
+                },
             "even_odd":
-                {"even": (197, 332), "odd": (497, 332)},
+                {
+                    "even": (binary_x_position + binary_x_offset, binary_y_position),
+                    "odd": (binary_x_position + binary_x_offset * 4, binary_y_position)
+                },
             "high_low":
-                {"high": (597, 332), "low": (97, 332)},
+                {
+                    "high": (binary_x_position + binary_x_offset * 5, binary_y_position),
+                    "low": (binary_x_position, binary_y_position)
+                },
             "dozen":
-                {i: (145 + (i - 1) * 200, 279) for i in range(1, 4)},
+                {i: (dozen_x_position + (i - 1) * dozen_x_offset, dozen_y_position) for i in range(1, 4)},
             "row":
-                {i: (672, [218, 150, 82][i - 1]) for i in range(1, 4)},
+                {
+                    i: (
+                        rows_x_position,
+                        [first_row_y_position, second_row_y_position, third_row_y_position][i - 1]
+                    ) for i in range(1, 4)
+                },
             "sixline":
-                {i: (97 + (i - 1) * 100, 252) for i in range(1, 7)},
+                {i: (sixline_x_position + (i - 1) * sixline_x_offset, sixline_y_position) for i in range(1, 7)},
         }
         table = Image.open(config.ROULETTE_TABLE)
         chip = Image.open(config.ROULETTE_CHIP)
@@ -301,7 +331,7 @@ class Roulette:
             value = bet["value"]
             amount = bet["amount"]
 
-            position = offset.get(category, {}).get(value, None)
+            position = positions.get(category, {}).get(value, None)
 
             chip_with_text = chip.copy()
             draw = ImageDraw.Draw(chip_with_text)

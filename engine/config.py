@@ -156,7 +156,6 @@ CASINO_FRAUD_BAN = "assets/casino/fraud_ban.jpg"
 
 ROULETTE = "assets/casino/roulette.jpg"
 ROULETTE_TABLE = "assets/casino/roulette_table.jpg"
-ROULETTE_TABLE_ALL_BETS = "assets/casino/roulette_all_bets.jpg"
 ROULETTE_CHIP = "assets/casino/roulette_chip.png"
 ROULETTE_RESULT_WIN = "assets/casino/roulette_result_win.jpg"
 ROULETTE_RESULT_LOSE = "assets/casino/roulette_result_lose.jpg"
@@ -173,7 +172,7 @@ SLOT_MACHINE_SYMBOLS = {
     "frog_orange": "assets/casino/slot_machine_reel_frog_orange.png",
     "frog_white": "assets/casino/slot_machine_reel_frog_white.png",
 }
-SLOT_MACHINE_CENTRAL_LINE = "assets/casino/slot_machine_reels_line.png"
+SLOT_MACHINE_PAYLINE = "assets/casino/slot_machine_payline.png"
 
 YAHTZEE = "assets/casino/yahtzee.jpg"
 YAHTZEE_TABLE = "assets/casino/yahtzee_table.jpg"
