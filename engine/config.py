@@ -52,6 +52,7 @@ QUIZ_PARTICIPANT_ID = int(os.getenv('QUIZ_PARTICIPANT_ID'))
 DATABASE_PATH = "database/vault.db"
 
 BASIC_COLOR_CODE = (97, 194, 0)
+ERROR_COLOR_CODE = (255, 0, 0)
 
 CATCHING_COOLDOWN_JSON = "settings/cooldown.json"
 CATCHING_COOLDOWN = utils.json_safeload(CATCHING_COOLDOWN_JSON)['current']
@@ -150,37 +151,3 @@ QUIZ_IMAGE = "assets/quiz.jpg"
 QUIZ_TIME_UP = "assets/quiz_time_up.jpg"
 QUIZ_PRIZE_BASIC = "assets/quiz_prize_basic.jpg"
 QUIZ_PRIZE_SPECIAL = "assets/quiz_prize_special.jpg"
-
-CASINO_ENTRANCE = "assets/casino/entrance.jpg"
-CASINO_FRAUD_BAN = "assets/casino/fraud_ban.jpg"
-
-ROULETTE = "assets/casino/roulette.jpg"
-ROULETTE_TABLE = "assets/casino/roulette_table.jpg"
-ROULETTE_CHIP = "assets/casino/roulette_chip.png"
-ROULETTE_RESULT_WIN = "assets/casino/roulette_result_win.jpg"
-ROULETTE_RESULT_LOSE = "assets/casino/roulette_result_lose.jpg"
-
-SLOT_MACHINE = "assets/casino/slot_machine.jpg"
-SLOT_MACHINE_BLANK_REELS = "assets/casino/slot_machine_blank_reels.jpg"
-SLOT_MACHINE_SYMBOLS = {
-    "gold": "assets/casino/slot_machine_reel_gold.png",
-    "cart": "assets/casino/slot_machine_reel_cart.png",
-    "star": "assets/casino/slot_machine_reel_star.png",
-    "horseshoe": "assets/casino/slot_machine_reel_horseshoe.png",
-    "moonshine": "assets/casino/slot_machine_reel_moonshine.png",
-    "frog_green": "assets/casino/slot_machine_reel_frog_green.png",
-    "frog_orange": "assets/casino/slot_machine_reel_frog_orange.png",
-    "frog_white": "assets/casino/slot_machine_reel_frog_white.png",
-}
-SLOT_MACHINE_PAYLINE = "assets/casino/slot_machine_payline.png"
-
-YAHTZEE = "assets/casino/yahtzee.jpg"
-YAHTZEE_TABLE = "assets/casino/yahtzee_table.jpg"
-YAHTZEE_DICE = {
-    1: "assets/casino/yahtzee_dice_1.png",
-    2: "assets/casino/yahtzee_dice_2.png",
-    3: "assets/casino/yahtzee_dice_3.png",
-    4: "assets/casino/yahtzee_dice_4.png",
-    5: "assets/casino/yahtzee_dice_5.png",
-    6: "assets/casino/yahtzee_dice_6.png",
-}

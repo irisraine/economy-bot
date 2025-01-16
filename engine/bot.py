@@ -103,20 +103,6 @@ async def admin(interaction: nextcord.Interaction):
     )
 
 
-# @client.slash_command(description="Казино «Три лягушки»")
-# async def casino(interaction: nextcord.Interaction):
-#     gambling_pool.setdefault(interaction.user,
-#                              {
-#                                  "slot_machine": None,
-#                                  "roulette": None,
-#                                  "yahtzee": None}
-#                              )
-#     await interaction.response.send_message(
-#         **messages.casino(),
-#         view=views.CasinoMenuView(interaction.user)
-#     )
-
-
 @client.event
 async def on_application_command_error(interaction: nextcord.Interaction, error):
     if isinstance(error, application_checks.ApplicationMissingPermissions):
