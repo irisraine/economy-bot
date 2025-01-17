@@ -7,7 +7,7 @@ import engine.casino.config as config
 
 class SlotMachine:
     BET_AMOUNTS = {
-        'low': 5,
+        'low': 4,
         'high': 8
     }
     PAYOUT_AMOUNTS = {
@@ -18,9 +18,9 @@ class SlotMachine:
         'three_moonshine': 40,
         'two_gold': 25,
         'three_frogs_white': {'low': 20, 'high': 25},
-        'three_frogs_orange': {'low': 16, 'high': 20},
-        'three_frogs_green': {'low': 8, 'high': 10},
-        'three_frogs_all_colors': {'low': 12, 'high': 15},
+        'three_frogs_orange': {'low': 15, 'high': 20},
+        'three_frogs_green': {'low': 7, 'high': 12},
+        'three_frogs_all_colors': {'low': 10, 'high': 15},
         'one_gold': 10,
     }
     REEL = {
@@ -236,7 +236,9 @@ class Roulette:
             'total_payout': 0,
             'winning_bets': []
         }
-        self.__image = None
+        self.__images = {
+            'table': None, 'wheel': None
+        }
 
     @property
     def player(self):
@@ -309,86 +311,105 @@ class Roulette:
         self.__spin()
         self.__calculate_payout()
 
-    def draw(self):
-        zero_x_position, zero_y_position = 20, 150
-        first_line_x_position = 72
-        line_x_offset = 50
-        rows_x_position = 672
-        first_row_y_position, second_row_y_position, third_row_y_position = 218, 150, 82
-        dozen_x_position, dozen_y_position = 145, 279
-        dozen_x_offset = 200
-        binary_x_position, binary_y_position = 97, 332
-        binary_x_offset = 100
-        sixline_x_position, sixline_y_position = 97, 252
-        sixline_x_offset = 100
+    def draw(self, image_type):
+        if image_type == "table":
+            zero_x_position, zero_y_position = 20, 150
+            first_line_x_position = 72
+            line_x_offset = 50
+            rows_x_position = 672
+            first_row_y_position, second_row_y_position, third_row_y_position = 218, 150, 82
+            dozen_x_position, dozen_y_position = 145, 279
+            dozen_x_offset = 200
+            binary_x_position, binary_y_position = 97, 332
+            binary_x_offset = 100
+            sixline_x_position, sixline_y_position = 97, 252
+            sixline_x_offset = 100
 
-        positions = {
-            "straight":
-                {
-                    i: (
-                        first_line_x_position + ((i - 1) // 3) * line_x_offset,
-                        [first_row_y_position, second_row_y_position, third_row_y_position][(i - 1) % 3]
-                    ) for i in range(1, 37)
-                } | {0: (zero_x_position, zero_y_position)},
-            "color":
-                {
-                    "red": (binary_x_position + binary_x_offset * 2, binary_y_position),
-                    "black": (binary_x_position + binary_x_offset * 3, binary_y_position)
-                },
-            "even_odd":
-                {
-                    "even": (binary_x_position + binary_x_offset, binary_y_position),
-                    "odd": (binary_x_position + binary_x_offset * 4, binary_y_position)
-                },
-            "high_low":
-                {
-                    "high": (binary_x_position + binary_x_offset * 5, binary_y_position),
-                    "low": (binary_x_position, binary_y_position)
-                },
-            "dozen":
-                {i: (dozen_x_position + (i - 1) * dozen_x_offset, dozen_y_position) for i in range(1, 4)},
-            "row":
-                {
-                    i: (
-                        rows_x_position,
-                        [first_row_y_position, second_row_y_position, third_row_y_position][i - 1]
-                    ) for i in range(1, 4)
-                },
-            "sixline":
-                {i: (sixline_x_position + (i - 1) * sixline_x_offset, sixline_y_position) for i in range(1, 7)},
-        }
-        table = Image.open(config.ROULETTE_TABLE)
-        chip = Image.open(config.ROULETTE_CHIP)
-        font = ImageFont.truetype("arial.ttf", 20)
-        for bet in self.__bets:
-            category, value, amount = bet["category"], bet["value"], bet["amount"]
+            positions = {
+                "straight":
+                    {
+                        i: (
+                            first_line_x_position + ((i - 1) // 3) * line_x_offset,
+                            [first_row_y_position, second_row_y_position, third_row_y_position][(i - 1) % 3]
+                        ) for i in range(1, 37)
+                    } | {0: (zero_x_position, zero_y_position)},
+                "color":
+                    {
+                        "red": (binary_x_position + binary_x_offset * 2, binary_y_position),
+                        "black": (binary_x_position + binary_x_offset * 3, binary_y_position)
+                    },
+                "even_odd":
+                    {
+                        "even": (binary_x_position + binary_x_offset, binary_y_position),
+                        "odd": (binary_x_position + binary_x_offset * 4, binary_y_position)
+                    },
+                "high_low":
+                    {
+                        "high": (binary_x_position + binary_x_offset * 5, binary_y_position),
+                        "low": (binary_x_position, binary_y_position)
+                    },
+                "dozen":
+                    {
+                        i: (dozen_x_position + (i - 1) * dozen_x_offset, dozen_y_position) for i in range(1, 4)
+                    },
+                "row":
+                    {
+                        i: (
+                            rows_x_position,
+                            [first_row_y_position, second_row_y_position, third_row_y_position][i - 1]
+                        ) for i in range(1, 4)
+                    },
+                "sixline":
+                    {i: (sixline_x_position + (i - 1) * sixline_x_offset, sixline_y_position) for i in range(1, 7)},
+            }
+            table = Image.open(config.ROULETTE_TABLE)
+            chip = Image.open(config.ROULETTE_CHIP)
+            font = ImageFont.truetype("arial.ttf", 20)
+            for bet in self.__bets:
+                category, value, amount = bet["category"], bet["value"], bet["amount"]
+                chip_with_text = chip.copy()
+                draw = ImageDraw.Draw(chip_with_text)
+                text = str(amount)
+                text_width = int(draw.textlength(text, font))
+                text_height = font.size
+                text_x = (chip_with_text.width - text_width) // 2
+                text_y = (chip_with_text.height - text_height) // 2
+                draw.text((text_x - 1, text_y - 1), text, fill="white", font=font)
+                chip_x_position, chip_y_position = positions.get(category).get(value)
+                table.paste(chip_with_text, (chip_x_position, chip_y_position), chip_with_text)
+            self.__images['table'] = io.BytesIO()
+            table.save(self.__images['table'], format='JPEG')
+            return self.__images['table'].getvalue()
 
-            chip_with_text = chip.copy()
-            draw = ImageDraw.Draw(chip_with_text)
-            text = str(amount)
-            text_width = int(draw.textlength(text, font))
-            text_height = font.size
-            text_x = (chip_with_text.width - text_width) // 2
-            text_y = (chip_with_text.height - text_height) // 2
-            draw.text((text_x - 1, text_y - 1), text, fill="white", font=font)
-            # x, y = position
-            chip_x_position, chip_y_position = positions.get(category).get(value)
-            table.paste(chip_with_text, (chip_x_position, chip_y_position), chip_with_text)
+        if image_type == "wheel":
+            ball_positions = {
+                0: (384, 64),
+                32: (408, 66), 15: (431, 72), 19: (452, 83), 4: (469, 97), 21: (486, 114), 2: (501, 132),
+                25: (510, 153), 17: (517, 175), 34: (519, 199), 6: (517, 221), 27: (514, 244), 13: (504, 265),
+                36: (493, 285), 11: (478, 303), 30: (459, 317), 8: (440, 328), 23: (419, 336), 10: (396, 341),
+                5: (373, 341), 24: (350, 336), 16: (329, 329), 33: (309, 317), 1: (292, 302), 20: (276, 284),
+                14: (264, 265), 31: (255, 245), 9: (251, 222), 22: (250, 198), 18: (252, 175), 29: (259, 153),
+                7: (270, 132), 28: (282, 112), 12: (299, 97), 35: (318, 83), 3: (339, 75), 26: (361, 67)
+            }
 
-        self.__image = io.BytesIO()
-        table.save(self.__image, format='JPEG')
-        return self.__image.getvalue()
+            wheel = Image.open(config.ROULETTE_WHEEL)
+            ball = Image.open(config.ROULETTE_BALL)
+            position = ball_positions[self.__sector['number']]
+            wheel.paste(ball, position, ball)
+            self.__images['wheel'] = io.BytesIO()
+            wheel.save(self.__images['wheel'], format='JPEG')
+            return self.__images['wheel'].getvalue()
 
 
 class Yahtzee:
     PAYOUT_MULTIPLIERS = {
-            "yahtzee": 20,
-            "four-of-a-kind": 3,
-            "full-house": 2,
-            "three-of-a-kind": 1.5,
-            "small-straight": 5,
-            "large-straight": 10
-        }
+        "three-of-a-kind": 1.5,
+        "full-house": 2,
+        "four-of-a-kind": 3,
+        "small-straight": 5,
+        "large-straight": 15,
+        "yahtzee": 50
+    }
 
     def __init__(self, player):
         self.__player = player

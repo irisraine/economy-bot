@@ -1,13 +1,15 @@
-SEPARATOR = "assets/separator.png"
-
 CASINO_ENTRANCE = "assets/casino/casino_entrance.jpg"
 CASINO_FRAUD_BAN = "assets/casino/casino_fraud_ban.jpg"
+CASINO_WRONG_PLAYER = "assets/casino/casino_wrong_player.jpg"
+
+SEPARATOR_CONFIRM = "assets/casino/separator_confirm.png"
+SEPARATOR_ERROR = "assets/casino/separator_error.png"
 
 ROULETTE = "assets/casino/roulette.jpg"
 ROULETTE_TABLE = "assets/casino/roulette_table.jpg"
 ROULETTE_CHIP = "assets/casino/roulette_chip.png"
-ROULETTE_RESULT_WIN = "assets/casino/roulette_result_win.jpg"
-ROULETTE_RESULT_LOSE = "assets/casino/roulette_result_lose.jpg"
+ROULETTE_WHEEL = "assets/casino/roulette_wheel.jpg"
+ROULETTE_BALL = "assets/casino/roulette_ball.png"
 
 SLOT_MACHINE = "assets/casino/slot_machine.jpg"
 SLOT_MACHINE_REELS_BLANK = "assets/casino/slot_machine_reels_blank.jpg"

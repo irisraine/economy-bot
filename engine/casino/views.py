@@ -107,7 +107,7 @@ class RouletteBetsView(UniquePlayerBasicView):
         if not overall_bet:
             return await interaction.followup.send(
                 **messages.roulette_no_bets_error(), ephemeral=True)
-        table_with_bets_image = self.roulette.draw()
+        table_with_bets_image = self.roulette.draw(image_type='table')
         await interaction.edit_original_message(
             **messages.roulette_all_bets_listing(
                 bets=self.roulette.bets,
@@ -233,7 +233,7 @@ class RouletteTrinaryBetModal(nextcord.ui.Modal):
             label="Величина ставки",
             max_length=2,
             required=True,
-            placeholder=f"Введите размер ставки в диапазоне от 5 до 25 лягушек",
+            placeholder=f"Введите размер ставки в диапазоне от 3 до 15 лягушек",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.bet_amount)
@@ -245,7 +245,7 @@ class RouletteTrinaryBetModal(nextcord.ui.Modal):
             return await interaction.followup.send(
                 **messages.roulette_single_bet_confirmation(is_valid=False, category="trinary"), ephemeral=True
             )
-        bet = utils.get_valid_bet(self.bet_amount.value, lower_limit=5, upper_limit=25)
+        bet = utils.get_valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=15)
         if not bet:
             return await interaction.followup.send(
                 **messages.roulette_single_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
@@ -278,7 +278,7 @@ class RouletteSixlineBetModal(nextcord.ui.Modal):
             label="Величина ставки",
             max_length=2,
             required=True,
-            placeholder=f"Введите размер ставки в диапазоне от 5 до 25 лягушек",
+            placeholder=f"Введите размер ставки в диапазоне от 3 до 15 лягушек",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.bet_amount)
@@ -290,7 +290,7 @@ class RouletteSixlineBetModal(nextcord.ui.Modal):
             return await interaction.followup.send(
                 **messages.roulette_single_bet_confirmation(is_valid=False, category="sixline"), ephemeral=True
             )
-        bet = utils.get_valid_bet(self.bet_amount.value, lower_limit=5, upper_limit=25)
+        bet = utils.get_valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=15)
         if not bet:
             return await interaction.followup.send(
                 **messages.roulette_single_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
@@ -323,14 +323,17 @@ class RouletteBetsConfirmView(UniquePlayerBasicView):
                      f"с общей ставкой в размере {overall_bet} шт. лягушек")
         sector = self.roulette.sector
         winnings = self.roulette.winnings
-        logging.info(f"Пользователь {self.roulette.player.name} выиграл лягушек "
-                     f"в количестве {winnings['total_payout']} шт.")
+        wheel_with_ball = self.roulette.draw(image_type='wheel')
+        if winnings['total_payout'] > 0:
+            logging.info(f"Пользователь {self.roulette.player.name} выиграл лягушек "
+                         f"в количестве {winnings['total_payout']} шт.")
         await interaction.edit_original_message(
             **messages.roulette_result(
                 player=self.roulette.player,
                 sector=sector,
                 overall_bet=overall_bet,
-                winnings=winnings),
+                winnings=winnings,
+                image_binary_data=wheel_with_ball),
             view=None
         )
 
