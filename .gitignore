@@ -13,8 +13,3 @@ logs
 # Ignore all files in the items directory, but preserve the directory itself
 shop_items/**
 !shop_items/.gitkeep
-
-# Ignore current game results
-assets/casino/yahtzee_result.jpg
-assets/casino/slot_machine_result.jpg
-assets/casino/roulette_all_bets.jpg
