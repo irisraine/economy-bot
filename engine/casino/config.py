@@ -52,11 +52,11 @@ ROULETTE_BALL_POSITIONS = {
     7: (270, 132), 28: (282, 112), 12: (299, 97), 35: (318, 83), 3: (339, 75), 26: (361, 67)
 }
 ROULETTE_PAYOUT_MULTIPLIERS = {
-        "straight": 36,
-        "color": 2, "even_odd": 2, "high_low": 2,
-        "dozen": 3, "row": 3,
-        "sixline": 6
-    }
+    "straight": 36,
+    "color": 2, "even_odd": 2, "high_low": 2,
+    "dozen": 3, "row": 3,
+    "sixline": 6
+}
 
 SLOT_MACHINE = "assets/casino/slot_machine.jpg"
 SLOT_MACHINE_REELS_BLANK = "assets/casino/slot_machine_reels_blank.jpg"
@@ -122,29 +122,19 @@ SLOT_MACHINE_BET_AMOUNTS = {
     'high': 8
 }
 SLOT_MACHINE_PAYOUT_AMOUNTS = {
-    'three_gold': 500,
-    'three_cart': 100,
-    'three_star': 75,
-    'three_horseshoe': 50,
-    'three_moonshine': 40,
-    'two_gold': 25,
-    'three_frogs_white': {
-        'low': 20,
-        'high': 30
+    'rare_symbols': {
+        'gold': {3: 500, 2: 25, 1: 10},
+        'cart': {3: 100},
+        'star': {3: 75},
+        'horseshoe': {3: 50},
+        'moonshine': {3: 40},
     },
-    'three_frogs_orange': {
-        'low': 15,
-        'high': 20
+    'frogs': {
+        'green': {'low': 7, 'high': 12},
+        'white': {'low': 20, 'high': 30},
+        'orange': {'low': 15, 'high': 20},
+        'all_colors': {'low': 10, 'high': 15},
     },
-    'three_frogs_green': {
-        'low': 7,
-        'high': 12
-    },
-    'three_frogs_all_colors': {
-        'low': 10,
-        'high': 15
-    },
-    'one_gold': 10,
 }
 
 YAHTZEE = "assets/casino/yahtzee.jpg"

@@ -126,31 +126,22 @@ class SlotMachine:
 
     def __calculate_payout(self, reels):
         central_line = reels[1]
-        counts = {symbol: central_line.count(symbol) for symbol in set(central_line)}
-
+        symbol_counts = {symbol: central_line.count(symbol) for symbol in set(central_line)}
+        frog_symbol_counts = {
+            'green': symbol_counts.get('frog_green', 0),
+            'white': symbol_counts.get('frog_white', 0),
+            'orange': symbol_counts.get('frog_orange', 0),
+        }
         if self.__bet_type == "high":
-            if counts.get("gold", 0) == 3:
-                return config.SLOT_MACHINE_PAYOUT_AMOUNTS["three_gold"]
-            elif counts.get("cart", 0) == 3:
-                return config.SLOT_MACHINE_PAYOUT_AMOUNTS["three_cart"]
-            elif counts.get("star", 0) == 3:
-                return config.SLOT_MACHINE_PAYOUT_AMOUNTS["three_star"]
-            elif counts.get("horseshoe", 0) == 3:
-                return config.SLOT_MACHINE_PAYOUT_AMOUNTS["three_horseshoe"]
-            elif counts.get("moonshine", 0) == 3:
-                return config.SLOT_MACHINE_PAYOUT_AMOUNTS["three_moonshine"]
-            elif counts.get("gold", 0) == 2:
-                return config.SLOT_MACHINE_PAYOUT_AMOUNTS["two_gold"]
-            elif counts.get("gold", 0) == 1:
-                return config.SLOT_MACHINE_PAYOUT_AMOUNTS["one_gold"]
-        if counts.get("frog_green", 0) == 3:
-            return config.SLOT_MACHINE_PAYOUT_AMOUNTS["three_frogs_green"][self.__bet_type]
-        elif counts.get("frog_white", 0) == 3:
-            return config.SLOT_MACHINE_PAYOUT_AMOUNTS["three_frogs_white"][self.__bet_type]
-        elif counts.get("frog_orange", 0) == 3:
-            return config.SLOT_MACHINE_PAYOUT_AMOUNTS["three_frogs_orange"][self.__bet_type]
-        elif counts.get("frog_green", 0) == 1 and counts.get("frog_orange", 0) == 1 and counts.get("frog_white", 0) == 1:
-            return config.SLOT_MACHINE_PAYOUT_AMOUNTS["three_frogs_all_colors"][self.__bet_type]
+            for rare_symbol, payouts in config.SLOT_MACHINE_PAYOUT_AMOUNTS['rare_symbols'].items():
+                count = symbol_counts.get(rare_symbol, 0)
+                if count in payouts:
+                    return payouts[count]
+        for frog_color, payouts in config.SLOT_MACHINE_PAYOUT_AMOUNTS['frogs'].items():
+            if frog_color != 'all_colors' and frog_symbol_counts[frog_color] == 3:
+                return payouts[self.__bet_type]
+        if all(count == 1 for count in frog_symbol_counts.values()):
+            return config.SLOT_MACHINE_PAYOUT_AMOUNTS['frogs']['all_colors'][self.__bet_type]
         return 0
 
     def place_bet(self, bet_type):
@@ -276,27 +267,21 @@ class Roulette:
 
     def __calculate_individual_payout(self, bet):
         category, value, amount = bet["category"], bet["value"], bet["amount"]
+        number, color = self.__sector['number'], self.__sector['color']
 
-        if category == "straight":
-            return amount * config.ROULETTE_PAYOUT_MULTIPLIERS["straight"] if self.__sector['number'] == value else 0
-        if category == "color":
-            return amount * config.ROULETTE_PAYOUT_MULTIPLIERS["color"] if self.__sector['color'] == value else 0
-        if category == "even_odd":
-            if value == "even" and self.__sector['number'] in self.EVEN_NUMBERS:
-                return amount * config.ROULETTE_PAYOUT_MULTIPLIERS["even_odd"]
-            if value == "odd" and self.__sector['number'] in self.ODD_NUMBERS:
-                return amount * config.ROULETTE_PAYOUT_MULTIPLIERS["even_odd"]
-        if category == "high_low":
-            if value == "high" and self.__sector['number'] in self.HIGH_RANGE:
-                return amount * config.ROULETTE_PAYOUT_MULTIPLIERS["high_low"]
-            if value == "low" and self.__sector['number'] in self.LOW_RANGE:
-                return amount * config.ROULETTE_PAYOUT_MULTIPLIERS["high_low"]
-        if category == "dozen":
-            return amount * config.ROULETTE_PAYOUT_MULTIPLIERS["dozen"] if self.__sector['number'] in self.DOZEN_RANGES.get(value) else 0
-        if category == "row":
-            return amount * config.ROULETTE_PAYOUT_MULTIPLIERS["row"] if self.__sector['number'] % 3 == self.ROW_MODULO.get(value) else 0
-        if category == "sixline":
-            return amount * config.ROULETTE_PAYOUT_MULTIPLIERS["sixline"] if self.__sector['number'] in self.SIXLINE_RANGES.get(value) else 0
+        conditions = {
+            "straight": lambda: number == value,
+            "color": lambda: color == value,
+            "even_odd": lambda: (value == "even" and number in self.EVEN_NUMBERS) or
+                                (value == "odd" and number in self.ODD_NUMBERS),
+            "high_low": lambda: (value == "high" and number in self.HIGH_RANGE) or
+                                (value == "low" and number in self.LOW_RANGE),
+            "dozen": lambda: number in self.DOZEN_RANGES.get(value),
+            "row": lambda: number % 3 == self.ROW_MODULO.get(value),
+            "sixline": lambda: number in self.SIXLINE_RANGES.get(value)
+        }
+        if conditions[category]():
+            return amount * config.ROULETTE_PAYOUT_MULTIPLIERS[category]
         return 0
 
     def place_bet(self, category, value, amount):
@@ -387,22 +372,23 @@ class Yahtzee:
         counts = Counter(self.__roll_outcome['dice'])
         unique_values = sorted(counts.keys())
         counts_values = list(counts.values())
-
-        if 5 in counts_values:
-            self.__roll_outcome['winning_combination'] = "yahtzee"
-        elif 4 in counts_values:
-            self.__roll_outcome['winning_combination'] = "four_of_a_kind"
-        elif sorted(counts_values) == [2, 3]:
-            self.__roll_outcome['winning_combination'] = "full_house"
-        elif 3 in counts_values:
-            self.__roll_outcome['winning_combination'] = "three_of_a_kind"
-        elif unique_values == [1, 2, 3, 4, 5] or unique_values == [2, 3, 4, 5, 6]:
-            self.__roll_outcome['winning_combination'] = "large_straight"
-        elif any(all(x in unique_values for x in straight) for straight in [[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]]):
-            self.__roll_outcome['winning_combination'] = "small_straight"
-
-        if self.__roll_outcome['winning_combination']:
-            self.__payout = int(self.bet * config.YAHTZEE_PAYOUT_MULTIPLIERS[self.__roll_outcome['winning_combination']])
+        conditions = {
+            "yahtzee": lambda: 5 in counts_values,
+            "four_of_a_kind": lambda: 4 in counts_values,
+            "full_house": lambda: sorted(counts_values) == [2, 3],
+            "three_of_a_kind": lambda: 3 in counts_values,
+            "large_straight": lambda: unique_values == [1, 2, 3, 4, 5] or unique_values == [2, 3, 4, 5, 6],
+            "small_straight": lambda: any(all(x in unique_values for x in straight)
+                                          for straight in [[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]])
+        }
+        winning_combination = None
+        for combination, condition in conditions.items():
+            if condition():
+                winning_combination = combination
+                break
+        if winning_combination:
+            self.__roll_outcome['winning_combination'] = winning_combination
+            self.__payout = int(self.bet * config.YAHTZEE_PAYOUT_MULTIPLIERS[winning_combination])
 
     def place_bet(self, bet):
         self.__bet = bet
