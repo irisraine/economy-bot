@@ -127,23 +127,19 @@ class SlotMachine:
     def __calculate_payout(self, reels):
         central_line = reels[1]
         symbol_counts = {symbol: central_line.count(symbol) for symbol in set(central_line)}
-        frog_symbol_counts = {
-            'green': symbol_counts.get('frog_green', 0),
-            'white': symbol_counts.get('frog_white', 0),
-            'orange': symbol_counts.get('frog_orange', 0),
-        }
         if self.__bet_type == "high":
             for rare_symbol, payouts in config.SLOT_MACHINE_PAYOUT_AMOUNTS['rare_symbols'].items():
                 count = symbol_counts.get(rare_symbol, 0)
                 if count in payouts:
                     self.__payout = payouts[count]
                     return
-        for frog_color, payouts in config.SLOT_MACHINE_PAYOUT_AMOUNTS['frogs'].items():
-            if frog_color != 'all_colors' and frog_symbol_counts[frog_color] == 3:
+        for frog_symbol, payouts in config.SLOT_MACHINE_PAYOUT_AMOUNTS['frog_symbols'].items():
+            count = symbol_counts.get(frog_symbol, 0)
+            if count == 3:
                 self.__payout = payouts[self.__bet_type]
                 return
-        if all(count == 1 for count in frog_symbol_counts.values()):
-            self.__payout = config.SLOT_MACHINE_PAYOUT_AMOUNTS['frogs']['all_colors'][self.__bet_type]
+        if all(symbol_counts.get(color, 0) == 1 for color in ["frog_green", "frog_orange", "frog_white"]):
+            self.__payout = config.SLOT_MACHINE_PAYOUT_AMOUNTS['frogs_all_colors'][self.__bet_type]
 
     def place_bet(self, bet_type):
         self.__bet_type = bet_type
