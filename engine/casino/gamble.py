@@ -415,22 +415,20 @@ class Yahtzee:
         self.__calculate_payout()
 
     def draw(self):
+        dice_size = config.YAHTZEE_DIMENSIONS['dice_size']
+        table_width = config.YAHTZEE_DIMENSIONS['table_width']
+        table_height = config.YAHTZEE_DIMENSIONS['table_height']
+
         table = Image.open(config.YAHTZEE_TABLE)
-        table_width, table_height = table.size
-
         dice_images = [Image.open(config.YAHTZEE_DICE[i]) for i in range(1, 7)]
-        dice_size, _ = dice_images[0].size
-
         total_dice_width = len(self.__roll_outcome['dice']) * dice_size
         start_x = (table_width - total_dice_width) // 2
         start_y = (table_height - dice_size) // 2
-
         for i, die in enumerate(self.__roll_outcome['dice']):
             x_offset = start_x + i * dice_size
             y_offset = start_y
             die_image = dice_images[die - 1]
             table.paste(die_image, (x_offset, y_offset), die_image)
-
         self.__image = io.BytesIO()
         table.save(self.__image, format='JPEG')
         return self.__image.getvalue()

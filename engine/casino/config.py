@@ -165,3 +165,8 @@ YAHTZEE_PAYOUT_MULTIPLIERS = {
     "large_straight": 15,
     "yahtzee": 50
 }
+YAHTZEE_DIMENSIONS = {
+    "dice_size": 100,
+    "table_width": 800,
+    "table_height": 343,
+}
