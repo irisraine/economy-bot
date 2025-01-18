@@ -136,20 +136,21 @@ class SlotMachine:
             for rare_symbol, payouts in config.SLOT_MACHINE_PAYOUT_AMOUNTS['rare_symbols'].items():
                 count = symbol_counts.get(rare_symbol, 0)
                 if count in payouts:
-                    return payouts[count]
+                    self.__payout = payouts[count]
+                    return
         for frog_color, payouts in config.SLOT_MACHINE_PAYOUT_AMOUNTS['frogs'].items():
             if frog_color != 'all_colors' and frog_symbol_counts[frog_color] == 3:
-                return payouts[self.__bet_type]
+                self.__payout = payouts[self.__bet_type]
+                return
         if all(count == 1 for count in frog_symbol_counts.values()):
-            return config.SLOT_MACHINE_PAYOUT_AMOUNTS['frogs']['all_colors'][self.__bet_type]
-        return 0
+            self.__payout = config.SLOT_MACHINE_PAYOUT_AMOUNTS['frogs']['all_colors'][self.__bet_type]
 
     def place_bet(self, bet_type):
         self.__bet_type = bet_type
 
     def play(self):
         self.__spin()
-        self.__payout = self.__calculate_payout(self.__reels)
+        self.__calculate_payout(self.__reels)
 
     def draw(self):
         slot_size = config.SLOT_MACHINE_DIMENSIONS["slot_size"]
