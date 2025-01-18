@@ -47,7 +47,7 @@ def roulette_bet_value_transcript(bet_category, value):
         return f"{value}-й сикслайн"
 
 
-def get_valid_field(field, field_type="straight"):
+def roulette_valid_field(field, field_type="straight"):
     try:
         int_field = int(field)
         if field_type == "straight":
@@ -59,7 +59,7 @@ def get_valid_field(field, field_type="straight"):
     except (ValueError, TypeError):
         return False
 
-def get_valid_bet(bet, lower_limit, upper_limit):
+def valid_bet(bet, lower_limit, upper_limit):
     try:
         int_bet = int(bet)
         if lower_limit <= int_bet <= upper_limit:

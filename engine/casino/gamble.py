@@ -28,25 +28,28 @@ class SlotMachine:
         'high': (['gold'] * 1 + ['cart'] * 2 + ['star'] * 3 + ['horseshoe'] * 4 + ['moonshine'] * 5 +
             ['frog_green'] * 16 + ['frog_orange'] * 8 + ['frog_white'] * 4)
     }
-    PREDEFINED_WINNING_OUTCOMES = {
-        'three_gold': {'probability_range': (0, 0.01), 'reel': ['gold'] * 3},
-        'three_cart': {'probability_range': (0.01, 0.03), 'reel': ['cart'] * 3},
-        'three_star': {'probability_range': (0.03, 0.055), 'reel': ['star'] * 3},
-        'three_horseshoe': {'probability_range': (0.055, 0.08), 'reel': ['horseshoe'] * 3},
-        'three_moonshine': {'probability_range': (0.08, 0.15), 'reel': ['moonshine'] * 3},
-        'two_gold': {'probability_range': (0.15, 0.3), 'reel': ['gold'] * 2},
-        'one_gold': {'probability_range': (0.3, 1.0), 'reel': ['gold'] * 1},
+    PREDEFINED_OUTCOMES = {
+        'winning': {
+            'three_gold': {'probability_range': (0, 0.01), 'reel': ['gold'] * 3},
+            'three_cart': {'probability_range': (0.01, 0.03), 'reel': ['cart'] * 3},
+            'three_star': {'probability_range': (0.03, 0.055), 'reel': ['star'] * 3},
+            'three_horseshoe': {'probability_range': (0.055, 0.08), 'reel': ['horseshoe'] * 3},
+            'three_moonshine': {'probability_range': (0.08, 0.15), 'reel': ['moonshine'] * 3},
+            'two_gold': {'probability_range': (0.15, 0.3), 'reel': ['gold'] * 2},
+            'one_gold': {'probability_range': (0.3, 1.0), 'reel': ['gold'] * 1},
+        },
+        'near_winning': {
+            'cart': {'probability_range': (0, 0.15), 'reel': ['cart'] * 2},
+            'star': {'probability_range': (0.15, 0.40), 'reel': ['star'] * 2},
+            'horseshoe': {'probability_range': (0.40, 0.60), 'reel': ['horseshoe'] * 2},
+            'moonshine': {'probability_range': (0.60, 0.75), 'reel': ['moonshine'] * 2},
+            'frog': {'probability_range': (0.75, 1.0),'reel': [random.choice(['frog_green', 'frog_orange', 'frog_white'])] * 2},
+        }
     }
-    PREDEFINED_NEAR_WINNING_OUTCOMES = {
-        'cart': {'probability_range': (0, 0.15), 'reel': ['cart'] * 2},
-        'star': {'probability_range': (0.15, 0.40), 'reel': ['star'] * 2},
-        'horseshoe': {'probability_range': (0.40, 0.60), 'reel': ['horseshoe'] * 2},
-        'moonshine': {'probability_range': (0.60, 0.75), 'reel': ['moonshine'] * 2},
-        'frog': {'probability_range': (0.75, 1.0),
-                 'reel': [random.choice(['frog_green', 'frog_orange', 'frog_white'])] * 2},
+    THRESHOLDS_FOR_PREDEFINED_OUTCOMES = {
+        'winning': 0.25,
+        'near_winning': 0.4,
     }
-    THRESHOLD_FOR_PREDEFINED_WINNING = 0.25
-    THRESHOLD_FOR_PREDEFINED_NEAR_WINNING = 0.15
 
     def __init__(self, player):
         self.__player = player
@@ -76,27 +79,20 @@ class SlotMachine:
 
     def __spin(self):
         central_line = []
-
         if self.__bet_type == 'high':
-            roll_for_predefined_winning = random.random()
-            is_predefined_winning = roll_for_predefined_winning < self.THRESHOLD_FOR_PREDEFINED_WINNING
-            if is_predefined_winning:
-                roll_for_predefined_winning_type = random.random()
-                for outcome in self.PREDEFINED_WINNING_OUTCOMES.values():
+            predefined_outcome = None
+            roll_for_predefined_outcome_category = random.random()
+            if roll_for_predefined_outcome_category < self.THRESHOLDS_FOR_PREDEFINED_OUTCOMES['winning']:
+                predefined_outcome = 'winning'
+            elif roll_for_predefined_outcome_category < self.THRESHOLDS_FOR_PREDEFINED_OUTCOMES['near_winning']:
+                predefined_outcome = 'near_winning'
+            if predefined_outcome:
+                roll_for_predefined_outcome_type = random.random()
+                for outcome in self.PREDEFINED_OUTCOMES[predefined_outcome].values():
                     lower_bound, upper_bound = outcome['probability_range']
-                    if lower_bound <= roll_for_predefined_winning_type < upper_bound:
-                        central_line = outcome['reel']
+                    if lower_bound <= roll_for_predefined_outcome_type < upper_bound:
+                        central_line = outcome['reel'][:]
                         break
-            else:
-                roll_for_predefined_near_winning = random.random()
-                is_predefined_near_winning = roll_for_predefined_near_winning < self.THRESHOLD_FOR_PREDEFINED_NEAR_WINNING
-                if is_predefined_near_winning:
-                    roll_for_predefined_near_winning_type = random.random()
-                    for outcome in self.PREDEFINED_NEAR_WINNING_OUTCOMES.values():
-                        lower_bound, upper_bound = outcome['probability_range']
-                        if lower_bound <= roll_for_predefined_near_winning_type < upper_bound:
-                            central_line = outcome['reel']
-                            break
         if central_line:
             if len(central_line) == 2:
                 central_line.append(self.__reel())
@@ -142,7 +138,6 @@ class SlotMachine:
         self.__bet_type = bet_type
 
     def play(self):
-        self.__reels = [] # убрать после тестов!
         self.__spin()
         self.__payout = self.__calculate_payout(self.__reels)
 
@@ -196,12 +191,10 @@ class Roulette:
         25: 'red', 26: 'black', 27: 'red', 28: 'black', 29: 'black', 30: 'red',
         31: 'black', 32: 'red', 33: 'black', 34: 'red', 35: 'black', 36: 'red'
     }
-    PAYOUT_MULTIPLIERS = {
-        "straight": 36,
-        "color": 2, "even_odd": 2, "high_low": 2,
-        "dozen": 3, "row": 3,
-        "sixline": 6
-    }
+    LOW_RANGE = range(1, 19)
+    HIGH_RANGE = range(19, 37)
+    EVEN_NUMBERS = [i for i in range(1, 37) if i % 2 == 0]
+    ODD_NUMBERS = [i for i in range(1, 37) if i % 2 != 0]
     DOZEN_RANGES = {
         1: range(1, 13),
         2: range(13, 25),
@@ -220,10 +213,12 @@ class Roulette:
         5: range(25, 31),
         6: range(31, 37)
     }
-    LOW_RANGE = range(1, 19)
-    HIGH_RANGE = range(19, 37)
-    EVEN_NUMBERS = [i for i in range(1, 37) if i % 2 == 0]
-    ODD_NUMBERS = [i for i in range(1, 37) if i % 2 != 0]
+    PAYOUT_MULTIPLIERS = {
+        "straight": 36,
+        "color": 2, "even_odd": 2, "high_low": 2,
+        "dozen": 3, "row": 3,
+        "sixline": 6
+    }
 
     def __init__(self, player):
         self.__player = player
@@ -324,8 +319,7 @@ class Roulette:
             binary_x_offset = 100
             sixline_x_position, sixline_y_position = 97, 252
             sixline_x_offset = 100
-
-            positions = {
+            chip_positions = {
                 "straight":
                     {
                         i: (
@@ -375,7 +369,7 @@ class Roulette:
                 text_x = (chip_with_text.width - text_width) // 2
                 text_y = (chip_with_text.height - text_height) // 2
                 draw.text((text_x - 1, text_y - 1), text, fill="white", font=font)
-                chip_x_position, chip_y_position = positions.get(category).get(value)
+                chip_x_position, chip_y_position = chip_positions.get(category).get(value)
                 table.paste(chip_with_text, (chip_x_position, chip_y_position), chip_with_text)
             self.__images['table'] = io.BytesIO()
             table.save(self.__images['table'], format='JPEG')
@@ -391,7 +385,6 @@ class Roulette:
                 14: (264, 265), 31: (255, 245), 9: (251, 222), 22: (250, 198), 18: (252, 175), 29: (259, 153),
                 7: (270, 132), 28: (282, 112), 12: (299, 97), 35: (318, 83), 3: (339, 75), 26: (361, 67)
             }
-
             wheel = Image.open(config.ROULETTE_WHEEL)
             ball = Image.open(config.ROULETTE_BALL)
             position = ball_positions[self.__sector['number']]
@@ -458,10 +451,10 @@ class Yahtzee:
             self.__roll_outcome['winning_combination'] = "yahtzee"
         elif 4 in counts_values:
             self.__roll_outcome['winning_combination'] = "four-of-a-kind"
-        elif 3 in counts_values:
-            self.__roll_outcome['winning_combination'] = "three-of-a-kind"
         elif sorted(counts_values) == [2, 3]:
             self.__roll_outcome['winning_combination'] = "full-house"
+        elif 3 in counts_values:
+            self.__roll_outcome['winning_combination'] = "three-of-a-kind"
         elif unique_values == [1, 2, 3, 4, 5] or unique_values == [2, 3, 4, 5, 6]:
             self.__roll_outcome['winning_combination'] = "large-straight"
         elif any(all(x in unique_values for x in straight) for straight in [[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]]):

@@ -43,19 +43,20 @@ class CasinoMenuView(nextcord.ui.View):
         await interaction.delete_original_message()
 
 
-class UniquePlayerBasicView(nextcord.ui.View):
+class OriginalPlayerBasicView(nextcord.ui.View):
     def __init__(self, player: nextcord.User):
         super().__init__(timeout=None)
         self.player = player
 
     async def interaction_check(self, interaction: nextcord.Interaction):
         if interaction.user.id != self.player.id:
-            await interaction.response.send_message(**messages.wrong_player_error(), ephemeral=True)
+            await interaction.response.send_message(
+                **messages.wrong_player_error(original_player=self.player), ephemeral=True)
             return False
         return True
 
 
-class RouletteBetsView(UniquePlayerBasicView):
+class RouletteBetsView(OriginalPlayerBasicView):
     def __init__(self, roulette):
         super().__init__(player=roulette.player)
         self.roulette = roulette
@@ -147,12 +148,12 @@ class RouletteStraightUpBetModal(nextcord.ui.Modal):
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        sector = utils.get_valid_field(self.number.value)
+        sector = utils.roulette_valid_field(self.number.value)
         if sector is False:
             return await interaction.followup.send(
                 **messages.roulette_single_bet_confirmation(is_valid=False, category="straight"), ephemeral=True
             )
-        bet = utils.get_valid_bet(self.bet_amount.value, lower_limit=1, upper_limit=10)
+        bet = utils.valid_bet(self.bet_amount.value, lower_limit=1, upper_limit=10)
         if not bet:
             return await interaction.followup.send(
                 **messages.roulette_single_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
@@ -194,7 +195,7 @@ class RouletteBinaryBetModal(nextcord.ui.Modal):
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        bet = utils.get_valid_bet(self.bet_amount.value, lower_limit=5, upper_limit=25)
+        bet = utils.valid_bet(self.bet_amount.value, lower_limit=5, upper_limit=25)
         if not bet:
             return await interaction.followup.send(
                 **messages.roulette_single_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
@@ -240,12 +241,12 @@ class RouletteTrinaryBetModal(nextcord.ui.Modal):
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        number_of_range = utils.get_valid_field(self.number_of_range.value, field_type="trinary")
+        number_of_range = utils.roulette_valid_field(self.number_of_range.value, field_type="trinary")
         if number_of_range is False:
             return await interaction.followup.send(
                 **messages.roulette_single_bet_confirmation(is_valid=False, category="trinary"), ephemeral=True
             )
-        bet = utils.get_valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=15)
+        bet = utils.valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=15)
         if not bet:
             return await interaction.followup.send(
                 **messages.roulette_single_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
@@ -285,12 +286,12 @@ class RouletteSixlineBetModal(nextcord.ui.Modal):
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        sixline = utils.get_valid_field(self.number_of_range.value, field_type="sixline")
+        sixline = utils.roulette_valid_field(self.number_of_range.value, field_type="sixline")
         if sixline is False:
             return await interaction.followup.send(
                 **messages.roulette_single_bet_confirmation(is_valid=False, category="sixline"), ephemeral=True
             )
-        bet = utils.get_valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=15)
+        bet = utils.valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=15)
         if not bet:
             return await interaction.followup.send(
                 **messages.roulette_single_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
@@ -306,7 +307,7 @@ class RouletteSixlineBetModal(nextcord.ui.Modal):
         )
 
 
-class RouletteBetsConfirmView(UniquePlayerBasicView):
+class RouletteBetsConfirmView(OriginalPlayerBasicView):
     def __init__(self, roulette):
         super().__init__(player=roulette.player)
         self.roulette = roulette
@@ -344,7 +345,7 @@ class RouletteBetsConfirmView(UniquePlayerBasicView):
         await interaction.delete_original_message()
 
 
-class SlotMachineView(UniquePlayerBasicView):
+class SlotMachineView(OriginalPlayerBasicView):
     def __init__(self, slot_machine):
         super().__init__(player=slot_machine.player)
         self.slot_machine = slot_machine
@@ -388,7 +389,7 @@ class SlotMachineView(UniquePlayerBasicView):
         await interaction.delete_original_message()
 
 
-class YahtzeeView(UniquePlayerBasicView):
+class YahtzeeView(OriginalPlayerBasicView):
     def __init__(self, yahtzee):
         super().__init__(player=yahtzee.player)
         self.yahtzee = yahtzee
@@ -452,14 +453,14 @@ class YahtzeeBetModal(nextcord.ui.Modal):
             label="Величина ставки",
             max_length=2,
             required=True,
-            placeholder=f"Введите размер ставки в диапазоне от 4 до 15 лягушек",
+            placeholder=f"Введите размер ставки в диапазоне от 3 до 15 лягушек",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.bet_amount)
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        bet = utils.get_valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=15)
+        bet = utils.valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=15)
         if not bet:
             return await interaction.followup.send(
                 **messages.roulette_single_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
@@ -474,7 +475,7 @@ class YahtzeeBetModal(nextcord.ui.Modal):
             **messages.roulette_single_bet_confirmation(), ephemeral=True
         )
 
-class YahtzeeRerollView(UniquePlayerBasicView):
+class YahtzeeRerollView(OriginalPlayerBasicView):
     def __init__(self, yahtzee):
         super().__init__(player=yahtzee.player)
         self.yahtzee = yahtzee
