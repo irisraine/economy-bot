@@ -3,7 +3,7 @@
 ## Description
 
 Welcome to the Frog Economy Bot for Discord! This bot introduces a fun and engaging economy system to your server, 
-allowing members to earn and spend an inner server currency called "frogs". With various commands and features, 
+allowing members to earn and spend an in-server currency called "frogs". With various commands and features, 
 users can enjoy a dynamic and interactive experience.
 
 ## Features
@@ -13,6 +13,8 @@ users can enjoy a dynamic and interactive experience.
 - **Catch Frogs**: Try your luck in the swamp to catch frogs with a certain probability.
 - **Transfer Frogs**: Easily transfer frogs to other users.
 - **Hold Quizzes**: Create and hold quizzes and thereby allowing members of your server to demonstrate their erudition.
+- **Casino Games**: Allows you to enjoy three exciting casino games: roulette, slot machine, and yahtzee. Test your 
+luck and have fun while earning (or losing) frog currency!
 - **Admin Controls**: Special options for admins to adjust prices and configure settings.
 
 ## Commands
@@ -23,6 +25,7 @@ users can enjoy a dynamic and interactive experience.
 - `/transfer <amount> <user>`: Transfer a specified amount of frogs to another user.
 - `/quiz`: Set and start interactive quiz.
 - `/prize <username>`: Give a reward for quiz winner.
+- `/сasino`: Access the casino to gamble.
 - `/admin`: Access special admin options to adjust prices and configure other settings.
 
 ## Usage
