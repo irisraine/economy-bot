@@ -413,29 +413,23 @@ class YahtzeeView(OriginalPlayerBasicView):
                      f"со ставкой в размере {bet} шт. лягушек")
         first_roll_outcome = self.yahtzee.roll_outcome
         first_roll_outcome_image = self.yahtzee.draw()
-        if not first_roll_outcome['winning_combination']:
-            await interaction.edit_original_message(
-                **messages.yahtzee_result_no_winning(
-                    player=self.yahtzee.player,
-                    bet=bet,
-                    roll_outcome=first_roll_outcome['dice'],
-                    image_binary_data=first_roll_outcome_image
-                ),
-                view=YahtzeeRerollView(self.yahtzee))
-        else:
-            payout = self.yahtzee.payout
+        payout = self.yahtzee.payout
+        if first_roll_outcome['winning_combination']:
             sql.set_user_balance(self.yahtzee.player, payout)
+            view = None
             logging.info(f"Пользователь {self.yahtzee.player.name} выиграл в покере на костях лягушек "
                          f"в количестве {payout} шт.")
-            return await interaction.edit_original_message(
-                **messages.yahtzee_result_winning(
-                    player=self.yahtzee.player,
-                    bet=bet,
-                    payout=payout,
-                    roll_outcome=first_roll_outcome,
-                    image_binary_data=first_roll_outcome_image
-                ),
-                view=None)
+        else:
+            view = YahtzeeRerollView(self.yahtzee)
+        await interaction.edit_original_message(
+            **messages.yahtzee_result(
+                player=self.yahtzee.player,
+                bet=bet,
+                payout=payout,
+                roll_outcome=first_roll_outcome,
+                image_binary_data=first_roll_outcome_image
+            ),
+            view=view)
 
     @nextcord.ui.button(label="Отказаться от игры", style=nextcord.ButtonStyle.gray, emoji="❌")
     async def close_yahtzee_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
@@ -521,30 +515,21 @@ class YahtzeeRerollView(OriginalPlayerBasicView):
         self.yahtzee.play()
         second_roll_outcome = self.yahtzee.roll_outcome
         second_roll_outcome_image = self.yahtzee.draw()
-        if not second_roll_outcome['winning_combination']:
-            await interaction.edit_original_message(
-                **messages.yahtzee_result_no_winning(
-                    player=self.yahtzee.player,
-                    bet=bet,
-                    roll_outcome=second_roll_outcome['dice'],
-                    image_binary_data=second_roll_outcome_image,
-                    is_reroll=True
-                ),
-                view=None)
-        else:
-            payout = self.yahtzee.payout
+        payout = self.yahtzee.payout
+        if second_roll_outcome['winning_combination']:
             sql.set_user_balance(self.yahtzee.player, payout)
             logging.info(f"Пользователь {self.yahtzee.player.name} выиграл в покере на костях лягушек "
                          f"в количестве {payout} шт.")
-            return await interaction.edit_original_message(
-                **messages.yahtzee_result_winning(
-                    player=self.yahtzee.player,
-                    bet=bet,
-                    payout=payout,
-                    roll_outcome=second_roll_outcome,
-                    image_binary_data=second_roll_outcome_image
-                ),
-                view=None)
+        await interaction.edit_original_message(
+            **messages.yahtzee_result(
+                player=self.yahtzee.player,
+                bet=bet,
+                payout=payout,
+                roll_outcome=second_roll_outcome,
+                image_binary_data=second_roll_outcome_image,
+                is_reroll=True
+            ),
+            view=None)
 
     @nextcord.ui.button(label="Сдаться и уйти", style=nextcord.ButtonStyle.gray, emoji="❌", row=4)
     async def close_yahtzee_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
