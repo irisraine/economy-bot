@@ -102,7 +102,7 @@ class RouletteBetsView(OriginalPlayerBasicView):
         await interaction.response.send_modal(RouletteSixlineBetModal(self.roulette))
 
     @nextcord.ui.button(label="Список всех ставок", style=nextcord.ButtonStyle.green, emoji="✅", row=4)
-    async def all_bets_listing_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+    async def bets_listing_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
         overall_bet = self.roulette.overall_bet()
         if not overall_bet:
@@ -110,7 +110,7 @@ class RouletteBetsView(OriginalPlayerBasicView):
                 **messages.roulette_no_bets_error(), ephemeral=True)
         table_with_bets_image = self.roulette.draw(image_type='table')
         await interaction.edit_original_message(
-            **messages.roulette_all_bets_listing(
+            **messages.roulette_bets_listing(
                 bets=self.roulette.bets,
                 overall_bet=overall_bet,
                 image_binary_data=table_with_bets_image),
