@@ -9,60 +9,26 @@ class SlotMachine:
     REEL = {
         'low': (['frog_green'] * 3 + ['frog_orange'] * 2 + ['frog_white']),
         'high': (['gold'] * 1 + ['cart'] * 2 + ['star'] * 3 + ['horseshoe'] * 4 + ['moonshine'] * 5 +
-                 ['frog_green'] * 16 + ['frog_orange'] * 8 + ['frog_white'] * 4)
+                 ['frog_green'] * 16 + ['frog_orange'] * 10 + ['frog_white'] * 6)
     }
     PREDEFINED_OUTCOMES = {
         'winning': {
-            'three_gold': {
-                'probability_range': (0, 0.01),
-                'reel': ['gold'] * 3
+            ('gold', 'gold', 'gold'): (0, 0.005),
+            ('cart', 'cart', 'cart'): (0.005, 0.03),
+            ('star', 'star', 'star'): (0.03, 0.055),
+            ('horseshoe', 'horseshoe', 'horseshoe'): (0.055, 0.08),
+            ('moonshine', 'moonshine', 'moonshine'): (0.08, 0.15),
+            ('gold', 'gold'): (0.15, 0.3),
+            ('gold',): (0.3, 1.0)
             },
-            'three_cart': {
-                'probability_range': (0.01, 0.03),
-                'reel': ['cart'] * 3
-            },
-            'three_star': {
-                'probability_range': (0.03, 0.055),
-                'reel': ['star'] * 3
-            },
-            'three_horseshoe': {
-                'probability_range': (0.055, 0.08),
-                'reel': ['horseshoe'] * 3
-            },
-            'three_moonshine': {
-                'probability_range': (0.08, 0.15),
-                'reel': ['moonshine'] * 3
-            },
-            'two_gold': {
-                'probability_range': (0.15, 0.3),
-                'reel': ['gold'] * 2
-            },
-            'one_gold': {
-                'probability_range': (0.3, 1.0),
-                'reel': ['gold'] * 1
-            },
-        },
         'near_winning': {
-            'cart': {
-                'probability_range': (0, 0.15),
-                'reel': ['cart'] * 2
-            },
-            'star': {
-                'probability_range': (0.15, 0.40),
-                'reel': ['star'] * 2
-            },
-            'horseshoe': {
-                'probability_range': (0.40, 0.60),
-                'reel': ['horseshoe'] * 2
-            },
-            'moonshine': {
-                'probability_range': (0.60, 0.75),
-                'reel': ['moonshine'] * 2
-            },
-            'frog': {
-                'probability_range': (0.75, 1.0),
-                'reel': [random.choice(['frog_green', 'frog_orange', 'frog_white'])] * 2
-            },
+            ('cart', 'cart'): (0, 0.15),
+            ('star', 'star'): (0.15, 0.3),
+            ('horseshoe', 'horseshoe'): (0.3, 0.45),
+            ('moonshine', 'moonshine'): (0.45, 0.6),
+            ('frog_white', 'frog_white'): (0.6, 0.75),
+            ('frog_orange', 'frog_orange'): (0.75, 0.9),
+            ('frog_green', 'frog_green'): (0.9, 1.0),
         }
     }
     THRESHOLDS_FOR_PREDEFINED_OUTCOMES = {
@@ -107,10 +73,10 @@ class SlotMachine:
                 predefined_outcome = 'near_winning'
             if predefined_outcome:
                 roll_for_predefined_outcome_type = random.random()
-                for outcome in self.PREDEFINED_OUTCOMES[predefined_outcome].values():
-                    lower_bound, upper_bound = outcome['probability_range']
+                for reel, probability_range in self.PREDEFINED_OUTCOMES[predefined_outcome].items():
+                    lower_bound, upper_bound = probability_range
                     if lower_bound <= roll_for_predefined_outcome_type < upper_bound:
-                        central_line = outcome['reel'][:]
+                        central_line.extend(reel)
                         break
         if central_line:
             if len(central_line) == 2:
