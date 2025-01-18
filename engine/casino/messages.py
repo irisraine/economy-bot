@@ -214,7 +214,7 @@ def roulette():
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def roulette_single_bet_confirmation(is_valid=True, category=None):
+def roulette_bet_confirmation(is_valid=True, category=None):
     if not is_valid:
         title = ERROR_HEADER
         file_path = config.SEPARATOR_ERROR
@@ -379,6 +379,7 @@ def yahtzee():
 def yahtzee_bet_confirmation(is_valid=True, category=None):
     if not is_valid:
         title = ERROR_HEADER
+        file_path = config.SEPARATOR_ERROR
         if category == "bet":
             description = ("Ставка не принята, вы ввели некорректное значение. Ставка должна быть целым числом в "
                            "пределах указанного диапазона.")
@@ -388,10 +389,11 @@ def yahtzee_bet_confirmation(is_valid=True, category=None):
     else:
         title = SUCCESS_HEADER
         description = "Ставка принята!"
+        file_path = config.SEPARATOR_CONFIRM
     embed_message = MessageContainer(
         title=title,
         description=description,
-        file_path=config.SEPARATOR_CONFIRM
+        file_path=file_path
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 

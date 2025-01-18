@@ -151,21 +151,21 @@ class RouletteStraightUpBetModal(nextcord.ui.Modal):
         sector = utils.roulette_valid_field(self.number.value)
         if sector is False:
             return await interaction.followup.send(
-                **messages.roulette_single_bet_confirmation(is_valid=False, category="straight"), ephemeral=True
+                **messages.roulette_bet_confirmation(is_valid=False, category="straight"), ephemeral=True
             )
         bet = utils.valid_bet(self.bet_amount.value, lower_limit=1, upper_limit=10)
         if not bet:
             return await interaction.followup.send(
-                **messages.roulette_single_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
+                **messages.roulette_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
             )
         is_enough_balance = utils.is_enough_balance(interaction.user, bet, self.roulette.overall_bet())
         if not is_enough_balance:
             return await interaction.followup.send(
-                **messages.roulette_single_bet_confirmation(is_valid=False, category="balance"), ephemeral=True
+                **messages.roulette_bet_confirmation(is_valid=False, category="balance"), ephemeral=True
             )
         self.roulette.place_bet(category="straight", value=sector, amount=bet)
         await interaction.followup.send(
-            **messages.roulette_single_bet_confirmation(), ephemeral=True
+            **messages.roulette_bet_confirmation(), ephemeral=True
         )
 
 
@@ -198,16 +198,16 @@ class RouletteBinaryBetModal(nextcord.ui.Modal):
         bet = utils.valid_bet(self.bet_amount.value, lower_limit=5, upper_limit=25)
         if not bet:
             return await interaction.followup.send(
-                **messages.roulette_single_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
+                **messages.roulette_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
             )
         is_enough_balance = utils.is_enough_balance(interaction.user, bet, self.roulette.overall_bet())
         if not is_enough_balance:
             return await interaction.followup.send(
-                **messages.roulette_single_bet_confirmation(is_valid=False, category="balance"), ephemeral=True
+                **messages.roulette_bet_confirmation(is_valid=False, category="balance"), ephemeral=True
             )
         self.roulette.place_bet(category=self.DESCRIPTION[self.bet_type][1], value=self.bet_type, amount=bet)
         await interaction.followup.send(
-            **messages.roulette_single_bet_confirmation(), ephemeral=True
+            **messages.roulette_bet_confirmation(), ephemeral=True
         )
 
 
@@ -244,21 +244,21 @@ class RouletteTrinaryBetModal(nextcord.ui.Modal):
         number_of_range = utils.roulette_valid_field(self.number_of_range.value, field_type="trinary")
         if number_of_range is False:
             return await interaction.followup.send(
-                **messages.roulette_single_bet_confirmation(is_valid=False, category="trinary"), ephemeral=True
+                **messages.roulette_bet_confirmation(is_valid=False, category="trinary"), ephemeral=True
             )
         bet = utils.valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=15)
         if not bet:
             return await interaction.followup.send(
-                **messages.roulette_single_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
+                **messages.roulette_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
             )
         is_enough_balance = utils.is_enough_balance(interaction.user, bet, self.roulette.overall_bet())
         if not is_enough_balance:
             return await interaction.followup.send(
-                **messages.roulette_single_bet_confirmation(is_valid=False, category="balance"), ephemeral=True
+                **messages.roulette_bet_confirmation(is_valid=False, category="balance"), ephemeral=True
             )
         self.roulette.place_bet(category=self.bet_type, value=number_of_range, amount=bet)
         await interaction.followup.send(
-            **messages.roulette_single_bet_confirmation(), ephemeral=True
+            **messages.roulette_bet_confirmation(), ephemeral=True
         )
 
 
@@ -289,21 +289,21 @@ class RouletteSixlineBetModal(nextcord.ui.Modal):
         sixline = utils.roulette_valid_field(self.number_of_range.value, field_type="sixline")
         if sixline is False:
             return await interaction.followup.send(
-                **messages.roulette_single_bet_confirmation(is_valid=False, category="sixline"), ephemeral=True
+                **messages.roulette_bet_confirmation(is_valid=False, category="sixline"), ephemeral=True
             )
         bet = utils.valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=15)
         if not bet:
             return await interaction.followup.send(
-                **messages.roulette_single_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
+                **messages.roulette_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
             )
         is_enough_balance = utils.is_enough_balance(interaction.user, bet, self.roulette.overall_bet())
         if not is_enough_balance:
             return await interaction.followup.send(
-                **messages.roulette_single_bet_confirmation(is_valid=False, category="balance"), ephemeral=True
+                **messages.roulette_bet_confirmation(is_valid=False, category="balance"), ephemeral=True
             )
         self.roulette.place_bet(category="sixline", value=sixline, amount=bet)
         await interaction.followup.send(
-            **messages.roulette_single_bet_confirmation(), ephemeral=True
+            **messages.roulette_bet_confirmation(), ephemeral=True
         )
 
 
@@ -457,16 +457,16 @@ class YahtzeeBetModal(nextcord.ui.Modal):
         bet = utils.valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=15)
         if not bet:
             return await interaction.followup.send(
-                **messages.roulette_single_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
+                **messages.yahtzee_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
             )
         is_enough_balance = utils.is_enough_balance(interaction.user, bet)
         if not is_enough_balance:
             return await interaction.followup.send(
-                **messages.roulette_single_bet_confirmation(is_valid=False, category="balance"), ephemeral=True
+                **messages.yahtzee_bet_confirmation(is_valid=False, category="balance"), ephemeral=True
             )
         self.yahtzee.place_bet(bet=bet)
         await interaction.followup.send(
-            **messages.roulette_single_bet_confirmation(), ephemeral=True
+            **messages.yahtzee_bet_confirmation(), ephemeral=True
         )
 
 
