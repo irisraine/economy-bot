@@ -7,9 +7,9 @@ import engine.casino.gamble as gamble
 def load_casino_cog(client):
     try:
         client.load_extension('engine.casino.cog')
-        logging.info(f'Модуль казино успешно загружен.')
+        logging.info("Модуль казино успешно загружен.")
     except Exception as error:
-        logging.error(f'Ошибка при попытке загрузки модуля казино. Дополнительная информация: {error}')
+        logging.error(f"Ошибка при попытке загрузки модуля казино. Дополнительная информация: {error}")
 
 
 def set_game(player, game, reset=True):
@@ -59,6 +59,7 @@ def roulette_valid_field(field, field_type="straight"):
     except (ValueError, TypeError):
         return False
 
+
 def valid_bet(bet, lower_limit, upper_limit):
     try:
         int_bet = int(bet)
@@ -66,6 +67,7 @@ def valid_bet(bet, lower_limit, upper_limit):
             return int_bet
     except (ValueError, TypeError):
         return False
+
 
 def is_enough_balance(player, bet, overall_bets=0):
     return sql.get_user_balance(player) >= bet + overall_bets

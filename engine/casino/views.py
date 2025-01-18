@@ -126,14 +126,14 @@ class RouletteBetsView(OriginalPlayerBasicView):
 
 class RouletteStraightUpBetModal(nextcord.ui.Modal):
     def __init__(self, roulette):
-        super().__init__(f"Сделать прямую ставку на число")
+        super().__init__("Сделать прямую ставку на число")
         self.roulette = roulette
 
         self.number = nextcord.ui.TextInput(
             label="Сектор",
             max_length=2,
             required=True,
-            placeholder=f"Введите число в диапазоне от 0 до 36",
+            placeholder="Введите число в диапазоне от 0 до 36",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.number)
@@ -141,7 +141,7 @@ class RouletteStraightUpBetModal(nextcord.ui.Modal):
             label="Величина ставки",
             max_length=2,
             required=True,
-            placeholder=f"Введите размер ставки в диапазоне от 1 до 10 лягушек",
+            placeholder="Введите размер ставки в диапазоне от 1 до 10 лягушек",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.bet_amount)
@@ -188,7 +188,7 @@ class RouletteBinaryBetModal(nextcord.ui.Modal):
             label="Величина ставки",
             max_length=2,
             required=True,
-            placeholder=f"Введите размер ставки в диапазоне от 5 до 25 лягушек",
+            placeholder="Введите размер ставки в диапазоне от 5 до 25 лягушек",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.bet_amount)
@@ -234,7 +234,7 @@ class RouletteTrinaryBetModal(nextcord.ui.Modal):
             label="Величина ставки",
             max_length=2,
             required=True,
-            placeholder=f"Введите размер ставки в диапазоне от 3 до 15 лягушек",
+            placeholder="Введите размер ставки в диапазоне от 3 до 15 лягушек",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.bet_amount)
@@ -264,14 +264,14 @@ class RouletteTrinaryBetModal(nextcord.ui.Modal):
 
 class RouletteSixlineBetModal(nextcord.ui.Modal):
     def __init__(self, roulette):
-        super().__init__(f"Сделать ставку на сикслайн")
+        super().__init__("Сделать ставку на сикслайн")
         self.roulette = roulette
 
         self.number_of_range = nextcord.ui.TextInput(
-            label=f"Номер сикслайна",
+            label="Номер сикслайна",
             max_length=1,
             required=True,
-            placeholder=f"Введите номер сикслайна в диапазоне от 1 до 6",
+            placeholder="Введите номер сикслайна в диапазоне от 1 до 6",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.number_of_range)
@@ -279,7 +279,7 @@ class RouletteSixlineBetModal(nextcord.ui.Modal):
             label="Величина ставки",
             max_length=2,
             required=True,
-            placeholder=f"Введите размер ставки в диапазоне от 3 до 15 лягушек",
+            placeholder="Введите размер ставки в диапазоне от 3 до 15 лягушек",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.bet_amount)
@@ -440,14 +440,14 @@ class YahtzeeView(OriginalPlayerBasicView):
 
 class YahtzeeBetModal(nextcord.ui.Modal):
     def __init__(self, yahtzee):
-        super().__init__(f"Сделать ставку")
+        super().__init__("Сделать ставку")
         self.yahtzee = yahtzee
 
         self.bet_amount = nextcord.ui.TextInput(
             label="Величина ставки",
             max_length=2,
             required=True,
-            placeholder=f"Введите размер ставки в диапазоне от 3 до 15 лягушек",
+            placeholder="Введите размер ставки в диапазоне от 3 до 15 лягушек",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.bet_amount)
@@ -468,6 +468,7 @@ class YahtzeeBetModal(nextcord.ui.Modal):
         await interaction.followup.send(
             **messages.roulette_single_bet_confirmation(), ephemeral=True
         )
+
 
 class YahtzeeRerollView(OriginalPlayerBasicView):
     def __init__(self, yahtzee):

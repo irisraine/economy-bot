@@ -9,7 +9,7 @@ class SlotMachine:
     REEL = {
         'low': (['frog_green'] * 3 + ['frog_orange'] * 2 + ['frog_white']),
         'high': (['gold'] * 1 + ['cart'] * 2 + ['star'] * 3 + ['horseshoe'] * 4 + ['moonshine'] * 5 +
-            ['frog_green'] * 16 + ['frog_orange'] * 8 + ['frog_white'] * 4)
+                 ['frog_green'] * 16 + ['frog_orange'] * 8 + ['frog_white'] * 4)
     }
     PREDEFINED_OUTCOMES = {
         'winning': {
