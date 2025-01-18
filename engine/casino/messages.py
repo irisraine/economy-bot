@@ -48,79 +48,79 @@ def casino():
 def slot_machine():
     embed_message = MessageContainer(
         title="**Однорукий бандит**",
-        description="Испытай свою удачу в игре с одноруким бандитом и сорви свой джекпот! Выбирай между двумя режимами "
-                    "игры: более доступным «Жабьим чвяком» и дорогим «Отчаянным ковбоем», каждый из которых предлагает "
-                    "свои шансы на победу и уникальные комбинации!\n"
-                    "После выбора режима дергай за рычаг однорукого бандита и жди, когда замершие барабаны отобразят "
-                    "результат игры - он определяется в зависимости от символов, выпавших на центральной линии.\n\n"
-                    f"- **Жабий чвяк** (стоимость игры **4** {FROG_EMOJI})\n"
-                    "Это классический режим для тех, кто хочет испытать свою удачу без лишнего риска. На барабане "
-                    "всего три типа символов - три лягушки разных цветов, а вероятность победы ниже.\n\n"
-                    "*Выигрышные комбинации:*\n"
+        description=f"Испытай свою удачу в игре с одноруким бандитом и сорви свой джекпот! Выбирай между двумя "
+                    f"режимами игры: более доступным «Жабьим чвяком» и дорогим «Отчаянным ковбоем», каждый из которых "
+                    f"предлагает свои шансы на победу и уникальные комбинации!\n"
+                    f"После выбора режима дергай за рычаг однорукого бандита и жди, когда замершие барабаны отобразят "
+                    f"результат игры - он определяется в зависимости от символов, выпавших на центральной линии.\n\n"
+                    f"- **Жабий чвяк** (стоимость игры **{config.SLOT_MACHINE_BET_AMOUNTS['low']}** {FROG_EMOJI})\n"
+                    f"Это классический режим для тех, кто хочет испытать свою удачу без лишнего риска. На барабане "
+                    f"всего три типа символов - три лягушки разных цветов, а вероятность победы ниже.\n\n"
+                    f"*Выигрышные комбинации:*\n"
                     f"**{config.SLOT_MACHINE_REEL_SYMBOLS['frog_white']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_white']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_white']['emoji']}** "
-                    f" - выплата **20** {FROG_EMOJI}\n"
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['three_frogs_white']['low']}** {FROG_EMOJI}\n"
                     f"**{config.SLOT_MACHINE_REEL_SYMBOLS['frog_orange']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_orange']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_orange']['emoji']}** "
-                    f" - выплата **15** {FROG_EMOJI}\n"
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['three_frogs_orange']['low']}** {FROG_EMOJI}\n"
                     f"**{config.SLOT_MACHINE_REEL_SYMBOLS['frog_green']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_orange']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_white']['emoji']}** "
-                    f" - выплата **10** {FROG_EMOJI}\n"
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['three_frogs_all_colors']['low']}** {FROG_EMOJI}\n"
                     f"**{config.SLOT_MACHINE_REEL_SYMBOLS['frog_green']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_green']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_green']['emoji']}** "
-                    f" - выплата **7** {FROG_EMOJI}\n\n"
-                    f"- **Отчаянный ковбой** (стоимость игры **8** {FROG_EMOJI})\n"
-                    "Для настоящих искателей приключений! Этот режим обойдется тебе дороже, но и предлагает более "
-                    "щедрые шансы на выигрыш. На барабане целых восемь символов, в каждом из которых отразился один "
-                    "из аспектов жизни на Диком Западе, а количество победных комбинаций увеличено до девяти!\n\n"
-                    "*Выигрышные комбинации:*\n"
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['three_frogs_green']['low']}** {FROG_EMOJI}\n\n"
+                    f"- **Отчаянный ковбой** (стоимость игры **{config.SLOT_MACHINE_BET_AMOUNTS['high']}** {FROG_EMOJI})\n"
+                    f"Для настоящих искателей приключений! Этот режим обойдется тебе дороже, но и предлагает более "
+                    f"щедрые шансы на выигрыш. На барабане целых восемь символов, в каждом из которых отразился один "
+                    f"из аспектов жизни на Диком Западе, а количество победных комбинаций увеличено до девяти!\n\n"
+                    f"*Выигрышные комбинации:*\n"
                     f"**{config.SLOT_MACHINE_REEL_SYMBOLS['gold']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['gold']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['gold']['emoji']}** "
-                    f" - выплата **300** {FROG_EMOJI}\n"
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['three_gold']}** {FROG_EMOJI}\n"
                     f"**{config.SLOT_MACHINE_REEL_SYMBOLS['cart']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['cart']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['cart']['emoji']}** "
-                    f" - выплата **100** {FROG_EMOJI}\n"
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['three_cart']}** {FROG_EMOJI}\n"
                     f"**{config.SLOT_MACHINE_REEL_SYMBOLS['star']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['star']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['star']['emoji']}** "
-                    f" - выплата **75** {FROG_EMOJI}\n"
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['three_star']}** {FROG_EMOJI}\n"
                     f"**{config.SLOT_MACHINE_REEL_SYMBOLS['horseshoe']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['horseshoe']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['horseshoe']['emoji']}** "
-                    f" - выплата **50** {FROG_EMOJI}\n"
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['three_horseshoe']}** {FROG_EMOJI}\n"
                     f"**{config.SLOT_MACHINE_REEL_SYMBOLS['moonshine']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['moonshine']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['moonshine']['emoji']}** "
-                    f" - выплата **35** {FROG_EMOJI}\n"
-                    f"**{config.SLOT_MACHINE_REEL_SYMBOLS['gold']['emoji']} "
-                    f"{config.SLOT_MACHINE_REEL_SYMBOLS['gold']['emoji']} :x:** " 
-                    f" - выплата **25** {FROG_EMOJI}\n"
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['three_moonshine']}** {FROG_EMOJI}\n"
                     f"**{config.SLOT_MACHINE_REEL_SYMBOLS['frog_white']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_white']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_white']['emoji']}** "
-                    f" - выплата **25** {FROG_EMOJI}\n"
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['three_frogs_white']['high']}** {FROG_EMOJI}\n"
+                    f"**{config.SLOT_MACHINE_REEL_SYMBOLS['gold']['emoji']} "
+                    f"{config.SLOT_MACHINE_REEL_SYMBOLS['gold']['emoji']} :x:** " 
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['two_gold']}** {FROG_EMOJI}\n"
                     f"**{config.SLOT_MACHINE_REEL_SYMBOLS['frog_orange']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_orange']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_orange']['emoji']}** "
-                    f" - выплата **20** {FROG_EMOJI}\n"
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['three_frogs_orange']['high']}** {FROG_EMOJI}\n"
                     f"**{config.SLOT_MACHINE_REEL_SYMBOLS['frog_green']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_orange']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_white']['emoji']}** "
-                    f" - выплата **15** {FROG_EMOJI}\n"
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['three_frogs_all_colors']['high']}** {FROG_EMOJI}\n"
                     f"**{config.SLOT_MACHINE_REEL_SYMBOLS['frog_green']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_green']['emoji']} "
                     f"{config.SLOT_MACHINE_REEL_SYMBOLS['frog_green']['emoji']}** "
-                    f" - выплата **12** {FROG_EMOJI}\n"
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['three_frogs_green']['high']}** {FROG_EMOJI}\n"
                     f"**{config.SLOT_MACHINE_REEL_SYMBOLS['gold']['emoji']} :x: :x:**"
-                    f" - выплата **10** {FROG_EMOJI}\n\n"
-                    "Сможешь ли ты обхитрить однорукого бандита и стать настоящим чемпионом? Дерзай, ведь удача "
-                    "любит смелых!",
+                    f" - выплата **{config.SLOT_MACHINE_PAYOUT_AMOUNTS['one_gold']}** {FROG_EMOJI}\n\n"
+                    f"Сможешь ли ты обхитрить однорукого бандита и стать настоящим чемпионом? Дерзай, ведь удача "
+                    f"любит смелых!",
         file_path=config.SLOT_MACHINE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
@@ -332,24 +332,24 @@ def roulette_result(player, sector, overall_bet, winnings, image_binary_data):
 def yahtzee():
     embed_message = MessageContainer(
         title="**Покер на костях**",
-        description="Добро пожаловать в захватывающий мир покера на костях — игру, где прихотливые законы вероятностей "
-                    "и стратегия идут рука об руку! Испытай свою судьбу, бросая игральные кубики, чтобы собрать "
-                    "одну из выигрышных комбинаций и получить заслуженную награду!\n"
-                    "Правила игры просты. Сделайте ставку и бросьте пять кубиков - после чего посмотрите, что выпадет. "
-                    "В случае, если вы сразу собрали одну из выигрышных комбинаций — поздравляем, вы победитель! "
-                    "Если же при первом броске удача оказалась не на твоей стороне, не беда! У тебя есть второй шанс: "
-                    "выбери до двух кубиков и перебрось их, чтобы улучшить свой результат. После второго броска твой "
-                    "набор считается окончательным, и производится расчет выигрыша.\n\n"
+        description=f"Добро пожаловать в захватывающий мир покера на костях — игру, где прихотливые законы вероятностей "
+                    f"и стратегия идут рука об руку! Испытай свою судьбу, бросая игральные кубики, чтобы собрать "
+                    f"одну из выигрышных комбинаций и получить заслуженную награду!\n"
+                    f"Правила игры просты. Сделайте ставку и бросьте пять кубиков - после чего посмотрите, что выпадет. "
+                    f"В случае, если вы сразу собрали одну из выигрышных комбинаций — поздравляем, вы победитель! "
+                    f"Если же при первом броске удача оказалась не на твоей стороне, не беда! У тебя есть второй шанс: "
+                    f"выбери до двух кубиков и перебрось их, чтобы улучшить свой результат. После второго броска твой "
+                    f"набор считается окончательным, и производится расчет выигрыша.\n\n"
                     f"*Лимит ставок*: от **3** до **15** {FROG_EMOJI}\n\n"
-                    "*Список выигрышных комбинаций и коэффициенты выплат:*\n\n"
-                    "- **Тройка** (три кости с одинаковым значением): **1.5:1**\n"
-                    "- **Фулл-хаус** (пара и тройка с одинаковыми значениями): **2:1**\n"
-                    "- **Каре** (четыре кости с одинаковым значением): **3:1**\n"
-                    "- **Малый стрит** (последовательность из четырех чисел): **5:1**\n"
-                    "- **Большой стрит** (последовательность из пяти чисел): **15:1**\n"
-                    "- **Покер** (все пять костей одинаковы): **50:1**\n\n"
-                    "Используй свою интуицию, стратегию и немного удачи, чтобы стать мастером покера на костях! "
-                    "Готов испытать судьбу? Бросай кости и собирай лучшие комбинации!",
+                    f"*Список выигрышных комбинаций и коэффициенты выплат:*\n\n"
+                    f"- **Тройка** (три кости с одинаковым значением): **{config.YAHTZEE_PAYOUT_MULTIPLIERS['three_of_a_kind']}:1**\n"
+                    f"- **Фулл-хаус** (пара и тройка с одинаковыми значениями): **{config.YAHTZEE_PAYOUT_MULTIPLIERS['full_house']}:1**\n"
+                    f"- **Каре** (четыре кости с одинаковым значением): **{config.YAHTZEE_PAYOUT_MULTIPLIERS['four_of_a_kind']}:1**\n"
+                    f"- **Малый стрит** (последовательность из четырех чисел): **{config.YAHTZEE_PAYOUT_MULTIPLIERS['small_straight']}:1**\n"
+                    f"- **Большой стрит** (последовательность из пяти чисел): **{config.YAHTZEE_PAYOUT_MULTIPLIERS['large_straight']}:1**\n"
+                    f"- **Покер** (все пять костей одинаковы): **{config.YAHTZEE_PAYOUT_MULTIPLIERS['yahtzee']}:1**\n\n"
+                    f"Используй свою интуицию, стратегию и немного удачи, чтобы стать мастером покера на костях! "
+                    f"Готов испытать судьбу? Бросай кости и собирай лучшие комбинации!",
         file_path=config.YAHTZEE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
@@ -405,11 +405,11 @@ def yahtzee_reroll_set(dice_index):
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
-def yahtzee_roll_result_no_winning(player, bet, dice, image_binary_data, is_reroll=False):
+def yahtzee_result_no_winning(player, bet, roll_outcome, image_binary_data, is_reroll=False):
     title = "Нет выигрышных комбинаций"
     description = ("Приглушенный свет ламп в зале скользил по поверхности стола, где ты с напряжением наблюдал "
                    "за результатом броска костей. Увы кубики, словно насмехаясь, остановились на комбинации, "
-                   f"далёкой от победы:\n\n **{'-'.join(map(str, dice))}**\n\n")
+                   f"далёкой от победы:\n\n **{'-'.join(map(str, roll_outcome))}**\n\n")
     if not is_reroll:
         description += ("Однако отчаиваться было еще рано! У тебя еще есть возможность улучшить свой результат. "
                         "Для этого выбери одну или две кости, которые бы ты хотел выбросить повторно. "
@@ -429,17 +429,17 @@ def yahtzee_roll_result_no_winning(player, bet, dice, image_binary_data, is_rero
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def yahtzee_roll_result_winning(player, bet, payout, roll_outcome, image_binary_data):
+def yahtzee_result_winning(player, bet, payout, roll_outcome, image_binary_data):
     winning_type = {
-        'small': ["three-of-a-kind", "four-of-a-kind", "full-house"],
-        'large': ["small-straight", "large-straight", "yahtzee"]
+        'small': ["three_of_a_kind", "four_of_a_kind", "full_house"],
+        'large': ["small_straight", "large_straight", "yahtzee"]
     }
     winning_name = {
-        "three-of-a-kind": "тройка",
-        "four-of-a-kind": "каре",
-        "full-house": "фулл хаус",
-        "small-straight": "малый стрит",
-        "large-straight": "большой стрит",
+        "three_of_a_kind": "тройка",
+        "four_of_a_kind": "каре",
+        "full_house": "фулл хаус",
+        "small_straight": "малый стрит",
+        "large_straight": "большой стрит",
         "yahtzee": "покер"
     }
     income = payout - bet

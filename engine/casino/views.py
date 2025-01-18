@@ -415,10 +415,10 @@ class YahtzeeView(OriginalPlayerBasicView):
         first_roll_outcome_image = self.yahtzee.draw()
         if not first_roll_outcome['winning_combination']:
             await interaction.edit_original_message(
-                **messages.yahtzee_roll_result_no_winning(
+                **messages.yahtzee_result_no_winning(
                     player=self.yahtzee.player,
                     bet=bet,
-                    dice=first_roll_outcome['dice'],
+                    roll_outcome=first_roll_outcome['dice'],
                     image_binary_data=first_roll_outcome_image
                 ),
                 view=YahtzeeRerollView(self.yahtzee))
@@ -428,7 +428,7 @@ class YahtzeeView(OriginalPlayerBasicView):
             logging.info(f"Пользователь {self.yahtzee.player.name} выиграл в покере на костях лягушек "
                          f"в количестве {payout} шт.")
             return await interaction.edit_original_message(
-                **messages.yahtzee_roll_result_winning(
+                **messages.yahtzee_result_winning(
                     player=self.yahtzee.player,
                     bet=bet,
                     payout=payout,
@@ -523,10 +523,10 @@ class YahtzeeRerollView(OriginalPlayerBasicView):
         second_roll_outcome_image = self.yahtzee.draw()
         if not second_roll_outcome['winning_combination']:
             await interaction.edit_original_message(
-                **messages.yahtzee_roll_result_no_winning(
+                **messages.yahtzee_result_no_winning(
                     player=self.yahtzee.player,
                     bet=bet,
-                    dice=second_roll_outcome['dice'],
+                    roll_outcome=second_roll_outcome['dice'],
                     image_binary_data=second_roll_outcome_image,
                     is_reroll=True
                 ),
@@ -537,7 +537,7 @@ class YahtzeeRerollView(OriginalPlayerBasicView):
             logging.info(f"Пользователь {self.yahtzee.player.name} выиграл в покере на костях лягушек "
                          f"в количестве {payout} шт.")
             return await interaction.edit_original_message(
-                **messages.yahtzee_roll_result_winning(
+                **messages.yahtzee_result_winning(
                     player=self.yahtzee.player,
                     bet=bet,
                     payout=payout,
