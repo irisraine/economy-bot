@@ -101,6 +101,7 @@ class SlotMachine:
                     return
             if all(symbol_counts.get(color, 0) == 1 for color in ["frog_green", "frog_orange", "frog_white"]):
                 self.__payout = config.SLOT_MACHINE_PAYOUT_AMOUNTS['frogs_all_colors']
+                return
         for frog_symbol, payouts in config.SLOT_MACHINE_PAYOUT_AMOUNTS['frog_symbols'].items():
             count = symbol_counts.get(frog_symbol, 0)
             if count == 3:
