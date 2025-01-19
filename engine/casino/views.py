@@ -319,6 +319,7 @@ class RouletteBetsConfirmView(OriginalPlayerBasicView):
         player_balance = sql.get_user_balance(self.roulette.player)
         if player_balance - overall_bet < 0:
             return await interaction.edit_original_message(**messages.balance_error(), view=None)
+        sql.set_user_balance(self.player, -overall_bet)
         self.roulette.play()
         logging.info(f"Пользователь {self.roulette.player.name} играет в рулетку "
                      f"с общей ставкой в размере {overall_bet} шт. лягушек")
@@ -326,6 +327,7 @@ class RouletteBetsConfirmView(OriginalPlayerBasicView):
         winnings = self.roulette.winnings
         wheel_with_ball = self.roulette.draw(image_type='wheel')
         if winnings['total_payout'] > 0:
+            sql.set_user_balance(self.player, winnings['total_payout'])
             logging.info(f"Пользователь {self.roulette.player.name} выиграл лягушек "
                          f"в количестве {winnings['total_payout']} шт.")
         await interaction.edit_original_message(
