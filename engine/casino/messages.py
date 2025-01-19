@@ -297,12 +297,12 @@ def roulette_result(player, sector, overall_bet, winnings, image_binary_data):
                    "за окнами. Шарик, прыгавший в хаотичном ритме, наконец нашел свое место. \n\n")
     description += "💠 ***Выпавший сектор***: "
     if sector['color'] == "green":
-        description += "__**0 (зеро)**__ 🟢\n"
+        description += "__**0 (зеро)**__ :green_circle:\n"
     else:
         if sector['color'] == "red":
-            description += f"__**{sector['number']} (красное)**__ 🔴\n"
+            description += f"__**{sector['number']} (красное)**__ :red_circle:\n"
         elif sector['color'] == "black":
-            description += f"__**{sector['number']} (черное)**__ ⚫️\n"
+            description += f"__**{sector['number']} (черное)**__ :black_circle:\n"
     description += "🎯 ***Выигравшие ставки***:\n"
     if not winnings["winning_bets"]:
         description += "- *Ни одна из твоих ставок не выиграла :(*\n\n"
@@ -450,7 +450,7 @@ def yahtzee_result(player, bet, payout, roll_outcome, image_binary_data, is_rero
         title = "Нет выигрышных комбинаций"
         description += (f"Приглушенный свет ламп в зале скользил по поверхности стола, где ты с напряжением наблюдал "
                         f"за результатом броска костей. Увы кубики, словно насмехаясь, остановились на комбинации, "
-                        f"далёкой от победы:\n\n **{'-'.join(map(str, roll_outcome['dice']))}**\n\n")
+                        f"далёкой от победы:\n\n 🎲 **{'-'.join(map(str, roll_outcome['dice']))}**\n\n")
         if not is_reroll:
             description += ("Однако отчаиваться было еще рано! У тебя еще есть возможность улучшить свой результат. "
                             "Для этого выбери одну или две кости, которые бы ты хотел выбросить повторно. "
@@ -464,7 +464,7 @@ def yahtzee_result(player, bet, payout, roll_outcome, image_binary_data, is_rero
         title = "Это победа! Болотные сокровища теперь твои!"
         if roll_outcome['winning_combination'] in winning_type['small']:
             description = (f"Кости с глухим стуком ударились о стол и замерли, показав скромную выигрышную комбинацию:"
-                           f"\n\n **{'-'.join(map(str, sorted(roll_outcome['dice'])))}**\n"
+                           f"\n\n 🎲 **{'-'.join(map(str, sorted(roll_outcome['dice'])))}**\n"
                            f"(*{winning_name[roll_outcome['winning_combination']]}*)\n\n"
                            f"<@{player.id}>, ты выиграл **{payout}** {FROG_EMOJI}.\n"
                            f"💰 **С учетом ставки твоя чистая прибыль составила {income} {FROG_EMOJI}**\n\n"
@@ -475,7 +475,7 @@ def yahtzee_result(player, bet, payout, roll_outcome, image_binary_data, is_rero
         if roll_outcome['winning_combination'] in winning_type['large']:
             description = (f"Кубики прыгали по столу, будто бы решая твою судьбу. Сердце замерло, когда они "
                            f"остановились, и вот — идеальная комбинация:\n\n"
-                           f"**{'-'.join(map(str, sorted(roll_outcome['dice'])))}**\n"
+                           f"🎲 **{'-'.join(map(str, sorted(roll_outcome['dice'])))}**\n"
                            f"(*{winning_name[roll_outcome['winning_combination']]}*)\n\n"
                            f"<@{player.id}>, ты выиграл баснословные **{payout}** {FROG_EMOJI}.\n"
                            f"💰 **С учетом ставки твоя чистая прибыль составила {income} {FROG_EMOJI}**\n\n"
