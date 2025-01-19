@@ -136,11 +136,7 @@ YAHTZEE_DICE = {
     6: "assets/casino/yahtzee_dice_6.png",
 }
 YAHTZEE_DIMENSIONS = {
-    "dice_size": 100,
-    "table_size": {
-        "x": 800,
-        "y": 343
-    }
+    "dice_positions": [(150, 121), (250, 121), (350, 121), (450, 121), (550, 121)]
 }
 YAHTZEE_PAYOUT_MULTIPLIERS = {
     "three_of_a_kind": 1.5,

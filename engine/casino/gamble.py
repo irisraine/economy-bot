@@ -352,14 +352,9 @@ class Yahtzee:
     def draw(self):
         yahtzee_table = Image.open(config.YAHTZEE_TABLE)
         dice_images = [Image.open(config.YAHTZEE_DICE[i]) for i in range(1, 7)]
-        total_dice_width = len(self.__roll_outcome['dice']) * config.YAHTZEE_DIMENSIONS['dice_size']
-        start_x = (config.YAHTZEE_DIMENSIONS['table_size']['x'] - total_dice_width) // 2
-        start_y = (config.YAHTZEE_DIMENSIONS['table_size']['y'] - config.YAHTZEE_DIMENSIONS['dice_size']) // 2
         for i, die in enumerate(self.__roll_outcome['dice']):
-            x_offset = start_x + i * config.YAHTZEE_DIMENSIONS['dice_size']
-            y_offset = start_y
             die_image = dice_images[die - 1]
-            yahtzee_table.paste(die_image, (x_offset, y_offset), die_image)
+            yahtzee_table.paste(die_image, config.YAHTZEE_DIMENSIONS['dice_positions'][i], die_image)
         self.__image = io.BytesIO()
         yahtzee_table.save(self.__image, format='JPEG')
         return self.__image.getvalue()
