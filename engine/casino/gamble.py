@@ -257,11 +257,8 @@ class Roulette:
                 chip_with_bet_amount = chip.copy()
                 draw = ImageDraw.Draw(chip_with_bet_amount)
                 bet_amount = str(amount)
-                bet_amount_width = int(draw.textlength(bet_amount, font))
-                bet_amount_height = font.size
-                bet_amount_x = (chip_with_bet_amount.width - bet_amount_width) // 2
-                bet_amount_y = (chip_with_bet_amount.height - bet_amount_height) // 2 - 1
-                draw.text((bet_amount_x, bet_amount_y), bet_amount, fill="white", font=font)
+                bet_amount_position = config.ROULETTE_DIMENSIONS["bet_amount"][len(bet_amount)]
+                draw.text(bet_amount_position, bet_amount, fill="white", font=font)
                 chip_position = config.ROULETTE_DIMENSIONS['chip'].get(category).get(value)
                 roulette_table.paste(chip_with_bet_amount, chip_position, chip_with_bet_amount)
             self.__images['table'] = io.BytesIO()
