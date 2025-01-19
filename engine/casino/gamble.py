@@ -334,7 +334,7 @@ class Yahtzee:
                 break
         if winning_combination:
             self.__roll_outcome['winning_combination'] = winning_combination
-            self.__payout = int(self.bet * config.YAHTZEE_PAYOUT_MULTIPLIERS[winning_combination])
+            self.__payout = round(self.bet * config.YAHTZEE_PAYOUT_MULTIPLIERS[winning_combination])
 
     def place_bet(self, bet):
         self.__bet = bet
