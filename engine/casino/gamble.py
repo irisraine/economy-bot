@@ -152,10 +152,10 @@ class Roulette:
         2: range(13, 25),
         3: range(25, 37)
     }
-    ROW_MODULO = {
-        1: 1,
-        2: 2,
-        3: 0
+    ROW_RANGES = {
+        1: [i for i in range(1, 37, 3)],
+        2: [i for i in range(2, 37, 3)],
+        3: [i for i in range(3, 37, 3)]
     }
     SIXLINE_RANGES = {
         1: range(1, 7),
@@ -226,7 +226,7 @@ class Roulette:
             "high_low": lambda: (value == "high" and number in self.HIGH_RANGE) or
                                 (value == "low" and number in self.LOW_RANGE),
             "dozen": lambda: number in self.DOZEN_RANGES.get(value),
-            "row": lambda: number % 3 == self.ROW_MODULO.get(value),
+            "row": lambda: number in self.ROW_RANGES.get(value),
             "sixline": lambda: number in self.SIXLINE_RANGES.get(value)
         }
         if conditions[category]():
