@@ -115,36 +115,21 @@ class SlotMachine:
         self.__calculate_payout(self.__reels)
 
     def draw(self):
-        slot_size = config.SLOT_MACHINE_DIMENSIONS["slot_size"]
-        grid_width = config.SLOT_MACHINE_DIMENSIONS["grid_size"]["width"]
-        grid_height = config.SLOT_MACHINE_DIMENSIONS["grid_size"]["height"]
-        horizontal_margin = config.SLOT_MACHINE_DIMENSIONS["margin"]["horizontal"]
-        left_margin = config.SLOT_MACHINE_DIMENSIONS["margin"]["left"]
-        right_margin = config.SLOT_MACHINE_DIMENSIONS["margin"]["right"]
-        crop_top = config.SLOT_MACHINE_DIMENSIONS["crop"]["top"]
-        crop_bottom = config.SLOT_MACHINE_DIMENSIONS["crop"]["bottom"]
-        grid_x_offset = config.SLOT_MACHINE_DIMENSIONS["grid_offset"]["x"]
-        grid_y_offset = config.SLOT_MACHINE_DIMENSIONS["grid_offset"]["y"]
-        payline_x_offset = config.SLOT_MACHINE_DIMENSIONS["payline_offset"]["x"]
-        payline_y_offset = config.SLOT_MACHINE_DIMENSIONS["payline_offset"]["y"]
-
-        slot_machine_bg = Image.open(config.SLOT_MACHINE_REELS_BLANK)
+        slot_machine_frame = Image.open(config.SLOT_MACHINE_FRAME)
         payline = Image.open(config.SLOT_MACHINE_PAYLINE)
         symbols = {
             key: Image.open(config.SLOT_MACHINE_REEL_SYMBOLS[key]["image"])
             for key in config.SLOT_MACHINE_REEL_SYMBOLS
         }
-        grid = Image.new("RGBA", (grid_width, grid_height), (0, 0, 0, 0))
+        grid = Image.new("RGBA", config.SLOT_MACHINE_DIMENSIONS["grid_size"], (0, 0, 0, 0))
         for row in range(3):
             for col in range(3):
-                x_offset = col * slot_size + (left_margin if col == 1 else left_margin + right_margin if col == 2 else 0)
-                y_offset = row * (slot_size + horizontal_margin)
-                grid.paste(symbols[self.__reels[row][col]], (x_offset, y_offset))
-        cropped_grid = grid.crop((0, crop_top, grid_width, grid_height - crop_bottom))
-        slot_machine_bg.paste(cropped_grid, (grid_x_offset, grid_y_offset), cropped_grid)
-        slot_machine_bg.paste(payline, (payline_x_offset, payline_y_offset), payline)
+                symbol_position = config.SLOT_MACHINE_DIMENSIONS["symbol_positions"][row][col]
+                grid.paste(symbols[self.__reels[row][col]], symbol_position)
+        slot_machine_frame.paste(grid, config.SLOT_MACHINE_DIMENSIONS["grid_offset"], grid)
+        slot_machine_frame.paste(payline, config.SLOT_MACHINE_DIMENSIONS["payline_offset"], payline)
         self.__image = io.BytesIO()
-        slot_machine_bg.save(self.__image, format='JPEG')
+        slot_machine_frame.save(self.__image, format='JPEG')
         return self.__image.getvalue()
 
 
@@ -264,7 +249,7 @@ class Roulette:
 
     def draw(self, image_type):
         if image_type == "table":
-            table = Image.open(config.ROULETTE_TABLE)
+            roulette_table = Image.open(config.ROULETTE_TABLE)
             chip = Image.open(config.ROULETTE_CHIP)
             font = ImageFont.truetype("arial.ttf", 20)
             for bet in self.__bets:
@@ -277,19 +262,19 @@ class Roulette:
                 text_x = (chip_with_text.width - text_width) // 2
                 text_y = (chip_with_text.height - text_height) // 2
                 draw.text((text_x - 1, text_y - 1), text, fill="white", font=font)
-                chip_x_position, chip_y_position = config.ROULETTE_CHIP_POSITIONS.get(category).get(value)
-                table.paste(chip_with_text, (chip_x_position, chip_y_position), chip_with_text)
+                chip_x_position, chip_y_position = config.ROULETTE_DIMENSIONS['chip'].get(category).get(value)
+                roulette_table.paste(chip_with_text, (chip_x_position, chip_y_position), chip_with_text)
             self.__images['table'] = io.BytesIO()
-            table.save(self.__images['table'], format='JPEG')
+            roulette_table.save(self.__images['table'], format='JPEG')
             return self.__images['table'].getvalue()
 
         if image_type == "wheel":
-            wheel = Image.open(config.ROULETTE_WHEEL)
+            roulette_wheel = Image.open(config.ROULETTE_WHEEL)
             ball = Image.open(config.ROULETTE_BALL)
-            position = config.ROULETTE_BALL_POSITIONS[self.__sector['number']]
-            wheel.paste(ball, position, ball)
+            position = config.ROULETTE_DIMENSIONS['ball'][self.__sector['number']]
+            roulette_wheel.paste(ball, position, ball)
             self.__images['wheel'] = io.BytesIO()
-            wheel.save(self.__images['wheel'], format='JPEG')
+            roulette_wheel.save(self.__images['wheel'], format='JPEG')
             return self.__images['wheel'].getvalue()
 
 
@@ -365,20 +350,16 @@ class Yahtzee:
         self.__calculate_payout()
 
     def draw(self):
-        dice_size = config.YAHTZEE_DIMENSIONS['dice_size']
-        table_width = config.YAHTZEE_DIMENSIONS['table_width']
-        table_height = config.YAHTZEE_DIMENSIONS['table_height']
-
-        table = Image.open(config.YAHTZEE_TABLE)
+        yahtzee_table = Image.open(config.YAHTZEE_TABLE)
         dice_images = [Image.open(config.YAHTZEE_DICE[i]) for i in range(1, 7)]
-        total_dice_width = len(self.__roll_outcome['dice']) * dice_size
-        start_x = (table_width - total_dice_width) // 2
-        start_y = (table_height - dice_size) // 2
+        total_dice_width = len(self.__roll_outcome['dice']) * config.YAHTZEE_DIMENSIONS['dice_size']
+        start_x = (config.YAHTZEE_DIMENSIONS['table_size']['x'] - total_dice_width) // 2
+        start_y = (config.YAHTZEE_DIMENSIONS['table_size']['y'] - config.YAHTZEE_DIMENSIONS['dice_size']) // 2
         for i, die in enumerate(self.__roll_outcome['dice']):
-            x_offset = start_x + i * dice_size
+            x_offset = start_x + i * config.YAHTZEE_DIMENSIONS['dice_size']
             y_offset = start_y
             die_image = dice_images[die - 1]
-            table.paste(die_image, (x_offset, y_offset), die_image)
+            yahtzee_table.paste(die_image, (x_offset, y_offset), die_image)
         self.__image = io.BytesIO()
-        table.save(self.__image, format='JPEG')
+        yahtzee_table.save(self.__image, format='JPEG')
         return self.__image.getvalue()
