@@ -20,7 +20,7 @@ class SlotMachine:
             ('moonshine', 'moonshine', 'moonshine'): (0.08, 0.15),
             ('gold', 'gold'): (0.15, 0.3),
             ('gold',): (0.3, 1.0)
-            },
+        },
         'near_winning': {
             ('cart', 'cart'): (0, 0.15),
             ('star', 'star'): (0.15, 0.3),
@@ -65,28 +65,28 @@ class SlotMachine:
     def __spin(self):
         central_line = []
         if self.__bet_type == 'high':
+            roll_for_category = random.random()
             predefined_outcome = None
-            roll_for_predefined_outcome_category = random.random()
-            if roll_for_predefined_outcome_category < self.THRESHOLDS_FOR_PREDEFINED_OUTCOMES['winning']:
+            if roll_for_category < self.THRESHOLDS_FOR_PREDEFINED_OUTCOMES['winning']:
                 predefined_outcome = 'winning'
-            elif roll_for_predefined_outcome_category < self.THRESHOLDS_FOR_PREDEFINED_OUTCOMES['near_winning']:
+            elif roll_for_category < self.THRESHOLDS_FOR_PREDEFINED_OUTCOMES['near_winning']:
                 predefined_outcome = 'near_winning'
             if predefined_outcome:
-                roll_for_predefined_outcome_type = random.random()
+                roll_for_type = random.random()
                 for reel, probability_range in self.PREDEFINED_OUTCOMES[predefined_outcome].items():
                     lower_bound, upper_bound = probability_range
-                    if lower_bound <= roll_for_predefined_outcome_type < upper_bound:
+                    if lower_bound <= roll_for_type < upper_bound:
                         central_line.extend(reel)
                         break
         if central_line:
-            if len(central_line) == 2:
+            while len(central_line) < 3:
                 central_line.append(self.__reel())
-            elif len(central_line) == 1:
-                central_line.extend([self.__reel() for _ in range(2)])
             random.shuffle(central_line)
-            self.__reels.append([self.__reel() for _ in range(3)])
-            self.__reels.append(central_line)
-            self.__reels.append([self.__reel() for _ in range(3)])
+            self.__reels = [
+                [self.__reel() for _ in range(3)],
+                central_line,
+                [self.__reel() for _ in range(3)],
+            ]
         else:
             self.__reels = [[self.__reel() for _ in range(3)] for _ in range(3)]
 
@@ -193,7 +193,8 @@ class Roulette:
             'winning_bets': []
         }
         self.__images = {
-            'table': None, 'wheel': None
+            'table': None,
+            'wheel': None
         }
 
     @property
