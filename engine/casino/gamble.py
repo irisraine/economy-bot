@@ -254,16 +254,16 @@ class Roulette:
             font = ImageFont.truetype("arial.ttf", 20)
             for bet in self.__bets:
                 category, value, amount = bet["category"], bet["value"], bet["amount"]
-                chip_with_text = chip.copy()
-                draw = ImageDraw.Draw(chip_with_text)
-                text = str(amount)
-                text_width = int(draw.textlength(text, font))
-                text_height = font.size
-                text_x = (chip_with_text.width - text_width) // 2
-                text_y = (chip_with_text.height - text_height) // 2
-                draw.text((text_x - 1, text_y - 1), text, fill="white", font=font)
-                chip_x_position, chip_y_position = config.ROULETTE_DIMENSIONS['chip'].get(category).get(value)
-                roulette_table.paste(chip_with_text, (chip_x_position, chip_y_position), chip_with_text)
+                chip_with_bet_amount = chip.copy()
+                draw = ImageDraw.Draw(chip_with_bet_amount)
+                bet_amount = str(amount)
+                bet_amount_width = int(draw.textlength(bet_amount, font))
+                bet_amount_height = font.size
+                bet_amount_x = (chip_with_bet_amount.width - bet_amount_width) // 2
+                bet_amount_y = (chip_with_bet_amount.height - bet_amount_height) // 2 - 1
+                draw.text((bet_amount_x, bet_amount_y), bet_amount, fill="white", font=font)
+                chip_position = config.ROULETTE_DIMENSIONS['chip'].get(category).get(value)
+                roulette_table.paste(chip_with_bet_amount, chip_position, chip_with_bet_amount)
             self.__images['table'] = io.BytesIO()
             roulette_table.save(self.__images['table'], format='JPEG')
             return self.__images['table'].getvalue()
@@ -354,7 +354,8 @@ class Yahtzee:
         dice_images = [Image.open(config.YAHTZEE_DICE[i]) for i in range(1, 7)]
         for i, die in enumerate(self.__roll_outcome['dice']):
             die_image = dice_images[die - 1]
-            yahtzee_table.paste(die_image, config.YAHTZEE_DIMENSIONS['dice_positions'][i], die_image)
+            die_position = config.YAHTZEE_DIMENSIONS['dice_positions'][i]
+            yahtzee_table.paste(die_image, die_position, die_image)
         self.__image = io.BytesIO()
         yahtzee_table.save(self.__image, format='JPEG')
         return self.__image.getvalue()
