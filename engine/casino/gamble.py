@@ -99,13 +99,13 @@ class SlotMachine:
                 if count in payouts:
                     self.__payout = payouts[count]
                     return
+            if all(symbol_counts.get(color, 0) == 1 for color in ["frog_green", "frog_orange", "frog_white"]):
+                self.__payout = config.SLOT_MACHINE_PAYOUT_AMOUNTS['frogs_all_colors']
         for frog_symbol, payouts in config.SLOT_MACHINE_PAYOUT_AMOUNTS['frog_symbols'].items():
             count = symbol_counts.get(frog_symbol, 0)
             if count == 3:
                 self.__payout = payouts[self.__bet_type]
                 return
-        if all(symbol_counts.get(color, 0) == 1 for color in ["frog_green", "frog_orange", "frog_white"]):
-            self.__payout = config.SLOT_MACHINE_PAYOUT_AMOUNTS['frogs_all_colors'][self.__bet_type]
 
     def place_bet(self, bet_type):
         self.__bet_type = bet_type
@@ -322,7 +322,6 @@ class Yahtzee:
             "yahtzee": lambda: 5 in counts_values,
             "four_of_a_kind": lambda: 4 in counts_values,
             "full_house": lambda: sorted(counts_values) == [2, 3],
-            "three_of_a_kind": lambda: 3 in counts_values,
             "large_straight": lambda: unique_values == [1, 2, 3, 4, 5] or unique_values == [2, 3, 4, 5, 6],
             "small_straight": lambda: any(all(x in unique_values for x in straight)
                                           for straight in [[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]])
