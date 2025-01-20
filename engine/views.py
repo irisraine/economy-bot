@@ -193,6 +193,11 @@ class AdminMenuView(nextcord.ui.View):
                 description="Посмотреть, сколько лягушек потратили участники",
                 emoji="🪙"),
             nextcord.SelectOption(
+                label="Посмотреть счёт казино",
+                value="casino_balance",
+                description="Посмотреть, сколько выиграли и проиграли участники",
+                emoji="🎰"),
+            nextcord.SelectOption(
                 label="Посмотреть счёта всех участников",
                 value="all_users_balance",
                 description="Изучить содержимое прудов всех участников",
@@ -237,6 +242,7 @@ class AdminMenuView(nextcord.ui.View):
     async def select_admin_menu_callback(self, select, interaction: nextcord.Interaction):
         admin_actions = {
             "bank_balance": {"message": messages.bank_balance(), "view": None},
+            "casino_balance": {"message": messages.casino_balance(), "view": None},
             "all_users_balance": {"message": messages.all_users_balances(), "view": None},
             "gift": {"message": messages.gift(), "view": GiftView()},
             "prices": {"message": messages.set_price(), "view": SetPriceView()},

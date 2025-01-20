@@ -26,6 +26,18 @@ def create_tables():
         cursor.execute("""CREATE TABLE IF NOT EXISTS bank_balance (
             balance INTEGER NOT NULL DEFAULT 0
             )""")
+        cursor.execute("""INSERT INTO bank_balance (balance)
+            SELECT 0
+            WHERE NOT EXISTS (SELECT 1 FROM bank_balance
+            )""")
+        cursor.execute("""CREATE TABLE IF NOT EXISTS casino_balance (
+            overall_bets INTEGER NOT NULL DEFAULT 0,
+            payouts INTEGER NOT NULL DEFAULT 0
+            )""")
+        cursor.execute("""INSERT INTO casino_balance (overall_bets, payouts)
+            SELECT 0, 0
+            WHERE NOT EXISTS (SELECT 1 FROM casino_balance
+            )""")
         cursor.execute("""CREATE TABLE IF NOT EXISTS premium_role_owners (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_discord_id INTEGER NOT NULL,
@@ -37,10 +49,6 @@ def create_tables():
             user_discord_id INTEGER NOT NULL,
             user_discord_name TEXT NOT NULL,
             expiration_time INTEGER NOT NULL
-            )""")
-        cursor.execute("""INSERT INTO bank_balance (balance)
-            SELECT 0
-            WHERE NOT EXISTS (SELECT 1 FROM bank_balance
             )""")
 
 
@@ -109,6 +117,27 @@ def set_bank_balance(amount):
         cursor = db_connect.cursor()
         cursor.execute("UPDATE bank_balance SET balance = balance + ?",
                        (amount,))
+
+
+@catch_sql_exceptions
+def get_casino_balance():
+    with sqlite3.connect(config.DATABASE_PATH) as db_connect:
+        cursor = db_connect.cursor()
+        cursor.execute("SELECT overall_bets, payouts FROM casino_balance")
+        current_casino_balance = cursor.fetchone()
+        return {"overall_bets": current_casino_balance[0], "payouts": current_casino_balance[1]}
+
+
+@catch_sql_exceptions
+def set_casino_balance(bet=0, payout=0):
+    with sqlite3.connect(config.DATABASE_PATH) as db_connect:
+        cursor = db_connect.cursor()
+        if bet:
+            cursor.execute("UPDATE casino_balance SET overall_bets = overall_bets + ?",
+                           (bet,))
+        if payout:
+            cursor.execute("UPDATE casino_balance SET payouts = payouts + ?",
+                           (payout,))
 
 
 @catch_sql_exceptions

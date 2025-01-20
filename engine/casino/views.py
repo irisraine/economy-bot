@@ -330,6 +330,7 @@ class RouletteBetsConfirmView(OriginalPlayerBasicView):
             sql.set_user_balance(self.player, winnings['total_payout'])
             logging.info(f"Пользователь {self.roulette.player.name} выиграл лягушек "
                          f"в количестве {winnings['total_payout']} шт.")
+        sql.set_casino_balance(bet=overall_bet, payout=winnings['total_payout'])
         await interaction.edit_original_message(
             **messages.roulette_result(
                 player=self.roulette.player,
@@ -366,6 +367,7 @@ class SlotMachineView(OriginalPlayerBasicView):
             sql.set_user_balance(self.player, payout)
             logging.info(f"Пользователь {self.slot_machine.player.name} выиграл в одноруком бандите лягушек "
                          f"в количестве {payout} шт.")
+        sql.set_casino_balance(bet=bet, payout=payout)
         await interaction.edit_original_message(
             **messages.slot_machine_result(
                 player=self.slot_machine.player,
@@ -423,6 +425,7 @@ class YahtzeeView(OriginalPlayerBasicView):
                          f"в количестве {payout} шт.")
         else:
             view = YahtzeeRerollView(self.yahtzee)
+        sql.set_casino_balance(bet=bet, payout=payout)
         await interaction.edit_original_message(
             **messages.yahtzee_result(
                 player=self.yahtzee.player,
@@ -521,6 +524,7 @@ class YahtzeeRerollView(OriginalPlayerBasicView):
         payout = self.yahtzee.payout
         if second_roll_outcome['winning_combination']:
             sql.set_user_balance(self.yahtzee.player, payout)
+            sql.set_casino_balance(payout=payout)
             logging.info(f"Пользователь {self.yahtzee.player.name} выиграл в покере на костях лягушек "
                          f"в количестве {payout} шт.")
         await interaction.edit_original_message(

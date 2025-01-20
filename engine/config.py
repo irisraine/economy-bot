@@ -120,6 +120,7 @@ CATCH_COMMON_IMAGE = "assets/catch_common.jpg"
 CATCH_UNCOMMON_IMAGE = "assets/catch_uncommon.jpg"
 CATCH_EPIC_IMAGE = "assets/catch_epic.jpg"
 CATCH_LEGENDARY_IMAGE = "assets/catch_legendary.jpg"
+CATCH_LEGENDARY_MAX_IMAGE = "assets/catch_legendary_max.jpg"
 
 COOLDOWN_IMAGE = "assets/cooldown.jpg"
 
@@ -137,6 +138,7 @@ SET_PRICE_IMAGE = "assets/set_price.jpg"
 SET_PROBABILITIES_IMAGE = "assets/set_probabilities.jpg"
 
 BANK_BALANCE_IMAGE = "assets/bank_balance.jpg"
+CASINO_BALANCE_IMAGE = "assets/casino_balance.jpg"
 ALL_USERS_BALANCES_IMAGE = "assets/all_users_balances.jpg"
 
 GIFT_IMAGE = "assets/gift.jpg"

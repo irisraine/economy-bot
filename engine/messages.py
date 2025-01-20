@@ -150,7 +150,7 @@ def catch(user, amount):
             "description": f"{user}, сегодня тебе невероятно повезло! Ты поймал "
                            f"целых **{amount}** {utils.numeral(amount)} за один раз. "
                            f"О таком грандиозном улове сложат легенды все жители ближайших лаграсских деревень.",
-            "file_path": config.CATCH_LEGENDARY_IMAGE
+            "file_path": config.CATCH_LEGENDARY_IMAGE if amount < 20 else config.CATCH_LEGENDARY_MAX_IMAGE
         }
     }
     embed_message = MessageContainer(
@@ -500,10 +500,24 @@ def news_channel_message(title, description, image_binary_data=None, image_filen
 def bank_balance():
     embed_message = MessageContainer(
         title="Баланс болотного банка",
-        description="Общий объем лягушек в банковском болоте "
+        description="Общий объем лягушек в банковском болоте"
                     f"составляет **{sql.get_bank_balance()}** {config.FROG_EMOJI}. "
                     "Именно столько в сумме потратили участники нашего сервера на покупки в магазине!",
         file_path=config.BANK_BALANCE_IMAGE
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
+def casino_balance():
+    overall_bets, payouts = sql.get_casino_balance()['overall_bets'], sql.get_casino_balance()['payouts']
+    embed_message = MessageContainer(
+        title="Баланс казино",
+        description=f"Общий объем ставок, сделанных игроками в казино: **{overall_bets}** {config.FROG_EMOJI}.\n"
+                    f"Все выплаты казино игрокам составляют: **{payouts}** {config.FROG_EMOJI}.\n\n"
+                    f"Исходя из соотношения ставок и выплат, текущая доходность казино составляет: "
+                    f"**{overall_bets - payouts}** {config.FROG_EMOJI}.\n"
+                    f"Показатель RTP (возврат средств игрокам) равен **{round(payouts / overall_bets, 4) * 100} %**.",
+        file_path=config.CASINO_BALANCE_IMAGE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
