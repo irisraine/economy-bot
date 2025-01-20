@@ -114,19 +114,14 @@ SLOT_MACHINE_BET_AMOUNTS = {
     "high": 8
 }
 SLOT_MACHINE_PAYOUT_AMOUNTS = {
-    "rare_symbols": {
-        "gold": {3: 500, 2: 25, 1: 10},
-        "cart": {3: 100},
-        "star": {3: 75},
-        "horseshoe": {3: 50},
-        "moonshine": {3: 40},
-    },
-    "frog_symbols": {
-        "frog_green": {"low": 5, "high": 12},
-        "frog_orange": {"low": 10, "high": 20},
-        "frog_white": {"low": 15, "high": 30},
-    },
-    "frogs_all_colors": 15,
+    "gold": {3: 300, 2: 20, 1: 8},
+    "cart": {3: 200},
+    "star": {3: 100},
+    "horseshoe": {3: 50},
+    "moonshine": {3: 25},
+    "frog_white": {3: 18},
+    "frog_orange": {3: 12},
+    "frog_green": {3: 10},
 }
 
 YAHTZEE = "assets/casino/yahtzee.jpg"
@@ -143,9 +138,9 @@ YAHTZEE_DIMENSIONS = {
     "dice_positions": [(150, 121), (250, 121), (350, 121), (450, 121), (550, 121)]
 }
 YAHTZEE_PAYOUT_MULTIPLIERS = {
-    "full_house": 1.5,
-    "four_of_a_kind": 2,
-    "small_straight": 4,
-    "large_straight": 7,
-    "yahtzee": 25
+    "small_straight": 1.5,
+    "full_house": 2,
+    "four_of_a_kind": 3,
+    "large_straight": 5,
+    "yahtzee": 15
 }

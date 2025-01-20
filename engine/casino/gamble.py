@@ -7,19 +7,21 @@ import engine.casino.config as config
 
 class SlotMachine:
     REEL = {
-        'low': (['frog_green'] * 3 + ['frog_orange'] * 2 + ['frog_white']),
-        'high': (['gold'] * 1 + ['cart'] * 2 + ['star'] * 3 + ['horseshoe'] * 4 + ['moonshine'] * 5 +
-                 ['frog_green'] * 16 + ['frog_orange'] * 10 + ['frog_white'] * 6)
+        'low': (['frog_green'] * 5 + ['frog_orange'] * 4 + ['frog_white'] * 3),
+        'high': (['gold'] * 1 + ['cart'] * 4 + ['star'] * 6 + ['horseshoe'] * 8 + ['moonshine'] * 10 +
+                 ['frog_green'] * 20 + ['frog_orange'] * 16 + ['frog_white'] * 2)
     }
     PREDEFINED_OUTCOMES = {
         'winning': {
-            ('gold', 'gold', 'gold'): (0, 0.005),
-            ('cart', 'cart', 'cart'): (0.005, 0.03),
-            ('star', 'star', 'star'): (0.03, 0.055),
-            ('horseshoe', 'horseshoe', 'horseshoe'): (0.055, 0.08),
-            ('moonshine', 'moonshine', 'moonshine'): (0.08, 0.15),
-            ('gold', 'gold'): (0.15, 0.3),
-            ('gold',): (0.3, 1.0)
+            ('cart', 'cart', 'cart'): (0, 0.015),
+            ('star', 'star', 'star'): (0.015, 0.045),
+            ('horseshoe', 'horseshoe', 'horseshoe'): (0.045, 0.105),
+            ('moonshine', 'moonshine', 'moonshine'): (0.105, 0.2),
+            ('frog_white', 'frog_white', 'frog_white'): (0.2, 0.25),
+            ('frog_orange', 'frog_orange', 'frog_orange'): (0.25, 0.35),
+            ('gold', 'gold'): (0.35, 0.5),
+            ('frog_green', 'frog_green', 'frog_green'): (0.5, 0.7),
+            ('gold',): (0.7, 1.0)
         },
         'near_winning': {
             ('cart', 'cart'): (0, 0.15),
@@ -32,8 +34,8 @@ class SlotMachine:
         }
     }
     THRESHOLDS_FOR_PREDEFINED_OUTCOMES = {
-        'winning': 0.2,
-        'near_winning': 0.4,
+        'winning': 0.3,
+        'near_winning': 0.5,
     }
 
     def __init__(self, player):
@@ -93,19 +95,10 @@ class SlotMachine:
     def __calculate_payout(self, reels):
         central_line = reels[1]
         symbol_counts = {symbol: central_line.count(symbol) for symbol in set(central_line)}
-        if self.__bet_type == "high":
-            for rare_symbol, payouts in config.SLOT_MACHINE_PAYOUT_AMOUNTS['rare_symbols'].items():
-                count = symbol_counts.get(rare_symbol, 0)
-                if count in payouts:
-                    self.__payout = payouts[count]
-                    return
-            if all(symbol_counts.get(color, 0) == 1 for color in ["frog_green", "frog_orange", "frog_white"]):
-                self.__payout = config.SLOT_MACHINE_PAYOUT_AMOUNTS['frogs_all_colors']
-                return
-        for frog_symbol, payouts in config.SLOT_MACHINE_PAYOUT_AMOUNTS['frog_symbols'].items():
-            count = symbol_counts.get(frog_symbol, 0)
-            if count == 3:
-                self.__payout = payouts[self.__bet_type]
+        for symbol, payouts in config.SLOT_MACHINE_PAYOUT_AMOUNTS.items():
+            count = symbol_counts.get(symbol, 0)
+            if count in payouts:
+                self.__payout = payouts[count]
                 return
 
     def place_bet(self, bet_type):
