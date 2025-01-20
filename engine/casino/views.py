@@ -418,7 +418,7 @@ class YahtzeeView(OriginalPlayerBasicView):
         first_roll_outcome = self.yahtzee.roll_outcome
         first_roll_outcome_image = self.yahtzee.draw()
         payout = self.yahtzee.payout
-        if first_roll_outcome['winning_combination']:
+        if payout:
             sql.set_user_balance(self.yahtzee.player, payout)
             view = None
             logging.info(f"Пользователь {self.yahtzee.player.name} выиграл в покере на костях лягушек "
@@ -522,7 +522,7 @@ class YahtzeeRerollView(OriginalPlayerBasicView):
         second_roll_outcome = self.yahtzee.roll_outcome
         second_roll_outcome_image = self.yahtzee.draw()
         payout = self.yahtzee.payout
-        if second_roll_outcome['winning_combination']:
+        if payout:
             sql.set_user_balance(self.yahtzee.player, payout)
             sql.set_casino_balance(payout=payout)
             logging.info(f"Пользователь {self.yahtzee.player.name} выиграл в покере на костях лягушек "
