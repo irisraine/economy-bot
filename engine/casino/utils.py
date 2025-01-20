@@ -12,21 +12,18 @@ def load_casino_cog(client):
         logging.error(f"Ошибка при попытке загрузки модуля казино. Дополнительная информация: {error}")
 
 
-def set_game(player, game, reset=True):
+def set_game(player, game, reset=False):
     gamble_cog = bot.client.get_cog('Casino')
+    if reset:
+        gamble_cog.gambling_pool[player][game] = None
+        return
     game_instance = None
     if game == "slot_machine":
-        if reset:
-            gamble_cog.gambling_pool[player]['slot_machine'] = None
-        game_instance = gamble_cog.gambling_pool[player]['slot_machine'] = gamble.SlotMachine(player)
+        game_instance = gamble_cog.gambling_pool[player][game] = gamble.SlotMachine(player)
     elif game == "roulette":
-        if reset:
-            gamble_cog.gambling_pool[player]['roulette'] = None
-        game_instance = gamble_cog.gambling_pool[player]['roulette'] = gamble.Roulette(player)
+        game_instance = gamble_cog.gambling_pool[player][game] = gamble.Roulette(player)
     elif game == "yahtzee":
-        if reset:
-            gamble_cog.gambling_pool[player]['yahtzee'] = None
-        game_instance = gamble_cog.gambling_pool[player]['yahtzee'] = gamble.Yahtzee(player)
+        game_instance = gamble_cog.gambling_pool[player][game] = gamble.Yahtzee(player)
     return game_instance
 
 
