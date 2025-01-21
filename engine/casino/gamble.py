@@ -34,7 +34,7 @@ class SlotMachine:
         }
     }
     THRESHOLDS_FOR_PREDEFINED_OUTCOMES = {
-        'winning': 0.3,
+        'winning': 0.2,
         'near_winning': 0.5,
     }
 
@@ -320,14 +320,11 @@ class Yahtzee:
             "small_straight": lambda: any(all(x in unique_values for x in straight)
                                           for straight in [[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]])
         }
-        winning_combination = None
         for combination, condition in conditions.items():
             if condition():
-                winning_combination = combination
+                self.__roll_outcome['winning_combination'] = combination
+                self.__payout = round(self.bet * config.YAHTZEE_PAYOUT_MULTIPLIERS[combination])
                 break
-        if winning_combination:
-            self.__roll_outcome['winning_combination'] = winning_combination
-            self.__payout = round(self.bet * config.YAHTZEE_PAYOUT_MULTIPLIERS[winning_combination])
 
     def place_bet(self, bet):
         self.__bet = bet
