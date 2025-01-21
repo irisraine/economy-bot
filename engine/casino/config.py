@@ -89,10 +89,12 @@ SLOT_MACHINE_REEL_SYMBOLS = {
     },
     "frog_green": {
         "image": "assets/casino/slot_machine_reel_frog_green.png",
-        "emoji": "<:1frg:1286272480083836970>"},
+        "emoji": "<:1frg:1286272480083836970>"
+    },
     "frog_orange": {
         "image": "assets/casino/slot_machine_reel_frog_orange.png",
-        "emoji": "<:2frg:1327365446361415791>"},
+        "emoji": "<:2frg:1327365446361415791>"
+    },
     "frog_white": {
         "image": "assets/casino/slot_machine_reel_frog_white.png",
         "emoji": "<:3frg:1327365491781799978>"
