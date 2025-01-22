@@ -514,9 +514,8 @@ def casino_balance():
         title="Баланс казино",
         description=f"Общий объем ставок, сделанных игроками в казино: **{overall_bets}** {config.FROG_EMOJI}.\n"
                     f"Все выплаты казино игрокам составляют: **{payouts}** {config.FROG_EMOJI}.\n\n"
-                    f"Исходя из соотношения ставок и выплат, текущая доходность казино составляет: "
-                    f"**{overall_bets - payouts}** {config.FROG_EMOJI}.\n"
-                    f"Показатель RTP (возврат средств игрокам) равен **{round(payouts / overall_bets, 4) * 100} %**.",
+                    f"Исходя из соотношения ставок и выплат, текущий показатель RTP (возврат средств игрокам) "
+                    f"равен **{round(payouts / overall_bets, 4) * 100} %**.",
         file_path=config.CASINO_BALANCE_IMAGE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
