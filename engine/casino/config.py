@@ -143,6 +143,6 @@ YAHTZEE_PAYOUT_MULTIPLIERS = {
     "small_straight": 1.5,
     "full_house": 2,
     "four_of_a_kind": 3,
-    "large_straight": 5,
-    "yahtzee": 10
+    "large_straight": 6,
+    "yahtzee": 11
 }
