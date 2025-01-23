@@ -38,6 +38,13 @@ def create_tables():
             SELECT 0, 0
             WHERE NOT EXISTS (SELECT 1 FROM casino_balance
             )""")
+        cursor.execute("""CREATE TABLE IF NOT EXISTS encashment_amount (
+            amount_to_withdrawal INTEGER NOT NULL DEFAULT 0
+            )""")
+        cursor.execute("""INSERT INTO encashment_amount (amount_to_withdrawal)
+            SELECT 0
+            WHERE NOT EXISTS (SELECT 1 FROM encashment_amount
+            )""")
         cursor.execute("""CREATE TABLE IF NOT EXISTS premium_role_owners (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_discord_id INTEGER NOT NULL,
@@ -70,7 +77,8 @@ def get_user_balance(user):
 def get_all_users_balances():
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute("SELECT user_discord_name, balance FROM user_balances WHERE balance > 0 ORDER BY balance DESC")
+        cursor.execute("SELECT user_discord_id, user_discord_name, balance FROM user_balances "
+                       "WHERE balance > 0 ORDER BY balance DESC")
         return cursor.fetchall()
 
 
@@ -117,6 +125,7 @@ def set_bank_balance(amount):
         cursor = db_connect.cursor()
         cursor.execute("UPDATE bank_balance SET balance = balance + ?",
                        (amount,))
+    add_to_encashment_amount(amount=amount)
 
 
 @catch_sql_exceptions
@@ -138,6 +147,30 @@ def set_casino_balance(bet=0, payout=0):
         if payout:
             cursor.execute("UPDATE casino_balance SET payouts = payouts + ?",
                            (payout,))
+    add_to_encashment_amount(amount=max(bet - payout, 0))
+
+
+@catch_sql_exceptions
+def get_encashment_amount():
+    with sqlite3.connect(config.DATABASE_PATH) as db_connect:
+        cursor = db_connect.cursor()
+        cursor.execute("SELECT amount_to_withdrawal FROM encashment_amount")
+        return cursor.fetchone()[0]
+
+
+@catch_sql_exceptions
+def add_to_encashment_amount(amount):
+    with sqlite3.connect(config.DATABASE_PATH) as db_connect:
+        cursor = db_connect.cursor()
+        cursor.execute("UPDATE encashment_amount SET amount_to_withdrawal = amount_to_withdrawal + ?",
+                       (amount,))
+
+
+@catch_sql_exceptions
+def reset_encashment_amount():
+    with sqlite3.connect(config.DATABASE_PATH) as db_connect:
+        cursor = db_connect.cursor()
+        cursor.execute("UPDATE encashment_amount SET amount_to_withdrawal = 0")
 
 
 @catch_sql_exceptions

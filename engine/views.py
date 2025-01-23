@@ -203,6 +203,11 @@ class AdminMenuView(nextcord.ui.View):
                 description="Изучить содержимое прудов всех участников",
                 emoji="📈"),
             nextcord.SelectOption(
+                label="Установить налог",
+                value="taxes_setup",
+                description="Активировать сбор налога и задать его размер",
+                emoji="💸"),
+            nextcord.SelectOption(
                 label="Перевести сколько угодно лягушек участнику",
                 value="gift",
                 description="Одарить участника болотным сокровищем",
@@ -244,6 +249,7 @@ class AdminMenuView(nextcord.ui.View):
             "bank_balance": {"message": messages.bank_balance(), "view": None},
             "casino_balance": {"message": messages.casino_balance(), "view": None},
             "all_users_balance": {"message": messages.all_users_balances(), "view": None},
+            "taxes_setup": {"message": messages.taxes_setup(), "view": TaxesSetupView()},
             "gift": {"message": messages.gift(), "view": GiftView()},
             "prices": {"message": messages.set_price(), "view": SetPriceView()},
             "probabilities": {"message": messages.set_probabilities(), "view": SetProbabilitiesView()},
@@ -490,6 +496,66 @@ class GiftView(AdminActionBasicView):
     @nextcord.ui.button(label="Сделать подарок с барского плеча", style=nextcord.ButtonStyle.green, emoji="💰")
     async def gift_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.send_modal(GiftModal())
+
+
+class TaxesSetupModal(nextcord.ui.Modal):
+    def __init__(self):
+        super().__init__("Установить размер налога")
+
+        self.tax = nextcord.ui.TextInput(
+            label="Размер налога",
+            max_length=1,
+            required=True,
+            style=nextcord.TextInputStyle.short
+        )
+        self.add_item(self.tax)
+
+    async def callback(self, interaction: nextcord.Interaction) -> None:
+        await interaction.response.defer()
+        is_valid = utils.validate(self.tax.value, check_type='tax')
+        if not is_valid:
+            return await interaction.followup.send(
+                **messages.taxes_setup_error(),
+                ephemeral=True
+            )
+        taxes_and_encashment = config.TAXES_AND_ENCASHMENT
+        taxes_and_encashment["tax_value"] = int(self.tax.value)
+        utils.json_safewrite(config.TAXES_AND_ENCASHMENT_JSON, taxes_and_encashment)
+        config.TAXES_AND_ENCASHMENT = utils.json_safeload(config.TAXES_AND_ENCASHMENT_JSON)
+        logging.info(f"Администратор устанавливает размер налога, равный {self.tax.value} лягушек.")
+        await interaction.followup.send(
+            **messages.taxes_setup_confirmation_message(value=int(self.tax.value)), ephemeral=True
+        )
+
+
+class TaxesSetupView(AdminActionBasicView):
+    def __init__(self):
+        super().__init__()
+
+    @nextcord.ui.button(label="Изменить статус налогообложения", style=nextcord.ButtonStyle.green, emoji="💵")
+    async def tax_status_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        await interaction.response.defer()
+        taxes_and_encashment = config.TAXES_AND_ENCASHMENT
+        is_taxes_active = taxes_and_encashment["is_taxes_active"]
+        if is_taxes_active:
+            taxes_and_encashment["is_taxes_active"] = False
+            taxes_and_encashment["tax_collection_date"] = ""
+            logging.info("Сбор налогов отключен.")
+        else:
+            taxes_and_encashment["is_taxes_active"] = True
+            current_date = utils.from_timestamp(utils.get_timestamp(), mode="date")
+            current_month = utils.get_short_date(current_date)
+            taxes_and_encashment["tax_collection_date"] = current_month
+            logging.info("Сбор налогов включен.")
+        utils.json_safewrite(config.TAXES_AND_ENCASHMENT_JSON, taxes_and_encashment)
+        config.TAXES_AND_ENCASHMENT = utils.json_safeload(config.TAXES_AND_ENCASHMENT_JSON)
+        await interaction.followup.send(
+            **messages.taxes_setup_confirmation_message(is_taxes_set_active=not is_taxes_active), ephemeral=True
+        )
+
+    @nextcord.ui.button(label="Величина налога", style=nextcord.ButtonStyle.green, emoji="🧮")
+    async def tax_value_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        await interaction.response.send_modal(TaxesSetupModal())
 
 
 class PostNewsWindow(nextcord.ui.Modal):

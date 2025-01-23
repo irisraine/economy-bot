@@ -1,5 +1,5 @@
 import nextcord
-from nextcord.ext import commands, application_checks
+from nextcord.ext import commands, application_checks, tasks
 import logging
 import engine.config as config
 import engine.sql as sql
@@ -103,6 +103,43 @@ async def admin(interaction: nextcord.Interaction):
     )
 
 
+@tasks.loop(time=utils.get_taxes_and_encashment_collection_time())
+async def scheduled_collection():
+    channel = client.get_channel(config.ECONOMY_BOT_MAIN_CHANNEL)
+    administrator = await client.fetch_user(config.ADMIN_ID)
+    taxes_and_encashment = config.TAXES_AND_ENCASHMENT
+    current_date = utils.from_timestamp(utils.get_timestamp(), mode="date")
+    previous_month = utils.get_short_date(current_date, previous=True)
+    if config.TAXES_AND_ENCASHMENT["is_taxes_active"] and taxes_and_encashment["tax_collection_date"] == previous_month:
+        taxes = 0
+        single_tax = taxes_and_encashment['tax_value']
+        all_users_balances = sql.get_all_users_balances()
+        for user_id, _, user_balance in all_users_balances:
+            if user_id == config.ADMIN_ID or user_balance < single_tax:
+                continue
+            user = await client.fetch_user(user_id)
+            sql.set_user_balance(user, -single_tax)
+            taxes += single_tax
+        current_month = utils.get_short_date(current_date)
+        taxes_and_encashment["tax_collection_date"] = current_month
+        utils.json_safewrite(config.TAXES_AND_ENCASHMENT_JSON, taxes_and_encashment)
+        config.TAXES_AND_ENCASHMENT_JSON = utils.json_safeload(config.TAXES_AND_ENCASHMENT_JSON)
+        if taxes:
+            sql.set_user_balance(administrator, taxes)
+            await channel.send(
+                **messages.taxes_collection(amount=taxes, tax_period=previous_month)
+            )
+            logging.info(f"Произведен сбор налогов в размере {taxes} шт. лягушек.")
+    encashment_amount = sql.get_encashment_amount()
+    if encashment_amount:
+        sql.set_user_balance(administrator, encashment_amount)
+        await channel.send(
+            **messages.encashment(amount=encashment_amount, encashment_day=utils.get_previous_day(current_date))
+        )
+        logging.info(f"Произведена инкассация, на счет администратора переведено {encashment_amount} шт. лягушек.")
+        sql.reset_encashment_amount()
+
+
 @client.event
 async def on_application_command_error(interaction: nextcord.Interaction, error):
     if isinstance(error, application_checks.ApplicationMissingPermissions):
@@ -115,3 +152,5 @@ async def on_application_command_error(interaction: nextcord.Interaction, error)
 async def on_ready():
     logging.info(f'Бот залогинен под именем: {client.user.name}')
     sql.create_tables()
+    if not scheduled_collection.is_running():
+        scheduled_collection.start()

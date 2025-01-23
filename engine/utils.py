@@ -4,7 +4,7 @@ import json
 import random
 import logging
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, time, timedelta, timezone
 import engine.config as config
 import engine.sql as sql
 
@@ -58,6 +58,46 @@ def from_timestamp(timestamp, mode="time"):
     return datetime.utcfromtimestamp(timestamp).strftime(pattern)
 
 
+def get_taxes_and_encashment_collection_time():
+    launch_time = time(
+        hour=config.TIME_AND_ENCASHMENT_COLLECTION_TIME['hour'],
+        minute=config.TIME_AND_ENCASHMENT_COLLECTION_TIME['minute']
+    )
+    return launch_time
+
+
+def get_short_date(date, previous=False):
+    date = datetime.strptime(date, "%d/%m/%Y")
+    if previous:
+        first_day_of_current_month = date.replace(day=1)
+        date = first_day_of_current_month - timedelta(days=1)
+    return date.strftime("%Y-%m")
+
+
+def get_previous_day(date):
+    date = datetime.strptime(date, "%d/%m/%Y")
+    date -= timedelta(days=1)
+    return date.strftime("%d/%m/%Y")
+
+
+def get_month_name(month, case="nominative"):
+    months = {
+        "01": {"nominative": "январь", "accusative": "января"},
+        "02": {"nominative": "февраль", "accusative": "февраля"},
+        "03": {"nominative": "март", "accusative": "марта"},
+        "04": {"nominative": "апрель", "accusative": "апреля"},
+        "05": {"nominative": "май", "accusative": "мая"},
+        "06": {"nominative": "июнь", "accusative": "июня"},
+        "07": {"nominative": "июль", "accusative": "июля"},
+        "08": {"nominative": "август", "accusative": "августа"},
+        "09": {"nominative": "сентябрь", "accusative": "сентября"},
+        "10": {"nominative": "октябрь", "accusative": "октября"},
+        "11": {"nominative": "ноябрь", "accusative": "ноября"},
+        "12": {"nominative": "декабрь", "accusative": "декабря"},
+    }
+    return months[month][case]
+
+
 def numeral(value, value_type="frogs"):
     def get_numeral(value, singular, few, many):
         if 11 <= value % 100 <= 14:
@@ -82,7 +122,7 @@ def validate(value, check_type):
             return 0 < int(value) <= 24
         return False
 
-    elif check_type in ['price', 'gift', 'quiz']:
+    elif check_type in ['price', 'gift', 'quiz', 'tax']:
         if value.isdigit():
             return int(value) > 0
         return False

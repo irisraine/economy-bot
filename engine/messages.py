@@ -500,9 +500,9 @@ def news_channel_message(title, description, image_binary_data=None, image_filen
 def bank_balance():
     embed_message = MessageContainer(
         title="Баланс болотного банка",
-        description="Общий объем лягушек в банковском болоте"
+        description=f"Общий объем лягушек в банковском болоте "
                     f"составляет **{sql.get_bank_balance()}** {config.FROG_EMOJI}. "
-                    "Именно столько в сумме потратили участники нашего сервера на покупки в магазине!",
+                    f"Именно столько в сумме потратили участники нашего сервера на покупки в магазине!",
         file_path=config.BANK_BALANCE_IMAGE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
@@ -510,12 +510,13 @@ def bank_balance():
 
 def casino_balance():
     overall_bets, payouts = sql.get_casino_balance()['overall_bets'], sql.get_casino_balance()['payouts']
+    rtp = round(payouts / overall_bets, 4) * 100 if overall_bets else 0
     embed_message = MessageContainer(
         title="Баланс казино",
         description=f"Общий объем ставок, сделанных игроками в казино: **{overall_bets}** {config.FROG_EMOJI}.\n"
                     f"Все выплаты казино игрокам составляют: **{payouts}** {config.FROG_EMOJI}.\n\n"
                     f"Исходя из соотношения ставок и выплат, текущий показатель RTP (возврат средств игрокам) "
-                    f"равен **{round(payouts / overall_bets, 4) * 100} %**.",
+                    f"равен **{rtp} %**.",
         file_path=config.CASINO_BALANCE_IMAGE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
@@ -540,7 +541,7 @@ def all_users_balances():
         end = start + max_users
         users_slice = all_users_balances_list[start:end]
         description = "\n".join([
-            f"{index + 1}. {user_balance[0]} — **{user_balance[1]}**"
+            f"{index + 1}. {user_balance[1]} — **{user_balance[2]}**"
             for index, user_balance in enumerate(users_slice, start=start)
         ])
         title = "Земноводные балансы всех пользователей" if i == 0 else None
@@ -588,6 +589,82 @@ def gift_confirmation(other_user, amount, is_valid=True):
         title=title,
         description=description,
         file_path=file_path
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
+def taxes_setup():
+    tax_status = "сбор активен" if config.TAXES_AND_ENCASHMENT["is_taxes_active"] else "не собирается"
+    embed_message = MessageContainer(
+        title="Налог",
+        description=f"С помощью этой опции можно включить или отключить сбор налогов, а также задать размер "
+                    f"собираемого с участников налога. \n\n"
+                    f"На нынешний момент:\n\n"
+                    f"- Статус налога: **{tax_status}**\n"
+                    f"- Размер налога: **{config.TAXES_AND_ENCASHMENT['tax_value']}** {config.FROG_EMOJI}",
+        file_path=config.TAXES_COLLECTION_IMAGE
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
+def taxes_setup_confirmation_message(is_taxes_set_active=True, value=0):
+    if value:
+        description = f"Установлен всеобщий налог в размере **{value}** {config.FROG_EMOJI}"
+    else:
+        if is_taxes_set_active:
+            description = "Сбор налогов включен и начнется со следующего месяца."
+        else:
+            description = "Сбор налогов выключен. Объявляются налоговые каникулы."
+    embed_message = MessageContainer(
+        title=SUCCESS_HEADER,
+        description=description,
+        file_path=config.SUCCESS_OPERATION_IMAGE
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
+def taxes_setup_error():
+    embed_message = MessageContainer(
+        title=ERROR_HEADER,
+        description="Вы установили ошиблись при установке размера налога. Он должен быть целым числом в размере "
+                    "от 1 до 9 лягушек!",
+        file_path=config.ERROR_IMAGE
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
+def taxes_collection(amount, tax_period):
+    year, month = tax_period.split("-")
+    month_name = utils.get_month_name(month)
+    title = "Сбор налогов"
+    description = (f"Уважаемые жители болота!\n"
+                   f"Наступил новый месяц, а с ним и день сбора налогов. Администрация уже запустила руку в пруд "
+                   f"каждого участника, имеющего лягушек - и забрала по одной из них на нужды сервера.\n\n"
+                   f"Всего за **{month_name} {year} года** собрано **{amount}** {config.FROG_EMOJI} налогов.\n "
+                   f"Собранные налоги поступили на счёт директора болота <@{config.ADMIN_ID}>.\n\n"
+                   f"Спасибо за ваш вклад в процветание нашей экономики!")
+
+    embed_message = MessageContainer(
+        title=title,
+        description=description,
+        file_path=config.TAXES_COLLECTION_IMAGE
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
+def encashment(amount, encashment_day):
+    day, month, year = encashment_day.split("/")
+    month_name = utils.get_month_name(month, case="accusative")
+    title = "Инкассация"
+    description = (f"Ежедневное выгребание содержимого касс болотного банка и казино. \n "
+                   f"За **{day} {month_name} {year} года** участники потратили в магазине и спустили "
+                   f"в казино **{amount}** {config.FROG_EMOJI}. Эти средства поступают на "
+                   f"счет <@{config.ADMIN_ID}>.")
+
+    embed_message = MessageContainer(
+        title=title,
+        description=description,
+        file_path=config.ENCASHMENT_IMAGE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 

@@ -40,6 +40,7 @@ DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 GUILD_ID = int(os.getenv('GUILD_ID'))
 ADMIN_ID = int(os.getenv('ADMIN_ID'))
 NEWS_CHANNEL_ID = int(os.getenv('NEWS_CHANNEL_ID'))
+ECONOMY_BOT_MAIN_CHANNEL = int(os.getenv('ECONOMY_BOT_MAIN_CHANNEL'))
 
 PREMIUM_ROLE = {
     "lite": int(os.getenv('PREMIUM_ROLE_LITE_ID')),
@@ -60,11 +61,18 @@ PRICES_JSON = "settings/prices.json"
 PRICES = utils.json_safeload(PRICES_JSON)['current']
 PROBABILITIES_JSON = "settings/probabilities.json"
 PROBABILITIES = utils.json_safeload(PROBABILITIES_JSON)['current']
+TAXES_AND_ENCASHMENT_JSON = "settings/taxes_and_encashment.json"
+TAXES_AND_ENCASHMENT = utils.json_safeload(TAXES_AND_ENCASHMENT_JSON)
 
 PREMIUM_ROLE_DURATION = 2592000
 
 QUIZ_ROUND_TIME = 60
 QUIZ_ACTIVE_TIME = 1800
+
+TIME_AND_ENCASHMENT_COLLECTION_TIME = {
+    'hour': 3,
+    'minute': 5
+}
 
 FROG_EMOJI = "<:1frg:1286272480083836970>"
 
@@ -129,6 +137,9 @@ SET_PROBABILITIES_IMAGE = "assets/set_probabilities.jpg"
 BANK_BALANCE_IMAGE = "assets/bank_balance.jpg"
 CASINO_BALANCE_IMAGE = "assets/casino_balance.jpg"
 ALL_USERS_BALANCES_IMAGE = "assets/all_users_balances.jpg"
+
+TAXES_COLLECTION_IMAGE = "assets/taxes_collection.jpg"
+ENCASHMENT_IMAGE = "assets/encashment.jpg"
 
 GIFT_IMAGE = "assets/gift.jpg"
 GIFT_SUCCESS_IMAGE = "assets/gift_successful.jpg"
