@@ -469,14 +469,22 @@ def yahtzee_result(player, bet, payout, roll_outcome, image_binary_data, is_rero
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def balance_error():
+def balance_error(is_fraud=True):
+    description = "На твоем счету недостаточно средств для игры. "
+    if is_fraud:
+        description += ("Появление этой ошибки свидетельствует, что ты параллельно с текущей игрой играл в другую "
+                        "игру, совершил покупки или перевод средств другому участнику. Данное поведение запрещено "
+                        "правилами казино, и за это ты будешь подвергнут наказанию. Бот уже сообщил о твоем проступке "
+                        "администрации. Готовь жопу!")
+        file_path = config.CASINO_FRAUD_BAN
+    else:
+        description += ("Поймай лягушек на болоте, или попроси у кого-нибудь взаймы с непременным обещанием вернуть "
+                        "после выигрыша - и начинай игру!")
+        file_path = config.SEPARATOR_ERROR
     embed_message = MessageContainer(
         title=ERROR_HEADER,
-        description="На твоем счету недостаточно средств для игры. Появление этой ошибки свидетельствует, что ты "
-                    "параллельно с текущей игрой играл в другую игру, совершил покупки или перевод средств другому "
-                    "участнику. Данное поведение запрещено правилами казино, и за это ты будешь подвергнут наказанию. "
-                    "Бот уже сообщил о твоем проступке администрации. Готовь жопу!",
-        file_path=config.CASINO_FRAUD_BAN
+        description=description,
+        file_path=file_path
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 

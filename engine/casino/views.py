@@ -357,6 +357,9 @@ class SlotMachineView(OriginalPlayerBasicView):
         await interaction.response.defer()
         self.slot_machine.place_bet(bet_type)
         bet = self.slot_machine.bet
+        player_balance = sql.get_user_balance(self.player)
+        if player_balance - bet < 0:
+            return await interaction.followup.send(**messages.balance_error(is_fraud=False), ephemeral=True)
         sql.set_user_balance(self.player, -self.slot_machine.bet)
         self.slot_machine.play()
         logging.info(f"Пользователь {self.slot_machine.player.name} играет в однорукого бандита "
