@@ -61,17 +61,17 @@ PRICES_JSON = "settings/prices.json"
 PRICES = utils.json_safeload(PRICES_JSON)['current']
 PROBABILITIES_JSON = "settings/probabilities.json"
 PROBABILITIES = utils.json_safeload(PROBABILITIES_JSON)['current']
-TAXES_AND_ENCASHMENT_JSON = "settings/taxes_and_encashment.json"
-TAXES_AND_ENCASHMENT = utils.json_safeload(TAXES_AND_ENCASHMENT_JSON)
+TAXATION_JSON = "settings/taxation.json"
+TAXATION = utils.json_safeload(TAXATION_JSON)
 
 PREMIUM_ROLE_DURATION = 2592000
 
 QUIZ_ROUND_TIME = 60
 QUIZ_ACTIVE_TIME = 1800
 
-TAXES_AND_ENCASHMENT_COLLECTION_TIME = utils.get_time_object(
+TAXES_COLLECTION_AND_ENCASHMENT_TIME = utils.get_time_object(
     hour=0,
-    minute=15
+    minute=30
 )
 
 FROG_EMOJI = "<:1frg:1286272480083836970>"

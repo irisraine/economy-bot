@@ -170,9 +170,9 @@ def set_cooldown(updated_cooldown=None, reset=False):
     config.CATCHING_COOLDOWN = json_safeload(config.CATCHING_COOLDOWN_JSON)['current']
 
 
-def set_taxes(updated_taxes_and_encashment):
-    json_safewrite(config.TAXES_AND_ENCASHMENT_JSON, updated_taxes_and_encashment)
-    config.TAXES_AND_ENCASHMENT = json_safeload(config.TAXES_AND_ENCASHMENT_JSON)
+def set_taxation(updated_taxation):
+    json_safewrite(config.TAXATION_JSON, updated_taxation)
+    config.TAXATION = json_safeload(config.TAXATION_JSON)
 
 
 def json_safeload(filepath):

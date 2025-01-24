@@ -102,36 +102,36 @@ async def admin(interaction: nextcord.Interaction):
     )
 
 
-@tasks.loop(time=config.TAXES_AND_ENCASHMENT_COLLECTION_TIME)
+@tasks.loop(time=config.TAXES_COLLECTION_AND_ENCASHMENT_TIME)
 async def scheduled_collection():
     channel = client.get_channel(config.ECONOMY_BOT_MAIN_CHANNEL)
     administrator = await client.fetch_user(config.ADMIN_ID)
-    taxes_and_encashment = config.TAXES_AND_ENCASHMENT
+    taxation = config.TAXATION
     current_timestamp = utils.get_timestamp()
     current_month = utils.get_short_date(current_timestamp)
-    if taxes_and_encashment["is_taxes_active"] and taxes_and_encashment["tax_collection_date"] != current_month:
-        taxes = 0
-        single_tax = taxes_and_encashment['tax_value']
+    if taxation["is_taxes_active"] and taxation["tax_collection_date"] != current_month:
+        collected_taxes = 0
+        single_tax = taxation['tax_value']
         all_users_balances = sql.get_all_users_balances()
         for user_id, _, user_balance in all_users_balances:
             if user_id == config.ADMIN_ID or user_balance < single_tax:
                 continue
             user = await client.fetch_user(user_id)
             sql.set_user_balance(user, -single_tax)
-            taxes += single_tax
-        taxes_and_encashment["tax_collection_date"] = current_month
-        utils.set_taxes(taxes_and_encashment)
-        if taxes:
-            sql.set_user_balance(administrator, taxes)
+            collected_taxes += single_tax
+        taxation["tax_collection_date"] = current_month
+        utils.set_taxation(taxation)
+        if collected_taxes:
+            sql.set_user_balance(administrator, collected_taxes)
             previous_month = utils.get_short_date(current_timestamp, previous=True)
-            logging.info(f"Произведен сбор налогов в размере {taxes} шт. лягушек.")
+            logging.info(f"Произведен сбор налогов в размере {collected_taxes} шт. лягушек.")
             await channel.send(
-                **messages.taxes_collection(amount=taxes, tax_period=previous_month)
+                **messages.taxes_collection(amount=collected_taxes, tax_period=previous_month)
             )
     encashment_amount = sql.get_encashment_amount()
     if encashment_amount:
         sql.set_user_balance(administrator, encashment_amount)
-        sql.reset_encashment_amount()
+        sql.set_encashment_amount(reset=True)
         logging.info(f"Произведена инкассация, на счет администратора переведено {encashment_amount} шт. лягушек.")
         await channel.send(
             **messages.encashment(amount=encashment_amount, encashment_day=utils.get_previous_day(current_timestamp))

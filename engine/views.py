@@ -518,9 +518,9 @@ class TaxesSetupModal(nextcord.ui.Modal):
                 **messages.taxes_setup_error(),
                 ephemeral=True
             )
-        taxes_and_encashment = config.TAXES_AND_ENCASHMENT
-        taxes_and_encashment["tax_value"] = int(self.tax.value)
-        utils.set_taxes(taxes_and_encashment)
+        taxation = config.TAXATION
+        taxation["tax_value"] = int(self.tax.value)
+        utils.set_taxation(taxation)
         logging.info(f"Администратор устанавливает размер налога, равный {self.tax.value} лягушек.")
         await interaction.edit_original_message(
             **messages.taxes_setup_confirmation_message(value=int(self.tax.value), change_tax_value=True),
@@ -535,23 +535,23 @@ class TaxesSetupView(AdminActionBasicView):
     @nextcord.ui.button(label="Изменить статус налогообложения", style=nextcord.ButtonStyle.green, emoji="💵")
     async def tax_status_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
-        taxes_and_encashment = config.TAXES_AND_ENCASHMENT
-        is_taxes_active = taxes_and_encashment["is_taxes_active"]
+        taxation = config.TAXATION
+        is_taxes_active = taxation["is_taxes_active"]
         if is_taxes_active:
-            taxes_and_encashment["is_taxes_active"] = False
-            taxes_and_encashment["tax_collection_date"] = ""
+            taxation["is_taxes_active"] = False
+            taxation["tax_collection_date"] = ""
             logging.info("Сбор налогов отключен.")
         else:
-            taxes_and_encashment["is_taxes_active"] = True
+            taxation["is_taxes_active"] = True
             current_timestamp = utils.get_timestamp()
             current_month = utils.get_short_date(current_timestamp)
-            taxes_and_encashment["tax_collection_date"] = current_month
+            taxation["tax_collection_date"] = current_month
             logging.info("Сбор налогов включен.")
-        utils.set_taxes(taxes_and_encashment)
+        utils.set_taxation(taxation)
         await interaction.edit_original_message(
             **messages.taxes_setup_confirmation_message(
-                is_taxes_set_active=taxes_and_encashment["is_taxes_active"],
-                value=taxes_and_encashment["tax_value"]
+                is_taxes_set_active=taxation["is_taxes_active"],
+                value=taxation["tax_value"]
             ),
             view=None
         )

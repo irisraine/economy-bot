@@ -594,14 +594,14 @@ def gift_confirmation(other_user, amount, is_valid=True):
 
 
 def taxes_setup():
-    tax_status = "сбор активен" if config.TAXES_AND_ENCASHMENT["is_taxes_active"] else "не собирается"
+    tax_status = "сбор активен" if config.TAXATION["is_taxes_active"] else "не собирается"
     embed_message = MessageContainer(
         title="Налог",
         description=f"С помощью этой опции можно включить или отключить сбор налогов, а также задать размер "
                     f"собираемого с участников налога. \n\n"
                     f"На нынешний момент:\n\n"
                     f"- Статус налога: **{tax_status}**\n"
-                    f"- Размер налога: **{config.TAXES_AND_ENCASHMENT['tax_value']}** {config.FROG_EMOJI}",
+                    f"- Размер налога: **{config.TAXATION['tax_value']}** {config.FROG_EMOJI}",
         file_path=config.TAXES_COLLECTION_IMAGE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
