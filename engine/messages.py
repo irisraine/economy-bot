@@ -640,7 +640,7 @@ def taxes_setup_error():
 def taxes_collection(amount, tax_period):
     year, month = tax_period.split("-")
     month_name = utils.get_month_name(month)
-    title = "Сбор налогов"
+    title = "Оповещение от налоговой службы"
     description = (f"Уважаемые жители болота!\n"
                    f"Наступил новый месяц, а с ним и день сбора налогов. Администрация уже запустила руку в пруд "
                    f"каждого участника, имеющего лягушек - и забрала по одной из них на нужды сервера.\n\n"

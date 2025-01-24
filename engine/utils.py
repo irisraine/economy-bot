@@ -58,12 +58,8 @@ def from_timestamp(timestamp, mode="time"):
     return datetime.utcfromtimestamp(timestamp).strftime(pattern)
 
 
-def get_taxes_and_encashment_collection_time():
-    launch_time = time(
-        hour=config.TIME_AND_ENCASHMENT_COLLECTION_TIME['hour'],
-        minute=config.TIME_AND_ENCASHMENT_COLLECTION_TIME['minute']
-    )
-    return launch_time
+def get_time_object(hour=0, minute=0):
+    return time(hour=hour, minute=minute)
 
 
 def get_short_date(timestamp, previous=False):

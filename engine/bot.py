@@ -102,7 +102,7 @@ async def admin(interaction: nextcord.Interaction):
     )
 
 
-@tasks.loop(time=utils.get_taxes_and_encashment_collection_time())
+@tasks.loop(time=config.TAXES_AND_ENCASHMENT_COLLECTION_TIME)
 async def scheduled_collection():
     channel = client.get_channel(config.ECONOMY_BOT_MAIN_CHANNEL)
     administrator = await client.fetch_user(config.ADMIN_ID)
