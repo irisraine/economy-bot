@@ -66,16 +66,16 @@ def get_taxes_and_encashment_collection_time():
     return launch_time
 
 
-def get_short_date(date, previous=False):
-    date = datetime.strptime(date, "%d/%m/%Y")
+def get_short_date(timestamp, previous=False):
+    date = datetime.strptime(from_timestamp(timestamp, mode="date"), "%d/%m/%Y")
     if previous:
         first_day_of_current_month = date.replace(day=1)
         date = first_day_of_current_month - timedelta(days=1)
     return date.strftime("%Y-%m")
 
 
-def get_previous_day(date):
-    date = datetime.strptime(date, "%d/%m/%Y")
+def get_previous_day(timestamp):
+    date = datetime.strptime(from_timestamp(timestamp, mode="date"), "%d/%m/%Y")
     date -= timedelta(days=1)
     return date.strftime("%d/%m/%Y")
 
@@ -172,6 +172,11 @@ def set_cooldown(updated_cooldown=None, reset=False):
         cooldown['current'] = int(updated_cooldown)
     json_safewrite(config.CATCHING_COOLDOWN_JSON, cooldown)
     config.CATCHING_COOLDOWN = json_safeload(config.CATCHING_COOLDOWN_JSON)['current']
+
+
+def set_taxes(updated_taxes_and_encashment):
+    json_safewrite(config.TAXES_AND_ENCASHMENT_JSON, updated_taxes_and_encashment)
+    config.TAXES_AND_ENCASHMENT = json_safeload(config.TAXES_AND_ENCASHMENT_JSON)
 
 
 def json_safeload(filepath):

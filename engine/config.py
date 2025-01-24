@@ -70,8 +70,8 @@ QUIZ_ROUND_TIME = 60
 QUIZ_ACTIVE_TIME = 1800
 
 TIME_AND_ENCASHMENT_COLLECTION_TIME = {
-    'hour': 3,
-    'minute': 5
+    'hour': 0,
+    'minute': 15
 }
 
 FROG_EMOJI = "<:1frg:1286272480083836970>"
@@ -139,6 +139,8 @@ CASINO_BALANCE_IMAGE = "assets/casino_balance.jpg"
 ALL_USERS_BALANCES_IMAGE = "assets/all_users_balances.jpg"
 
 TAXES_COLLECTION_IMAGE = "assets/taxes_collection.jpg"
+TAXES_ON_IMAGE = "assets/taxes_on.jpg"
+TAXES_OFF_IMAGE = "assets/taxes_off.jpg"
 ENCASHMENT_IMAGE = "assets/encashment.jpg"
 
 GIFT_IMAGE = "assets/gift.jpg"

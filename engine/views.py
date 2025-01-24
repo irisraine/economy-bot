@@ -520,11 +520,11 @@ class TaxesSetupModal(nextcord.ui.Modal):
             )
         taxes_and_encashment = config.TAXES_AND_ENCASHMENT
         taxes_and_encashment["tax_value"] = int(self.tax.value)
-        utils.json_safewrite(config.TAXES_AND_ENCASHMENT_JSON, taxes_and_encashment)
-        config.TAXES_AND_ENCASHMENT = utils.json_safeload(config.TAXES_AND_ENCASHMENT_JSON)
+        utils.set_taxes(taxes_and_encashment)
         logging.info(f"Администратор устанавливает размер налога, равный {self.tax.value} лягушек.")
-        await interaction.followup.send(
-            **messages.taxes_setup_confirmation_message(value=int(self.tax.value)), ephemeral=True
+        await interaction.edit_original_message(
+            **messages.taxes_setup_confirmation_message(value=int(self.tax.value), change_tax_value=True),
+            view=None
         )
 
 
@@ -543,14 +543,17 @@ class TaxesSetupView(AdminActionBasicView):
             logging.info("Сбор налогов отключен.")
         else:
             taxes_and_encashment["is_taxes_active"] = True
-            current_date = utils.from_timestamp(utils.get_timestamp(), mode="date")
-            current_month = utils.get_short_date(current_date)
+            current_timestamp = utils.get_timestamp()
+            current_month = utils.get_short_date(current_timestamp)
             taxes_and_encashment["tax_collection_date"] = current_month
             logging.info("Сбор налогов включен.")
-        utils.json_safewrite(config.TAXES_AND_ENCASHMENT_JSON, taxes_and_encashment)
-        config.TAXES_AND_ENCASHMENT = utils.json_safeload(config.TAXES_AND_ENCASHMENT_JSON)
-        await interaction.followup.send(
-            **messages.taxes_setup_confirmation_message(is_taxes_set_active=not is_taxes_active), ephemeral=True
+        utils.set_taxes(taxes_and_encashment)
+        await interaction.edit_original_message(
+            **messages.taxes_setup_confirmation_message(
+                is_taxes_set_active=taxes_and_encashment["is_taxes_active"],
+                value=taxes_and_encashment["tax_value"]
+            ),
+            view=None
         )
 
     @nextcord.ui.button(label="Величина налога", style=nextcord.ButtonStyle.green, emoji="🧮")

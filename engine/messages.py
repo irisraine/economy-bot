@@ -607,18 +607,22 @@ def taxes_setup():
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def taxes_setup_confirmation_message(is_taxes_set_active=True, value=0):
-    if value:
-        description = f"Установлен всеобщий налог в размере **{value}** {config.FROG_EMOJI}"
+def taxes_setup_confirmation_message(is_taxes_set_active=True, value=0, change_tax_value=False):
+    if change_tax_value:
+        description = f"Размер всеобщего налога изменен. Теперь он составляет **{value}** {config.FROG_EMOJI}"
+        file_path = config.TAXES_COLLECTION_IMAGE
     else:
         if is_taxes_set_active:
-            description = "Сбор налогов включен и начнется со следующего месяца."
+            description = (f"Сбор налогов включен. Начиная со следующего месяца, со всех участников, имеющих "
+                           f"положительный баланс, будет ежемесячно списываться по **{value}** {config.FROG_EMOJI}")
+            file_path = config.TAXES_ON_IMAGE
         else:
             description = "Сбор налогов выключен. Объявляются налоговые каникулы."
+            file_path = config.TAXES_OFF_IMAGE
     embed_message = MessageContainer(
-        title=SUCCESS_HEADER,
+        title="Оповещение от налоговой службы",
         description=description,
-        file_path=config.SUCCESS_OPERATION_IMAGE
+        file_path=file_path
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 

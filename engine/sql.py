@@ -38,12 +38,12 @@ def create_tables():
             SELECT 0, 0
             WHERE NOT EXISTS (SELECT 1 FROM casino_balance
             )""")
-        cursor.execute("""CREATE TABLE IF NOT EXISTS encashment_amount (
+        cursor.execute("""CREATE TABLE IF NOT EXISTS encashment (
             amount_to_withdrawal INTEGER NOT NULL DEFAULT 0
             )""")
-        cursor.execute("""INSERT INTO encashment_amount (amount_to_withdrawal)
+        cursor.execute("""INSERT INTO encashment (amount_to_withdrawal)
             SELECT 0
-            WHERE NOT EXISTS (SELECT 1 FROM encashment_amount
+            WHERE NOT EXISTS (SELECT 1 FROM encashment
             )""")
         cursor.execute("""CREATE TABLE IF NOT EXISTS premium_role_owners (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -154,7 +154,7 @@ def set_casino_balance(bet=0, payout=0):
 def get_encashment_amount():
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute("SELECT amount_to_withdrawal FROM encashment_amount")
+        cursor.execute("SELECT amount_to_withdrawal FROM encashment")
         return cursor.fetchone()[0]
 
 
@@ -162,7 +162,7 @@ def get_encashment_amount():
 def add_to_encashment_amount(amount):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute("UPDATE encashment_amount SET amount_to_withdrawal = amount_to_withdrawal + ?",
+        cursor.execute("UPDATE encashment SET amount_to_withdrawal = amount_to_withdrawal + ?",
                        (amount,))
 
 
@@ -170,7 +170,7 @@ def add_to_encashment_amount(amount):
 def reset_encashment_amount():
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute("UPDATE encashment_amount SET amount_to_withdrawal = 0")
+        cursor.execute("UPDATE encashment SET amount_to_withdrawal = 0")
 
 
 @catch_sql_exceptions
