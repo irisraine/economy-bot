@@ -125,7 +125,7 @@ def set_bank_balance(amount):
         cursor = db_connect.cursor()
         cursor.execute("UPDATE bank_balance SET balance = balance + ?",
                        (amount,))
-    add_to_encashment_amount(amount=amount)
+    set_encashment_amount(amount=amount)
 
 
 @catch_sql_exceptions
@@ -147,7 +147,7 @@ def set_casino_balance(bet=0, payout=0):
         if payout:
             cursor.execute("UPDATE casino_balance SET payouts = payouts + ?",
                            (payout,))
-    add_to_encashment_amount(amount=max(bet - payout, 0))
+    set_encashment_amount(amount=max(bet - payout, 0))
 
 
 @catch_sql_exceptions
@@ -159,18 +159,14 @@ def get_encashment_amount():
 
 
 @catch_sql_exceptions
-def add_to_encashment_amount(amount):
+def set_encashment_amount(amount=0, reset=False):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute("UPDATE encashment SET amount_to_withdrawal = amount_to_withdrawal + ?",
-                       (amount,))
-
-
-@catch_sql_exceptions
-def reset_encashment_amount():
-    with sqlite3.connect(config.DATABASE_PATH) as db_connect:
-        cursor = db_connect.cursor()
-        cursor.execute("UPDATE encashment SET amount_to_withdrawal = 0")
+        if reset:
+            cursor.execute("UPDATE encashment SET amount_to_withdrawal = 0")
+        else:
+            cursor.execute("UPDATE encashment SET amount_to_withdrawal = amount_to_withdrawal + ?",
+                           (amount,))
 
 
 @catch_sql_exceptions
