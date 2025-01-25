@@ -69,35 +69,35 @@ SLOT_MACHINE_FRAME = "assets/casino/slot_machine_frame.jpg"
 SLOT_MACHINE_REEL_SYMBOLS = {
     "gold": {
         "image": "assets/casino/slot_machine_reel_gold.png",
-        "emoji": "<:gold:1327365509359997039>"
+        "emoji": "<:1au:1129141167817236550>"
     },
     "cart": {
         "image": "assets/casino/slot_machine_reel_cart.png",
-        "emoji": "<:cart:1327365671218057307>"
+        "emoji": "<:1bj:1129141191326310440>"
     },
     "star": {
         "image": "assets/casino/slot_machine_reel_star.png",
-        "emoji": "<:str:1327365588535742666>"
+        "emoji": "<:1bd:1132997121725976626>"
     },
     "horseshoe": {
         "image": "assets/casino/slot_machine_reel_horseshoe.png",
-        "emoji": "<:horseshoe:1327365621259829349>"
+        "emoji": "<:1bl:1132997117665890355>"
     },
     "moonshine": {
         "image": "assets/casino/slot_machine_reel_moonshine.png",
-        "emoji": "<:moonshine:1327365697906544751>"
+        "emoji": "<:1bt:1132755527479345232>"
     },
     "frog_green": {
         "image": "assets/casino/slot_machine_reel_frog_green.png",
-        "emoji": "<:1frg:1286272480083836970>"
+        "emoji": "<:1fb:1227748132868194346>"
     },
     "frog_orange": {
         "image": "assets/casino/slot_machine_reel_frog_orange.png",
-        "emoji": "<:2frg:1327365446361415791>"
+        "emoji": "<:1fc:1237024888339038271>"
     },
     "frog_white": {
         "image": "assets/casino/slot_machine_reel_frog_white.png",
-        "emoji": "<:3frg:1327365491781799978>"
+        "emoji": "<:1fd:1237130954368356393>"
     },
 }
 SLOT_MACHINE_PAYLINE = "assets/casino/slot_machine_payline.png"
