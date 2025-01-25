@@ -381,11 +381,11 @@ class SlotMachineView(OriginalPlayerBasicView):
             view=None
         )
 
-    @nextcord.ui.button(label="Трехлапая жаба", style=nextcord.ButtonStyle.blurple, emoji="💵")
+    @nextcord.ui.button(label="Однолапая жаба", style=nextcord.ButtonStyle.blurple, emoji="💵")
     async def cheap_version_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await self.game('low', interaction)
 
-    @nextcord.ui.button(label="Золото прерий", style=nextcord.ButtonStyle.blurple, emoji="💰")
+    @nextcord.ui.button(label="Трехлапая жаба", style=nextcord.ButtonStyle.blurple, emoji="💰")
     async def expensive_version_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await self.game('high', interaction)
 
