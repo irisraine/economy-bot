@@ -107,56 +107,91 @@ def shop():
 def catch(user, amount):
     match amount:
         case amount if amount == 0:
-            result = "fault"
+            title = "Увы и ах!"
+            description = (f"{user}, ты не поймал ни одной лягушки. Они оказались слишком прыткими и ускользнули "
+                           f"из твоих пальцев!")
+            file_path = config.CATCH_FAULT_IMAGE
         case amount if 1 <= amount <= 2:
-            result = "common"
+            title = "Ура!"
+            description = (f"Поздравляем тебя, {user}! Ты поймал **{amount}** {utils.numeral(amount)}. Это довольно "
+                           f"скромный результат, однако ловля лягушек - тяжелый труд, поэтому ты можешь "
+                           f"гордиться собой.")
+            file_path = config.CATCH_COMMON_IMAGE
         case amount if 3 <= amount <= 4:
-            result = "uncommon"
-        case amount if 5 <= amount <= 6:
-            result = "epic"
-        case amount if amount >= 7:
-            result = "legendary"
+            title = "О, нифигасе, класс!"
+            description = (f"Поздравляем тебя, {user}! Ты оказался достаточно умелым ловцом, и поймал "
+                           f"**{amount}** {utils.numeral(amount)}. Береги их как зеницу ока!")
+            file_path = config.CATCH_UNCOMMON_IMAGE
+        case amount if 5 <= amount <= 7:
+            title = "Я ещё хочу добавки, мало!"
+            description = (f"Здорово, {user}! Далеко не каждому ловцу так везет. Сегодня тебе удалось "
+                           f"поймать **{amount}** {utils.numeral(amount)}. Немного, но это честная работа.")
+            file_path = config.CATCH_EPIC_IMAGE
+        case amount if 8 <= amount <= 10:
+            title = "Класс!"
+            description = (f"Хорошая работа, {user}! Тебе удалось выловить из болота целых "
+                           f"**{amount}** {utils.numeral(amount)}, которых в двух ведрах наперевес ты понесешь "
+                           f"выплескивать в свой пруд!")
+            file_path = config.CATCH_LEGENDARY_IMAGES[1]
+        case amount if 11 <= amount <= 15:
+            title = "О, нифигасе, класс!"
+            description = (f"Твои усилия не были напрасны, {user}! На этот раз ты поймал "
+                           f"**{amount}** {utils.numeral(amount)}, можно и побаловать себя какой-нибудь покупкой "
+                           f"в болотном магазине.")
+            file_path = config.CATCH_LEGENDARY_IMAGES[2]
+        case amount if 16 <= amount <= 20:
+            title = "Лепота, красота!"
+            description = (f"Отлично, {user}! Ты поймал **{amount}** {utils.numeral(amount)}, и теперь можешь себе "
+                           f"позволить раскошелиться на пару покупок в болотном магазине!")
+            file_path = config.CATCH_LEGENDARY_IMAGES[3]
+        case amount if 21 <= amount <= 25:
+            title = "Я тебе жаб наловлю целую бочку!"
+            description = (f"Отличная работа, {user}! Тебе удалось выловить из болота "
+                           f"**{amount}** {utils.numeral(amount)}. Осталось только бережно донести их до своего пруда.")
+            file_path = config.CATCH_LEGENDARY_IMAGES[4]
+        case amount if 26 <= amount <= 30:
+            title = "Я тебе жаб наловлю и обклею всего!"
+            description = (f"Твои усилия не были напрасны, {user}! На этот раз ты поймал "
+                           f"**{amount}** {utils.numeral(amount)}, и все они отправляются в твои владения!")
+            file_path = config.CATCH_LEGENDARY_IMAGES[5]
+        case amount if 31 <= amount <= 35:
+            title = "Лягушки дружат со мной!"
+            description = (f"{user}, ты отлично постарался! Тебе посчастливилось поймать "
+                           f"**{amount}** {utils.numeral(amount)}. На этой неделе - гуляем!")
+            file_path = config.CATCH_LEGENDARY_IMAGES[6]
+        case amount if 36 <= amount <= 40:
+            title = "А теперь квакают и прыгают лягушки"
+            description = (f"Отличный улов, {user}! Ты оказался достаточно умелым ловцом, и поймал "
+                           f"**{amount}** {utils.numeral(amount)}. Столько лягушек не стыдно и девушке "
+                           f"в качестве подарка приподнести!")
+            file_path = config.CATCH_LEGENDARY_IMAGES[7]
+        case amount if 41 <= amount <= 45:
+            title = "Повозка - это хорошо!"
+            description = (f"Невероятно, {user}! Ты поймал **{amount}** {utils.numeral(amount)} — теперь можно "
+                           f"немного пожить на широкую ногу!")
+            file_path = config.CATCH_LEGENDARY_IMAGES[8]
+        case amount if 46 <= amount <= 49:
+            title = "Мы поедем, мы помчимся..."
+            description = (f"Чух-чух, {user}! Ты поймал за один раз целых **{amount}** {utils.numeral(amount)} - целый "
+                           f"состав. О таком грандиозном улове сложат легенды все жители ближайших "
+                           f"лаграсских деревень.")
+            file_path = config.CATCH_LEGENDARY_IMAGES[9]
+        case amount if amount == 50:
+            title = "Легендарная жаба!"
+            description = (f"{user}, тебе невероятно повезло! Ты выловил Жабочвяка - царя всея болота, и он "
+                           f"одарил тебя **{amount}** {utils.numeral(amount)} в обмен на свою свободу. Теперь в "
+                           f"твоём пруду кваканье звучит на весь Лаграс, и ты можешь хвастаться в салунах и "
+                           f"перед друзьями этой легендарной встречей!")
+            file_path = config.CATCH_LEGENDARY_IMAGES[10]
         case _:
-            result = "fault"
-
-    results = {
-        "fault": {
-            "title": "Увы и ах!",
-            "description": f"{user}, ты не поймал ни одной лягушки. "
-                           "Они оказались слишком прыткими и ускользнули из твоих пальцев!",
-            "file_path": config.CATCH_FAULT_IMAGE
-        },
-        "common": {
-            "title": "Ура!",
-            "description": f"Поздравляем тебя, {user}! Ты поймал **{amount}** {utils.numeral(amount)}. "
-                           "Это довольно скромный результат, однако ловля лягушек - тяжелый труд, "
-                           "поэтому ты можешь гордиться собой.",
-            "file_path": config.CATCH_COMMON_IMAGE
-        },
-        "uncommon": {
-            "title": "О, нифигасе, класс!",
-            "description": f"Поздравляем тебя, {user}! Ты оказался достаточно умелым ловцом, "
-                           f"и поймал **{amount}** {utils.numeral(amount)}.",
-            "file_path": config.CATCH_UNCOMMON_IMAGE
-        },
-        "epic": {
-            "title": "Лепота, красота!",
-            "description": f"Здорово {user}! Ты поистине превзошел сам себя, далеко не каждому ловцу так везет. "
-                           f"Сегодня тебе удалось поймать аж **{amount}** {utils.numeral(amount)}.",
-            "file_path": config.CATCH_EPIC_IMAGE
-        },
-        "legendary": {
-            "title": "Какая красотень!",
-            "description": f"{user}, сегодня тебе невероятно повезло! Ты поймал "
-                           f"целых **{amount}** {utils.numeral(amount)} за один раз. "
-                           f"О таком грандиозном улове сложат легенды все жители ближайших лаграсских деревень.",
-            "file_path": config.CATCH_LEGENDARY_IMAGE if amount < 20 else config.CATCH_LEGENDARY_MAX_IMAGE
-        }
-    }
+            title = ERROR_HEADER
+            description = ("Случилось страшное - твой сачок для ловли лягушек порвался. Это серьезная ошибка, которой "
+                           "не должно было случиться. Обязательно сообщи администратору об этом происшествии.")
+            file_path = config.ERROR_IMAGE
     embed_message = MessageContainer(
-        title=results[result]['title'],
-        description=results[result]['description'],
-        file_path=results[result]['file_path']
+        title=title,
+        description=description,
+        file_path=file_path
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 

@@ -116,8 +116,18 @@ CATCH_FAULT_IMAGE = "assets/catch_fault.jpg"
 CATCH_COMMON_IMAGE = "assets/catch_common.jpg"
 CATCH_UNCOMMON_IMAGE = "assets/catch_uncommon.jpg"
 CATCH_EPIC_IMAGE = "assets/catch_epic.jpg"
-CATCH_LEGENDARY_IMAGE = "assets/catch_legendary.jpg"
-CATCH_LEGENDARY_MAX_IMAGE = "assets/catch_legendary_max.jpg"
+CATCH_LEGENDARY_IMAGES = {
+    1: "assets/catch_legendary_tier_1.jpg",
+    2: "assets/catch_legendary_tier_2.jpg",
+    3: "assets/catch_legendary_tier_3.jpg",
+    4: "assets/catch_legendary_tier_4.jpg",
+    5: "assets/catch_legendary_tier_5.jpg",
+    6: "assets/catch_legendary_tier_6.jpg",
+    7: "assets/catch_legendary_tier_7.jpg",
+    8: "assets/catch_legendary_tier_8.jpg",
+    9: "assets/catch_legendary_tier_9.jpg",
+    10: "assets/catch_legendary_tier_10.jpg"
+}
 
 COOLDOWN_IMAGE = "assets/cooldown.jpg"
 
