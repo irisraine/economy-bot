@@ -544,7 +544,7 @@ def bank_balance():
 
 
 def casino_balance():
-    overall_bets, payouts = sql.get_casino_balance()['overall_bets'], sql.get_casino_balance()['payouts']
+    overall_bets, payouts = sql.get_casino_balance()
     rtp = round((payouts / overall_bets) * 100, 2) if overall_bets else 0
     embed_message = MessageContainer(
         title="Баланс казино",
@@ -853,6 +853,20 @@ def quiz_prize(winner, question, prize_amount, prize_special=False):
         title="Чвяк чвяк!",
         description=description,
         file_path=file_path
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
+def quiz_statistics():
+    total_quizzes_held, correct_answers, overall_prizes_amount = sql.get_quiz_statistics()
+
+    embed_message = MessageContainer(
+        title="Статистика викторин",
+        description=f"На нынешний момент интеллектуальная жизнь на сервере протекает следующим образом:\n\n"
+                    f"- Проведено викторин за все время: **{total_quizzes_held}**\n"
+                    f"- Количество правильных ответов участников: **{correct_answers}**\n"
+                    f"- Общая сумма выплат участникам: **{overall_prizes_amount}** {config.FROG_EMOJI}",
+        file_path=config.QUIZ_IMAGE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 

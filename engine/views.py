@@ -203,6 +203,11 @@ class AdminMenuView(nextcord.ui.View):
                 description="Изучить содержимое прудов всех участников",
                 emoji="📈"),
             nextcord.SelectOption(
+                label="Статистика викторин",
+                value="quiz_statistics",
+                description="Посмотреть на достижения эрудитов",
+                emoji="🎓"),
+            nextcord.SelectOption(
                 label="Установить налог",
                 value="taxes_setup",
                 description="Активировать сбор налога и задать его размер",
@@ -249,6 +254,7 @@ class AdminMenuView(nextcord.ui.View):
             "bank_balance": {"message": messages.bank_balance(), "view": None},
             "casino_balance": {"message": messages.casino_balance(), "view": None},
             "all_users_balance": {"message": messages.all_users_balances(), "view": None},
+            "quiz_statistics": {"message": messages.quiz_statistics(), "view": None},
             "taxes_setup": {"message": messages.taxes_setup(), "view": TaxesSetupView()},
             "gift": {"message": messages.gift(), "view": GiftView()},
             "prices": {"message": messages.set_price(), "view": SetPriceView()},
@@ -727,6 +733,7 @@ class QuizModal(nextcord.ui.Modal):
             self.prize_amount.value,
             self.prize_special.value
         )
+        sql.set_quiz_statistics(add_quiz=True)
         logging.info("Администратор начинает викторину.")
         await interaction.followup.send(
             **messages.quiz(self.question.value, image_binary_data, image_filename),

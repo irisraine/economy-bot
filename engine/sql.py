@@ -45,6 +45,15 @@ def create_tables():
             SELECT 0
             WHERE NOT EXISTS (SELECT 1 FROM encashment
             )""")
+        cursor.execute("""CREATE TABLE IF NOT EXISTS quiz_statistics (
+            total_quizzes_held INTEGER NOT NULL DEFAULT 0,
+            correct_answers INTEGER NOT NULL DEFAULT 0,
+            overall_prizes_amount INTEGER NOT NULL DEFAULT 0
+            )""")
+        cursor.execute("""INSERT INTO quiz_statistics (total_quizzes_held, correct_answers, overall_prizes_amount)
+            SELECT 0, 0, 0
+            WHERE NOT EXISTS (SELECT 1 FROM quiz_statistics
+            )""")
         cursor.execute("""CREATE TABLE IF NOT EXISTS premium_role_owners (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_discord_id INTEGER NOT NULL,
@@ -133,8 +142,7 @@ def get_casino_balance():
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
         cursor.execute("SELECT overall_bets, payouts FROM casino_balance")
-        current_casino_balance = cursor.fetchone()
-        return {"overall_bets": current_casino_balance[0], "payouts": current_casino_balance[1]}
+        return cursor.fetchone()
 
 
 @catch_sql_exceptions
@@ -167,6 +175,26 @@ def set_encashment_amount(amount=0, reset=False):
         else:
             cursor.execute("UPDATE encashment SET amount_to_withdrawal = amount_to_withdrawal + ?",
                            (amount,))
+
+
+@catch_sql_exceptions
+def set_quiz_statistics(add_quiz=False, prize_amount=0):
+    with sqlite3.connect(config.DATABASE_PATH) as db_connect:
+        cursor = db_connect.cursor()
+        if add_quiz:
+            cursor.execute("UPDATE quiz_statistics SET total_quizzes_held = total_quizzes_held + 1")
+        if prize_amount:
+            cursor.execute("UPDATE quiz_statistics SET correct_answers = correct_answers + 1")
+            cursor.execute("UPDATE quiz_statistics SET overall_prizes_amount = overall_prizes_amount + ?",
+                           (prize_amount,))
+
+
+@catch_sql_exceptions
+def get_quiz_statistics():
+    with sqlite3.connect(config.DATABASE_PATH) as db_connect:
+        cursor = db_connect.cursor()
+        cursor.execute("SELECT total_quizzes_held, correct_answers, overall_prizes_amount FROM quiz_statistics")
+        return cursor.fetchone()
 
 
 @catch_sql_exceptions

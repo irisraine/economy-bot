@@ -87,6 +87,7 @@ async def prize(
     elif current_quiz.in_progress():
         return await interaction.response.send_message(**messages.quiz_error("in_progress"), ephemeral=True)
     sql.set_user_balance(quiz_winner, current_quiz.prize_amount)
+    sql.set_quiz_statistics(prize_amount=current_quiz.prize_amount)
     current_quiz.close()
     logging.info(f"Пользователь {quiz_winner.name} становится победителем викторины и получает в награду "
                  f"лягушек в количестве {current_quiz.prize_amount} шт.")
