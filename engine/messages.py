@@ -167,8 +167,8 @@ def catch(user, amount):
             file_path = config.CATCH_LEGENDARY_IMAGES[7]
         case amount if 41 <= amount <= 45:
             title = "Повозка - это хорошо!"
-            description = (f"Невероятно, {user}! Ты поймал **{amount}** {utils.numeral(amount)} — теперь можно "
-                           f"немного пожить на широкую ногу!")
+            description = (f"Невероятно, {user}! Ты поймал **{amount}** {utils.numeral(amount)} - теперь можно "
+                           f"немного пожить на широкую ногу.")
             file_path = config.CATCH_LEGENDARY_IMAGES[8]
         case amount if 46 <= amount <= 49:
             title = "Мы поедем, мы помчимся..."
@@ -179,9 +179,9 @@ def catch(user, amount):
         case amount if amount == 50:
             title = "Легендарная жаба!"
             description = (f"{user}, тебе невероятно повезло! Ты выловил Жабочвяка - царя всея болота, и он "
-                           f"одарил тебя **{amount}** {utils.numeral(amount)} в обмен на свою свободу. Теперь в "
-                           f"твоём пруду кваканье звучит на весь Лаграс, и ты можешь хвастаться в салунах и "
-                           f"перед друзьями этой легендарной встречей!")
+                           f"одарил тебя **{amount}** лягушками в обмен на свою свободу. Теперь в твоём пруду "
+                           f"кваканье звучит на весь Лаграс, и ты можешь хвастаться в салунах и перед друзьями "
+                           f"этой легендарной встречей!")
             file_path = config.CATCH_LEGENDARY_IMAGES[10]
         case _:
             title = ERROR_HEADER
