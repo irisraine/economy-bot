@@ -517,10 +517,6 @@ class YahtzeeRerollView(OriginalPlayerBasicView):
         await interaction.response.defer()
         if not self.yahtzee.reroll_indexes:
             return await interaction.followup.send(**messages.yahtzee_reroll_error(is_filled=False), ephemeral=True)
-        player_balance = sql.get_user_balance(self.player)
-        bet = self.yahtzee.bet
-        if player_balance - bet < 0:
-            return await interaction.edit_original_message(**messages.balance_error(), view=None)
         self.yahtzee.play()
         second_roll_outcome = self.yahtzee.roll_outcome
         second_roll_outcome_image = self.yahtzee.draw()
@@ -533,7 +529,7 @@ class YahtzeeRerollView(OriginalPlayerBasicView):
         await interaction.edit_original_message(
             **messages.yahtzee_result(
                 player=self.yahtzee.player,
-                bet=bet,
+                bet=self.yahtzee.bet,
                 payout=payout,
                 roll_outcome=second_roll_outcome,
                 image_binary_data=second_roll_outcome_image,
