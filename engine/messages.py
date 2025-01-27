@@ -558,7 +558,7 @@ def casino_balance():
 
 
 def all_users_balances():
-    max_users = 100
+    max_users = 50
     embed_messages = []
     all_users_balances_list = sql.get_all_users_balances()
     number_of_users = len(all_users_balances_list)
