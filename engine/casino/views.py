@@ -234,7 +234,7 @@ class RouletteTrinaryBetModal(nextcord.ui.Modal):
             label="Величина ставки",
             max_length=2,
             required=True,
-            placeholder="Введите размер ставки в диапазоне от 3 до 15 лягушек",
+            placeholder="Введите размер ставки в диапазоне от 3 до 10 лягушек",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.bet_amount)
