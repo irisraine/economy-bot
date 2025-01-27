@@ -862,7 +862,7 @@ def quiz_statistics():
 
     embed_message = MessageContainer(
         title="Статистика викторин",
-        description=f"На нынешний момент интеллектуальная жизнь на сервере протекает следующим образом:\n\n"
+        description=f"Информация об интеллектуальном развитии сервера:\n\n"
                     f"- Проведено викторин за все время: **{total_quizzes_held}**\n"
                     f"- Количество правильных ответов участников: **{correct_answers}**\n"
                     f"- Общая сумма выплат участникам: **{overall_prizes_amount}** {config.FROG_EMOJI}",
