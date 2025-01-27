@@ -54,7 +54,7 @@ ROULETTE_DIMENSIONS = {
     },
     "bet_amount": {
         1: (15, 7),
-        2: (10, 8),
+        2: (10, 7),
     }
 }
 ROULETTE_CHIP_FONT = "assets/casino/monofonto.otf"
