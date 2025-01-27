@@ -53,10 +53,11 @@ ROULETTE_DIMENSIONS = {
         7: (270, 132), 28: (282, 112), 12: (299, 97), 35: (318, 83), 3: (339, 75), 26: (361, 67)
     },
     "bet_amount": {
-        1: (15, 10),
-        2: (10, 10),
+        1: (15, 7),
+        2: (10, 8),
     }
 }
+ROULETTE_CHIP_FONT = "assets/casino/monofonto.otf"
 ROULETTE_PAYOUT_MULTIPLIERS = {
     "straight": 36,
     "color": 2, "even_odd": 2, "high_low": 2,

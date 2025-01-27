@@ -245,7 +245,7 @@ class Roulette:
         if image_type == "table":
             roulette_table = Image.open(config.ROULETTE_TABLE)
             chip = Image.open(config.ROULETTE_CHIP)
-            font = ImageFont.truetype("arial.ttf", 20)
+            font = ImageFont.truetype(config.ROULETTE_CHIP_FONT, 22)
             for bet in self.__bets:
                 category, value, amount = bet["category"], bet["value"], bet["amount"]
                 chip_with_bet_amount = chip.copy()
