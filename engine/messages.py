@@ -576,7 +576,7 @@ def all_users_balances():
         end = start + max_users
         users_slice = all_users_balances_list[start:end]
         description = "\n".join([
-            f"{index + 1}. {user_balance[1]} — **{user_balance[2]}**"
+            f"{index + 1}. <@{user_balance[0]}> — **{user_balance[2]}**"
             for index, user_balance in enumerate(users_slice, start=start)
         ])
         title = "Земноводные балансы всех пользователей" if i == 0 else None
