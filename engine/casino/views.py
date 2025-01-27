@@ -141,7 +141,7 @@ class RouletteStraightUpBetModal(nextcord.ui.Modal):
             label="Величина ставки",
             max_length=2,
             required=True,
-            placeholder="Введите размер ставки в диапазоне от 1 до 10 лягушек",
+            placeholder="Введите размер ставки в диапазоне от 1 до 3 лягушек",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.bet_amount)
@@ -153,7 +153,7 @@ class RouletteStraightUpBetModal(nextcord.ui.Modal):
             return await interaction.followup.send(
                 **messages.roulette_bet_confirmation(is_valid=False, category="straight"), ephemeral=True
             )
-        bet = utils.valid_bet(self.bet_amount.value, lower_limit=1, upper_limit=10)
+        bet = utils.valid_bet(self.bet_amount.value, lower_limit=1, upper_limit=3)
         if not bet:
             return await interaction.followup.send(
                 **messages.roulette_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
@@ -188,14 +188,14 @@ class RouletteBinaryBetModal(nextcord.ui.Modal):
             label="Величина ставки",
             max_length=2,
             required=True,
-            placeholder="Введите размер ставки в диапазоне от 5 до 25 лягушек",
+            placeholder="Введите размер ставки в диапазоне от 5 до 15 лягушек",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.bet_amount)
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        bet = utils.valid_bet(self.bet_amount.value, lower_limit=5, upper_limit=25)
+        bet = utils.valid_bet(self.bet_amount.value, lower_limit=5, upper_limit=15)
         if not bet:
             return await interaction.followup.send(
                 **messages.roulette_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
@@ -246,7 +246,7 @@ class RouletteTrinaryBetModal(nextcord.ui.Modal):
             return await interaction.followup.send(
                 **messages.roulette_bet_confirmation(is_valid=False, category="trinary"), ephemeral=True
             )
-        bet = utils.valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=15)
+        bet = utils.valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=10)
         if not bet:
             return await interaction.followup.send(
                 **messages.roulette_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
@@ -279,7 +279,7 @@ class RouletteSixlineBetModal(nextcord.ui.Modal):
             label="Величина ставки",
             max_length=2,
             required=True,
-            placeholder="Введите размер ставки в диапазоне от 3 до 15 лягушек",
+            placeholder="Введите размер ставки в диапазоне от 3 до 10 лягушек",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.bet_amount)
@@ -291,7 +291,7 @@ class RouletteSixlineBetModal(nextcord.ui.Modal):
             return await interaction.followup.send(
                 **messages.roulette_bet_confirmation(is_valid=False, category="sixline"), ephemeral=True
             )
-        bet = utils.valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=15)
+        bet = utils.valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=10)
         if not bet:
             return await interaction.followup.send(
                 **messages.roulette_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
