@@ -8,17 +8,15 @@ import engine.casino.config as config
 class SlotMachine:
     REEL = {
         'low': (['frog_green'] * 5 + ['frog_orange'] * 4 + ['frog_white'] * 3),
-        'high': (['gold'] * 1 + ['cart'] * 4 + ['star'] * 6 + ['horseshoe'] * 8 + ['moonshine'] * 10 +
+        'high': (['gold'] * 1 + ['cart'] * 3 + ['star'] * 6 + ['horseshoe'] * 8 + ['moonshine'] * 10 +
                  ['frog_green'] * 20 + ['frog_orange'] * 16 + ['frog_white'] * 2)
     }
     PREDEFINED_OUTCOMES = {
         'winning': {
-            ('cart', 'cart', 'cart'): (0, 0.015),
-            ('star', 'star', 'star'): (0.015, 0.045),
-            ('horseshoe', 'horseshoe', 'horseshoe'): (0.045, 0.105),
-            ('moonshine', 'moonshine', 'moonshine'): (0.105, 0.2),
-            ('frog_white', 'frog_white', 'frog_white'): (0.2, 0.25),
-            ('frog_orange', 'frog_orange', 'frog_orange'): (0.25, 0.35),
+            ('horseshoe', 'horseshoe', 'horseshoe'): (0, 0.035),
+            ('moonshine', 'moonshine', 'moonshine'): (0.035, 0.1),
+            ('frog_white', 'frog_white', 'frog_white'): (0.1, 0.2),
+            ('frog_orange', 'frog_orange', 'frog_orange'): (0.2, 0.35),
             ('gold', 'gold'): (0.35, 0.5),
             ('frog_green', 'frog_green', 'frog_green'): (0.5, 0.7),
             ('gold',): (0.7, 1.0)
@@ -28,9 +26,9 @@ class SlotMachine:
             ('star', 'star'): (0.15, 0.3),
             ('horseshoe', 'horseshoe'): (0.3, 0.45),
             ('moonshine', 'moonshine'): (0.45, 0.6),
-            ('frog_white', 'frog_white'): (0.6, 0.75),
-            ('frog_orange', 'frog_orange'): (0.75, 0.9),
-            ('frog_green', 'frog_green'): (0.9, 1.0),
+            ('frog_white', 'frog_white'): (0.6, 0.7),
+            ('frog_orange', 'frog_orange'): (0.7, 0.8),
+            ('frog_green', 'frog_green'): (0.8, 1.0),
         }
     }
     THRESHOLDS_FOR_PREDEFINED_OUTCOMES = {
