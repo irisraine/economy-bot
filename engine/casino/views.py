@@ -455,14 +455,14 @@ class YahtzeeBetModal(nextcord.ui.Modal):
             label="Величина ставки",
             max_length=2,
             required=True,
-            placeholder="Введите размер ставки в диапазоне от 3 до 15 лягушек",
+            placeholder="Введите размер ставки в диапазоне от 3 до 10 лягушек",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.bet_amount)
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        bet = utils.valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=15)
+        bet = utils.valid_bet(self.bet_amount.value, lower_limit=3, upper_limit=10)
         if not bet:
             return await interaction.followup.send(
                 **messages.yahtzee_bet_confirmation(is_valid=False, category="bet"), ephemeral=True
