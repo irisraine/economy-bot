@@ -709,10 +709,10 @@ def encashment(amount, encashment_day):
 
 
 def role_manage():
-    def get_role_owners_description(role_owners, current_time, role_id):
+    def get_role_users_description(role_users, current_time, role_id):
         description = ""
-        for i, role_owner in enumerate(role_owners):
-            expiration_time = role_owner[1]
+        for i, role_user in enumerate(role_users):
+            expiration_time = role_user[1]
             if expiration_time > current_time:
                 if expiration_time - current_time < 86400:
                     expire = "истекает **сегодня!**"
@@ -721,7 +721,7 @@ def role_manage():
                     expire = f"истекает **{expiration_date}**."
             else:
                 expire = "**уже истекла!**"
-            description += f"{i}. {role_owner[0]} — {expire}\n"
+            description += f"{i}. {role_user[0]} — {expire}\n"
 
         if description:
             return (f"Нижеприведенные участники на данный момент обладают "
@@ -732,11 +732,13 @@ def role_manage():
 
     current_time = utils.get_timestamp()
     description = ""
-    premium_role_lite_owners = sql.get_all_premium_role_owners(lite=True)
-    premium_role_owners = sql.get_all_premium_role_owners()
-    description += get_role_owners_description(premium_role_lite_owners, current_time, config.PREMIUM_ROLE['lite'])
-    description += get_role_owners_description(premium_role_owners, current_time, config.PREMIUM_ROLE['basic'])
-    if premium_role_owners or premium_role_lite_owners:
+    premium_role_users = {
+        "lite": sql.get_all_premium_role_users(role_tier="lite"),
+        "basic": sql.get_all_premium_role_users()
+    }
+    description += get_role_users_description(premium_role_users["lite"], current_time, config.PREMIUM_ROLE['lite'])
+    description += get_role_users_description(premium_role_users["basic"], current_time, config.PREMIUM_ROLE['basic'])
+    if premium_role_users["lite"] or premium_role_users["basic"]:
         description += ("*Если в списке имеются участники, чей срок использования роли истек, "
                         "снимите с них роль c помощью соответствующей кнопки.*")
 
@@ -748,8 +750,8 @@ def role_manage():
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def role_expired_and_removed(is_expired_role_owners):
-    if is_expired_role_owners:
+def role_expired_and_removed(is_expired_role_users):
+    if is_expired_role_users:
         title = SUCCESS_HEADER
         description = "Участники с просроченными донатными ролями лишились их."
         file_path = config.ROLE_REMOVAL_IMAGE

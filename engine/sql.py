@@ -54,16 +54,11 @@ def create_tables():
             SELECT 0, 0, 0
             WHERE NOT EXISTS (SELECT 1 FROM quiz_statistics
             )""")
-        cursor.execute("""CREATE TABLE IF NOT EXISTS premium_role_owners (
+        cursor.execute("""CREATE TABLE IF NOT EXISTS premium_role_users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_discord_id INTEGER NOT NULL,
             user_discord_name TEXT NOT NULL,
-            expiration_time INTEGER NOT NULL
-            )""")
-        cursor.execute("""CREATE TABLE IF NOT EXISTS premium_role_lite_owners (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_discord_id INTEGER NOT NULL,
-            user_discord_name TEXT NOT NULL,
+            role_tier TEXT NOT NULL,
             expiration_time INTEGER NOT NULL
             )""")
 
@@ -198,39 +193,37 @@ def get_quiz_statistics():
 
 
 @catch_sql_exceptions
-def add_premium_role_owner(user, expiration_time, lite=False):
-    premium_table = "premium_role_owners" if not lite else "premium_role_lite_owners"
+def add_premium_role_user(user, expiration_time, role_tier="basic"):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute(f"SELECT COUNT(*) FROM {premium_table} WHERE user_discord_id = ?",
-                       (user.id,))
+        cursor.execute(f"SELECT COUNT(*) FROM premium_role_users WHERE user_discord_id = ? AND role_tier = ?",
+                       (user.id, role_tier))
         user_exists = cursor.fetchone()[0]
         if user_exists:
-            cursor.execute(f"UPDATE {premium_table} SET user_discord_name = ?, expiration_time = ? WHERE user_discord_id = ?",
-                           (user.name, expiration_time, user.id))
+            cursor.execute(f"UPDATE premium_role_users SET user_discord_name = ?, expiration_time = ? WHERE user_discord_id = ? AND role_tier = ?",
+                           (user.name, expiration_time, user.id, role_tier))
         else:
-            cursor.execute(f"INSERT INTO {premium_table} (user_discord_id, user_discord_name, expiration_time) VALUES (?, ?, ?)",
-                           (user.id, user.name, expiration_time))
+            cursor.execute(f"INSERT INTO premium_role_users (user_discord_id, user_discord_name, role_tier, expiration_time) VALUES (?, ?, ?, ?)",
+                           (user.id, user.name, role_tier, expiration_time))
 
 
 @catch_sql_exceptions
-def get_all_premium_role_owners(lite=False):
-    premium_table = "premium_role_owners" if not lite else "premium_role_lite_owners"
+def get_all_premium_role_users(role_tier="basic"):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute(f"SELECT user_discord_name, expiration_time FROM {premium_table}")
+        cursor.execute(f"SELECT user_discord_name, expiration_time FROM premium_role_users WHERE role_tier = ?",
+                       (role_tier, ))
         return cursor.fetchall()
 
 
 @catch_sql_exceptions
-def remove_expired_premium_role_owners(current_time, lite=False):
-    premium_table = "premium_role_owners" if not lite else "premium_role_lite_owners"
+def remove_expired_premium_role_users(current_time, role_tier="basic"):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute(f"SELECT user_discord_id FROM {premium_table} WHERE expiration_time < ?",
-                       (current_time,))
-        expired_premium_role_owners_ids = cursor.fetchall()
-        if expired_premium_role_owners_ids:
-            cursor.execute(f"DELETE FROM {premium_table} WHERE expiration_time < ?",
-                           (current_time, ))
-            return expired_premium_role_owners_ids
+        cursor.execute(f"SELECT user_discord_id FROM premium_role_users WHERE expiration_time < ? AND role_tier = ?",
+                       (current_time, role_tier))
+        expired_premium_role_users_ids = cursor.fetchall()
+        if expired_premium_role_users_ids:
+            cursor.execute(f"DELETE FROM premium_role_users WHERE expiration_time < ? AND role_tier = ?",
+                           (current_time, role_tier))
+            return expired_premium_role_users_ids
