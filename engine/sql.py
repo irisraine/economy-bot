@@ -99,7 +99,8 @@ def get_last_catching_time(user):
 def set_user_balance(user, amount):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute("SELECT balance FROM user_balances WHERE user_discord_id = ?", (user.id,))
+        cursor.execute("SELECT balance FROM user_balances WHERE user_discord_id = ?",
+                       (user.id,))
         if cursor.fetchone() is None:
             cursor.execute("INSERT INTO user_balances (user_discord_id, user_discord_name) VALUES (?, ?)",
                            (user.id, user.name))
@@ -196,14 +197,16 @@ def get_quiz_statistics():
 def add_premium_role_user(user, expiration_time, role_tier="basic"):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute(f"SELECT COUNT(*) FROM premium_role_users WHERE user_discord_id = ? AND role_tier = ?",
+        cursor.execute("SELECT COUNT(*) FROM premium_role_users WHERE user_discord_id = ? AND role_tier = ?",
                        (user.id, role_tier))
         user_exists = cursor.fetchone()[0]
         if user_exists:
-            cursor.execute(f"UPDATE premium_role_users SET user_discord_name = ?, expiration_time = ? WHERE user_discord_id = ? AND role_tier = ?",
+            cursor.execute("UPDATE premium_role_users "
+                           "SET user_discord_name = ?, expiration_time = ? WHERE user_discord_id = ? AND role_tier = ?",
                            (user.name, expiration_time, user.id, role_tier))
         else:
-            cursor.execute(f"INSERT INTO premium_role_users (user_discord_id, user_discord_name, role_tier, expiration_time) VALUES (?, ?, ?, ?)",
+            cursor.execute("INSERT INTO premium_role_users "
+                           "(user_discord_id, user_discord_name, role_tier, expiration_time) VALUES (?, ?, ?, ?)",
                            (user.id, user.name, role_tier, expiration_time))
 
 
@@ -211,7 +214,7 @@ def add_premium_role_user(user, expiration_time, role_tier="basic"):
 def get_all_premium_role_users(role_tier="basic"):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute(f"SELECT user_discord_name, expiration_time FROM premium_role_users WHERE role_tier = ?",
+        cursor.execute("SELECT user_discord_name, expiration_time FROM premium_role_users WHERE role_tier = ?",
                        (role_tier, ))
         return cursor.fetchall()
 
@@ -220,10 +223,10 @@ def get_all_premium_role_users(role_tier="basic"):
 def remove_expired_premium_role_users(current_time, role_tier="basic"):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute(f"SELECT user_discord_id FROM premium_role_users WHERE expiration_time < ? AND role_tier = ?",
+        cursor.execute("SELECT user_discord_id FROM premium_role_users WHERE expiration_time < ? AND role_tier = ?",
                        (current_time, role_tier))
         expired_premium_role_users_ids = cursor.fetchall()
         if expired_premium_role_users_ids:
-            cursor.execute(f"DELETE FROM premium_role_users WHERE expiration_time < ? AND role_tier = ?",
+            cursor.execute("DELETE FROM premium_role_users WHERE expiration_time < ? AND role_tier = ?",
                            (current_time, role_tier))
             return expired_premium_role_users_ids
