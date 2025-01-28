@@ -95,10 +95,10 @@ class PurchaseView(nextcord.ui.View):
                 nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE['basic']),
                 nextcord.utils.get(interaction.guild.roles, id=config.PREMIUM_ROLE['max'])
             ]
-            user_premium_role = next((role for role in premium_roles if role in interaction.user.roles), None)
-            if user_premium_role:
+            assigned_premium_role = next((role for role in premium_roles if role in interaction.user.roles), None)
+            if assigned_premium_role:
                 return await interaction.edit_original_message(
-                    **messages.already_has_premium_role(interaction.user, user_premium_role),
+                    **messages.already_has_premium_role(interaction.user, assigned_premium_role),
                     view=None
                 )
         sql.set_user_balance(interaction.user, -self.price)
