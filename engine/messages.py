@@ -308,7 +308,8 @@ def transfer_confirmation(other_user, amount, is_failed=False):
     else:
         title = "Перевод невозможен"
         description = (f"К сожалению, в твоем пруду слишком мало лягушек, и ты не можешь позволить себе "
-                       f"перевести {other_user.mention} целых **{amount}** {utils.numeral(amount)}.")
+                       f"перевести {other_user.mention} {'даже' if amount < 10 else 'целых'} "
+                       f"**{amount}** {utils.numeral(amount)}.")
         file_path = config.TRANSFER_DENIED_IMAGE
     embed_message = MessageContainer(
         title=title,
