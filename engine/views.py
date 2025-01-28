@@ -183,10 +183,10 @@ class AdminMenuView(nextcord.ui.View):
         placeholder="Выбери нужную опцию",
         options=[
             nextcord.SelectOption(
-                label="Кэшировать файлы",
-                value="cache",
-                description="Выполнить при первом запуске бота",
-                emoji="⚙️"),
+                label="Посмотреть счёта всех участников",
+                value="all_users_balance",
+                description="Изучить содержимое прудов всех участников",
+                emoji="📈"),
             nextcord.SelectOption(
                 label="Посмотреть счёт банка",
                 value="bank_balance",
@@ -198,20 +198,10 @@ class AdminMenuView(nextcord.ui.View):
                 description="Посмотреть, сколько выиграли и проиграли участники",
                 emoji="🎰"),
             nextcord.SelectOption(
-                label="Посмотреть счёта всех участников",
-                value="all_users_balance",
-                description="Изучить содержимое прудов всех участников",
-                emoji="📈"),
-            nextcord.SelectOption(
                 label="Статистика викторин",
                 value="quiz_statistics",
                 description="Посмотреть на достижения эрудитов",
                 emoji="🎓"),
-            nextcord.SelectOption(
-                label="Установить налог",
-                value="taxes_setup",
-                description="Активировать сбор налога и задать его размер",
-                emoji="💸"),
             nextcord.SelectOption(
                 label="Перевести сколько угодно лягушек участнику",
                 value="gift",
@@ -233,6 +223,11 @@ class AdminMenuView(nextcord.ui.View):
                 description="Определить допустимую частоту отлова",
                 emoji="⏰"),
             nextcord.SelectOption(
+                label="Установить налог",
+                value="taxes_setup",
+                description="Активировать сбор налога и задать его размер",
+                emoji="💸"),
+            nextcord.SelectOption(
                 label="Отправить сообщение от лица бота в канал новостей",
                 value="post_news",
                 description="Говорить от имени лягушачьего предводителя",
@@ -243,6 +238,11 @@ class AdminMenuView(nextcord.ui.View):
                 description="Кому и сколько еще осталось квакать",
                 emoji="👑"),
             nextcord.SelectOption(
+                label="Кэшировать файлы",
+                value="cache",
+                description="Выполнить при первом запуске бота",
+                emoji="⚙️"),
+            nextcord.SelectOption(
                 label="Обнулить базу данных",
                 value="reset_database",
                 description="Устроить финансовый апокалипсис",
@@ -251,32 +251,25 @@ class AdminMenuView(nextcord.ui.View):
     )
     async def select_admin_menu_callback(self, select, interaction: nextcord.Interaction):
         admin_actions = {
+            "all_users_balance": {"message": messages.all_users_balances(), "view": None},
             "bank_balance": {"message": messages.bank_balance(), "view": None},
             "casino_balance": {"message": messages.casino_balance(), "view": None},
-            "all_users_balance": {"message": messages.all_users_balances(), "view": None},
             "quiz_statistics": {"message": messages.quiz_statistics(), "view": None},
-            "taxes_setup": {"message": messages.taxes_setup(), "view": TaxesSetupView()},
             "gift": {"message": messages.gift(), "view": GiftView()},
             "prices": {"message": messages.set_price(), "view": SetPriceView()},
             "probabilities": {"message": messages.set_probabilities(), "view": SetProbabilitiesView()},
             "cooldown": {"message": messages.set_cooldown(), "view": SetCooldownView()},
+            "taxes_setup": {"message": messages.taxes_setup(), "view": TaxesSetupView()},
             "post_news": {"message": messages.post_news(), "view": PostNewsView()},
             "role_manage": {"message": messages.role_manage(), "view": RoleManageView()},
+            "cache": {"message": messages.cache(), "view": CacheView()},
             "reset_database": {"message": messages.reset_database(), "view": ResetDatabaseView()},
         }
         await interaction.response.defer()
-
-        if select.values[0] == "cache":
-            files_count_printable = utils.refresh_cache()
-            await interaction.edit_original_message(
-                **messages.caching_confirmation(files_count_printable),
-                view=AdminActionBasicView()
-            )
-        else:
-            await interaction.edit_original_message(
-                **admin_actions[select.values[0]]["message"],
-                view=admin_actions[select.values[0]]["view"]
-            )
+        await interaction.edit_original_message(
+            **admin_actions[select.values[0]]["message"],
+            view=admin_actions[select.values[0]]["view"]
+        )
 
     @nextcord.ui.button(label="Закрыть админку", style=nextcord.ButtonStyle.gray, emoji="❌")
     async def close_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
@@ -643,6 +636,20 @@ class RoleManageView(AdminActionBasicView):
             logging.info("Администратор снимает с участников роли лягушки, срок использования которых истек.")
         is_expired_role_users = expired_premium_role_users_ids["basic"] or expired_premium_role_users_ids["lite"]
         await interaction.followup.send(**messages.role_expired_and_removed(is_expired_role_users), ephemeral=True)
+
+
+class CacheView(AdminActionBasicView):
+    def __init__(self):
+        super().__init__()
+
+    @nextcord.ui.button(label="Начать кэширование", style=nextcord.ButtonStyle.green, emoji="📀")
+    async def cache_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        await interaction.response.defer()
+        files_count_printable = utils.refresh_cache()
+        await interaction.edit_original_message(
+            **messages.caching_confirmation(files_count_printable),
+            view=None
+        )
 
 
 class ResetDatabaseModal(nextcord.ui.Modal):
