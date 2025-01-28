@@ -635,7 +635,10 @@ class RoleManageView(AdminActionBasicView):
                 await expired_premium_role_basic_user.remove_roles(premium_role_basic)
             logging.info("Администратор снимает с участников роли лягушки, срок использования которых истек.")
         is_expired_role_users = expired_premium_role_users_ids["basic"] or expired_premium_role_users_ids["lite"]
-        await interaction.followup.send(**messages.role_expired_and_removed(is_expired_role_users), ephemeral=True)
+        await interaction.edit_original_message(
+            **messages.role_expired_and_removed(is_expired_role_users),
+            view=None
+        )
 
 
 class CacheView(AdminActionBasicView):
