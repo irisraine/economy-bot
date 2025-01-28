@@ -6,12 +6,13 @@ import engine.sql as sql
 import engine.views as views
 import engine.messages as messages
 import engine.utils as utils
+from engine.addon import QuizManager
 
 
 intents = nextcord.Intents.all()
 client = commands.Bot(command_prefix=';', intents=intents, default_guild_ids=[config.GUILD_ID])
 
-current_quiz = None
+quiz_manager = QuizManager()
 
 
 @client.slash_command(description="Поймать лягушку")
@@ -69,7 +70,8 @@ async def shop(interaction: nextcord.Interaction):
 @client.slash_command(description="Провести викторину")
 @application_checks.has_permissions(administrator=True)
 async def quiz(interaction: nextcord.Interaction):
-    await interaction.response.send_modal(views.QuizModal())
+    quiz_manager.create_quiz()
+    await interaction.response.send_modal(views.QuizModal(quiz_manager.current_quiz))
 
 
 @client.slash_command(description="Выдать награду победителю викторины")
@@ -80,18 +82,24 @@ async def prize(
             name="username",
             description="Имя победителя викторины")
 ):
-    if not current_quiz or not current_quiz.is_active():
+    if not quiz_manager.current_quiz or not quiz_manager.current_quiz.is_active():
         return await interaction.response.send_message(**messages.quiz_error("no_active_quiz"), ephemeral=True)
     elif quiz_winner.bot:
         return await interaction.response.send_message(**messages.quiz_error("to_bot"), ephemeral=True)
-    elif current_quiz.in_progress():
+    elif quiz_manager.current_quiz.in_progress():
         return await interaction.response.send_message(**messages.quiz_error("in_progress"), ephemeral=True)
-    sql.set_user_balance(quiz_winner, current_quiz.prize_amount)
-    sql.set_quiz_statistics(prize_amount=current_quiz.prize_amount)
-    current_quiz.close()
+    quiz_manager.reward_winner(quiz_winner)
+    quiz_manager.current_quiz.close()
     logging.info(f"Пользователь {quiz_winner.name} становится победителем викторины и получает в награду "
-                 f"лягушек в количестве {current_quiz.prize_amount} шт.")
-    await interaction.response.send_message(**messages.quiz_prize(quiz_winner, **current_quiz.get_contents()))
+                 f"лягушек в количестве {quiz_manager.current_quiz.prize_amount} шт.")
+    await interaction.response.send_message(
+        **messages.quiz_prize(
+            quiz_winner,
+            quiz_manager.current_quiz.question,
+            quiz_manager.current_quiz.prize_amount,
+            quiz_manager.current_quiz.prize_special,
+        )
+    )
 
 
 @client.slash_command(description="Админка")
