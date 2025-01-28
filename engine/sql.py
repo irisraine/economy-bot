@@ -99,11 +99,16 @@ def get_last_catching_time(user):
 def set_user_balance(user, amount):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        cursor.execute("SELECT balance FROM user_balances WHERE user_discord_id = ?",
+        cursor.execute("SELECT balance, user_discord_name FROM user_balances WHERE user_discord_id = ?",
                        (user.id,))
-        if cursor.fetchone() is None:
+        row = cursor.fetchone()
+        if row is None:
             cursor.execute("INSERT INTO user_balances (user_discord_id, user_discord_name) VALUES (?, ?)",
                            (user.id, user.name))
+        current_user_discord_name = row[1]
+        if current_user_discord_name != user.name:
+            cursor.execute("UPDATE user_balances SET user_discord_name = ? WHERE user_discord_id = ?",
+                           (user.name, user.id))
         cursor.execute("UPDATE user_balances SET balance = balance + ? WHERE user_discord_id = ?",
                        (amount, user.id,))
 
