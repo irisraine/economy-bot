@@ -747,8 +747,8 @@ class QuizModal(nextcord.ui.Modal):
         )
         logging.info("Администратор начинает викторину.")
         await interaction.followup.send(
-            **messages.quiz(self.question.value, image_binary_data, image_filename),
+            **messages.quiz(self.current_quiz.question, image_binary_data, image_filename),
             allowed_mentions=nextcord.AllowedMentions(roles=True)
         )
         await asyncio.sleep(config.QUIZ_ROUND_TIME)
-        await interaction.followup.send(**messages.quiz_time_up(self.answer.value))
+        await interaction.followup.send(**messages.quiz_time_up(self.current_quiz.answer))

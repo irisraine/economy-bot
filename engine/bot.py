@@ -48,11 +48,11 @@ async def transfer(
         description="Имя получателя"),
 ):
     if amount <= 0:
-        return await interaction.response.send_message(**messages.transfer_denied("non_positive_amount"))
+        return await interaction.response.send_message(**messages.transfer_denied(reason="non_positive_amount"))
     elif other_user == interaction.user:
-        return await interaction.response.send_message(**messages.transfer_denied("to_self"))
+        return await interaction.response.send_message(**messages.transfer_denied(reason="to_self"))
     elif other_user.bot:
-        return await interaction.response.send_message(**messages.transfer_denied("to_bot"))
+        return await interaction.response.send_message(**messages.transfer_denied(reason="to_bot"))
     await interaction.response.send_message(
         **messages.transfer(other_user, amount),
         view=views.TransferView(amount, other_user, interaction.user)
@@ -82,14 +82,12 @@ async def prize(
             name="username",
             description="Имя победителя викторины")
 ):
-    if not quiz_manager.current_quiz or not quiz_manager.current_quiz.is_active():
-        return await interaction.response.send_message(**messages.quiz_error("no_active_quiz"), ephemeral=True)
+    quiz_status = quiz_manager.get_status()
+    if quiz_status != "finished":
+        return await interaction.response.send_message(**messages.quiz_error(reason=quiz_status), ephemeral=True)
     elif quiz_winner.bot:
-        return await interaction.response.send_message(**messages.quiz_error("to_bot"), ephemeral=True)
-    elif quiz_manager.current_quiz.in_progress():
-        return await interaction.response.send_message(**messages.quiz_error("in_progress"), ephemeral=True)
+        return await interaction.response.send_message(**messages.quiz_error(reason="to_bot"), ephemeral=True)
     quiz_manager.reward_winner(quiz_winner)
-    quiz_manager.current_quiz.close()
     logging.info(f"Пользователь {quiz_winner.name} становится победителем викторины и получает в награду "
                  f"лягушек в количестве {quiz_manager.current_quiz.prize_amount} шт.")
     await interaction.response.send_message(
@@ -100,6 +98,7 @@ async def prize(
             quiz_manager.current_quiz.prize_special,
         )
     )
+    quiz_manager.close_quiz()
 
 
 @client.slash_command(description="Админка")

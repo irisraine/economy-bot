@@ -839,7 +839,7 @@ def quiz_error(reason):
     if reason == "incorrect_prize_amount":
         description = ("Ошибка при создании раунда викторины. Похоже, вы ошиблись при вводе размера награды, "
                        "она должна быть целым положительным числом.")
-    elif reason == "no_active_quiz":
+    elif reason == "no_available_quiz":
         description = ("Викторина еще не начата, либо уже завершилась, либо прошло уже более 30 минут после ее начала, "
                        "и время для вручения приза вышло.")
     elif reason == "in_progress":
