@@ -327,10 +327,7 @@ class SetPriceView(AdminActionBasicView):
     def __init__(self):
         super().__init__()
 
-    @nextcord.ui.select(
-        placeholder="Выбери нужный товар",
-        options=options
-    )
+    @nextcord.ui.select(placeholder="Выбери нужный товар", options=options)
     async def set_price_callback(self, select, interaction: nextcord.Interaction):
         await interaction.response.send_modal(SetPriceModal(select.values[0]))
 
