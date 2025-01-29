@@ -13,7 +13,7 @@ class MessageContainer:
         self.__embed = None
         fp = io.BytesIO(image_binary_data) if image_binary_data else file_path
         file_name = file_path.split('/')[-1]
-        color = ERROR_COLOR_CODE if title == ERROR_HEADER else BASIC_COLOR_CODE
+        color = BASIC_COLOR_CODE if title != ERROR_HEADER else ERROR_COLOR_CODE
         self.__embed = nextcord.Embed(
             title=title,
             description=description,

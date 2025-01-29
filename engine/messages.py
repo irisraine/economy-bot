@@ -38,10 +38,11 @@ class MessageContainer:
             fp = file_path
         file_name = file_path.split('/')[-1]
         if file_name.split('.')[-1] in ['jpg', 'jpeg', 'png', 'gif']:
+            color = config.BASIC_COLOR_CODE if title != ERROR_HEADER else config.ERROR_COLOR_CODE
             self.__embed = nextcord.Embed(
                 title=title,
                 description=description,
-                colour=nextcord.Colour.from_rgb(*config.BASIC_COLOR_CODE),
+                colour=nextcord.Colour.from_rgb(*color),
             )
             image_attachment = f"attachment://{file_name}"
             self.__embed.set_image(url=image_attachment)
@@ -504,7 +505,7 @@ def set_cooldown_confirmation(is_valid=True):
         file_path = config.SUCCESS_OPERATION_IMAGE
     else:
         title = ERROR_HEADER
-        description = ("Вы установили ошиблись при установке кулдауна. "
+        description = ("Вы ошиблись при установке кулдауна. "
                        "Внимательно перечитайте требования к устанавливаемым значению")
         file_path = config.ERROR_IMAGE
     embed_message = MessageContainer(
@@ -686,7 +687,7 @@ def taxes_setup_confirmation_message(is_taxes_set_active=True, value=0, change_t
 def taxes_setup_error():
     embed_message = MessageContainer(
         title=ERROR_HEADER,
-        description="Вы установили ошиблись при установке размера налога. Он должен быть целым числом в размере "
+        description="Вы ошиблись при установке размера налога. Он должен быть целым числом в размере "
                     "от 1 до 9 лягушек!",
         file_path=config.ERROR_IMAGE
     )
