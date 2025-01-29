@@ -330,6 +330,9 @@ def transfer_denied(reason):
     elif reason == "non_positive_amount":
         description = "Количество переводимых лягушек должно быть положительным числом."
         file_path = config.TRANSFER_DENIED_IMAGE
+    elif reason == "foreign_transfer":
+        description = "Вы не можете сделать перевод, поскольку эта транзакция принадлежит не вам!"
+        file_path = config.TRANSFER_DENIED_IMAGE
     embed_message = MessageContainer(
         title="Перевод невозможен",
         description=description,
@@ -904,15 +907,6 @@ def image_url_error():
                     "Если эта ошибка будет повторяться, используйте другую ссылку. Либо запостите сообщение "
                     "со стандартным изображением, оставив поле для ссылки пустым.",
         file_path=config.ERROR_IMAGE
-    )
-    return {'embed': embed_message.embed, 'file': embed_message.file}
-
-
-def other_user_transfer_error():
-    embed_message = MessageContainer(
-        title=ERROR_HEADER,
-        description="Вы не можете сделать перевод, поскольку эта транзакция принадлежит не вам!",
-        file_path=config.TRANSFER_DENIED_IMAGE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 

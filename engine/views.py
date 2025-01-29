@@ -144,7 +144,7 @@ class TransferView(nextcord.ui.View):
         await interaction.response.defer()
         if interaction.user.id != self.original_user.id:
             return await interaction.edit_original_message(
-                **messages.other_user_transfer_error(),
+                **messages.transfer_denied(reason="foreign_transfer"),
                 view=None
             )
         user_balance = sql.get_user_balance(interaction.user)
