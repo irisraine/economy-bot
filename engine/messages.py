@@ -510,7 +510,7 @@ def set_cooldown_confirmation(is_valid=True):
     else:
         title = ERROR_HEADER
         description = ("Вы ошиблись при установке кулдауна. "
-                       "Внимательно перечитайте требования к устанавливаемым значению")
+                       "Внимательно перечитайте требования к устанавливаемому значению.")
         file_path = config.ERROR_IMAGE
     embed_message = MessageContainer(
         title=title,
