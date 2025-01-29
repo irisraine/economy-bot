@@ -231,6 +231,16 @@ def image_download(url):
         return None, None
 
 
+def setup_directories():
+    directories = ['database', 'logs']
+
+    for directory in directories:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+
 def reset_database():
     try:
         if os.path.exists(config.DATABASE_PATH):
