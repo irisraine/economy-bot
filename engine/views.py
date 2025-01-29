@@ -54,10 +54,7 @@ class ShopMenuView(nextcord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-    @nextcord.ui.select(
-        placeholder="Выбери нужный товар",
-        options=options
-    )
+    @nextcord.ui.select(placeholder="Выбери нужный товар", options=options)
     async def select_purchase_callback(self, select, interaction: nextcord.Interaction):
         item = items()[select.values[0]]['description']
         price = items()[select.values[0]]['price']
