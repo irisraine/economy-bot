@@ -105,10 +105,11 @@ def set_user_balance(user, amount):
         if row is None:
             cursor.execute("INSERT INTO user_balances (user_discord_id, user_discord_name) VALUES (?, ?)",
                            (user.id, user.name))
-        current_user_discord_name = row[1]
-        if current_user_discord_name != user.name:
-            cursor.execute("UPDATE user_balances SET user_discord_name = ? WHERE user_discord_id = ?",
-                           (user.name, user.id))
+        else:
+            current_user_discord_name = row[1]
+            if current_user_discord_name != user.name:
+                cursor.execute("UPDATE user_balances SET user_discord_name = ? WHERE user_discord_id = ?",
+                               (user.name, user.id))
         cursor.execute("UPDATE user_balances SET balance = balance + ? WHERE user_discord_id = ?",
                        (amount, user.id,))
 
@@ -204,8 +205,8 @@ def add_premium_role_user(user, expiration_time, role_tier="basic"):
         cursor = db_connect.cursor()
         cursor.execute("SELECT COUNT(*) FROM premium_role_users WHERE user_discord_id = ? AND role_tier = ?",
                        (user.id, role_tier))
-        user_exists = cursor.fetchone()[0]
-        if user_exists:
+        row = cursor.fetchone()[0]
+        if row:
             cursor.execute("UPDATE premium_role_users "
                            "SET user_discord_name = ?, expiration_time = ? WHERE user_discord_id = ? AND role_tier = ?",
                            (user.name, expiration_time, user.id, role_tier))
