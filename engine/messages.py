@@ -321,18 +321,19 @@ def transfer_confirmation(other_user, amount, is_failed=False):
 
 
 def transfer_denied(reason):
-    if reason == "to_bot":
-        description = "Вы не можете подарить лягушек боту! Поверьте, он не оценит."
-        file_path = config.TRANSFER_FAILED_TO_BOT_IMAGE
-    elif reason == "to_self":
-        description = "Вы не можете подарить лягушек самому себе, в этом нет никакого смысла!"
-        file_path = config.TRANSFER_FAILED_TO_SELF_IMAGE
-    elif reason == "non_positive_amount":
-        description = "Количество переводимых лягушек должно быть положительным числом."
-        file_path = config.TRANSFER_DENIED_IMAGE
-    elif reason == "foreign_transfer":
-        description = "Вы не можете сделать перевод, поскольку эта транзакция принадлежит не вам!"
-        file_path = config.TRANSFER_DENIED_IMAGE
+    match reason:
+        case "to_bot":
+            description = "Вы не можете подарить лягушек боту! Поверьте, он не оценит."
+            file_path = config.TRANSFER_FAILED_TO_BOT_IMAGE
+        case "to_self":
+            description = "Вы не можете подарить лягушек самому себе, в этом нет никакого смысла!"
+            file_path = config.TRANSFER_FAILED_TO_SELF_IMAGE
+        case "non_positive_amount":
+            description = "Количество переводимых лягушек должно быть положительным числом."
+            file_path = config.TRANSFER_DENIED_IMAGE
+        case "foreign_transfer":
+            description = "Вы не можете сделать перевод, поскольку эта транзакция принадлежит не вам!"
+            file_path = config.TRANSFER_DENIED_IMAGE
     embed_message = MessageContainer(
         title="Перевод невозможен",
         description=description,
@@ -840,16 +841,17 @@ def quiz(question, image_binary_data=None, image_filename=None):
 
 
 def quiz_error(reason):
-    if reason == "incorrect_prize_amount":
-        description = ("Ошибка при создании раунда викторины. Похоже, вы ошиблись при вводе размера награды, "
-                       "она должна быть целым положительным числом.")
-    elif reason == "no_available_quiz":
-        description = ("Викторина еще не начата, либо уже завершилась, либо прошло уже более 30 минут после ее начала, "
-                       "и время для вручения приза вышло.")
-    elif reason == "in_progress":
-        description = "Данное участникам время на размышления еще не вышло."
-    elif reason == "to_bot":
-        description = "Боты не могут быть ни участниками, ни тем более победителями викторины."
+    match reason:
+        case "incorrect_prize_amount":
+            description = ("Ошибка при создании раунда викторины. Похоже, вы ошиблись при вводе размера награды, "
+                           "она должна быть целым положительным числом.")
+        case "no_available_quiz":
+            description = ("Викторина еще не начата, либо уже завершилась, либо прошло уже более 30 минут после "
+                           "ее начала, и время для вручения приза вышло.")
+        case "in_progress":
+            description = "Данное участникам время на размышления еще не вышло."
+        case "to_bot":
+            description = "Боты не могут быть ни участниками, ни тем более победителями викторины."
     embed_message = MessageContainer(
         title=ERROR_HEADER,
         description=description,
