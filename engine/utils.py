@@ -184,22 +184,22 @@ def get_random_shop_item(item):
 
 
 def refresh_cache():
-    expected_dirs = {'animal', 'cite', 'food', 'frog', 'meme', 'soundpad', 'track'}
+    expected_directories = {'animal', 'cite', 'food', 'frog', 'meme', 'soundpad', 'track'}
 
     directory_tree = {}
     files_count = {}
 
-    for root, dirs, files in os.walk(config.SHOP_ITEMS_PATH):
+    for root, directories, files in os.walk(config.SHOP_ITEMS_PATH):
         if root == config.SHOP_ITEMS_PATH:
-            for dir_name in dirs:
-                dir_path = os.path.join(root, dir_name)
-                items = os.listdir(dir_path)
-                directory_tree[dir_name] = items
-                files_count[dir_name] = len(items)
+            for directory_name in directories:
+                directory_path = os.path.join(root, directory_name)
+                items = os.listdir(directory_path)
+                directory_tree[directory_name] = items
+                files_count[directory_name] = len(items)
             break
     json_safewrite(config.SHOP_ITEMS_CACHE_JSON, directory_tree)
     config.SHOP_ITEMS_CACHE = json_safeload(config.SHOP_ITEMS_CACHE_JSON)
-    if set(files_count.keys()) == expected_dirs:
+    if set(files_count.keys()) == expected_directories:
         logging.info(f"Содержимое магазина успешно перекэшировано и записано в файл '{config.SHOP_ITEMS_CACHE_JSON}'")
         files_count_printable = '\n'.join(f"*{key}*: **{value}**" for key, value in files_count.items())
         return files_count_printable
