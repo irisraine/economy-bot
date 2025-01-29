@@ -771,15 +771,15 @@ def role_manage():
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def role_expired_and_removed(is_expired_role_users):
-    if is_expired_role_users:
-        title = SUCCESS_HEADER
+def expired_roles_removal(has_expired_roles=True):
+    if has_expired_roles:
+        title = "Изгнание из болотного рая"
         description = "Участники с просроченными донатными ролями лишились их."
         file_path = config.ROLE_REMOVAL_IMAGE
     else:
-        title = ERROR_HEADER
+        title = "Снимать нечего"
         description = "Участники с просроченной донатной ролью отсутствуют."
-        file_path = config.ERROR_IMAGE
+        file_path = config.ROLE_NOTHING_TO_REMOVE_IMAGE
     embed_message = MessageContainer(
         title=title,
         description=description,
