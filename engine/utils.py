@@ -233,10 +233,7 @@ def image_download(url):
 
 def setup_directories():
     directories = ['database', 'logs']
-
     for directory in directories:
-        if not os.path.exists(directory):
-            os.makedirs(directory)
         if not os.path.exists(directory):
             os.makedirs(directory)
 
