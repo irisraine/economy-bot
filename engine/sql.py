@@ -180,10 +180,10 @@ def set_encashment_amount(amount=0, reset=False):
 
 
 @catch_sql_exceptions
-def set_quiz_statistics(add_quiz=False, prize_amount=0):
+def set_quiz_statistics(increment=False, prize_amount=0):
     with sqlite3.connect(config.DATABASE_PATH) as db_connect:
         cursor = db_connect.cursor()
-        if add_quiz:
+        if increment:
             cursor.execute("UPDATE quiz_statistics SET total_quizzes_held = total_quizzes_held + 1")
         if prize_amount:
             cursor.execute("UPDATE quiz_statistics SET correct_answers = correct_answers + 1")

@@ -678,9 +678,8 @@ class ResetDatabaseView(AdminActionBasicView):
 
 
 class QuizModal(nextcord.ui.Modal):
-    def __init__(self, current_quiz):
+    def __init__(self):
         super().__init__("Начать викторину!")
-        self.current_quiz = current_quiz
 
         self.question = nextcord.ui.TextInput(
             label="Вопрос",
@@ -733,7 +732,7 @@ class QuizModal(nextcord.ui.Modal):
                 **messages.image_url_error(),
                 ephemeral=True
             )
-        self.current_quiz.start(
+        bot.quiz_manager.start_quiz(
             self.question.value,
             self.answer.value,
             self.prize_amount.value,
@@ -741,8 +740,8 @@ class QuizModal(nextcord.ui.Modal):
         )
         logging.info("Администратор начинает викторину.")
         await interaction.followup.send(
-            **messages.quiz(self.current_quiz.question, image_binary_data, image_filename),
+            **messages.quiz(self.question.value, image_binary_data, image_filename),
             allowed_mentions=nextcord.AllowedMentions(roles=True)
         )
         await asyncio.sleep(config.QUIZ_ROUND_TIME)
-        await interaction.followup.send(**messages.quiz_time_up(self.current_quiz.answer))
+        await interaction.followup.send(**messages.quiz_time_up(self.answer.value))

@@ -71,7 +71,7 @@ async def shop(interaction: nextcord.Interaction):
 @application_checks.has_permissions(administrator=True)
 async def quiz(interaction: nextcord.Interaction):
     quiz_manager.create_quiz()
-    await interaction.response.send_modal(views.QuizModal(quiz_manager.current_quiz))
+    await interaction.response.send_modal(views.QuizModal())
 
 
 @client.slash_command(description="Выдать награду победителю викторины")
