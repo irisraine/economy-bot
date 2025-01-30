@@ -179,8 +179,9 @@ def get_random_shop_item(item):
     try:
         return f"{config.SHOP_ITEMS_PATH}/{item}/{random.choice(shop_items[item])}"
     except Exception as error:
-        logging.error(f"Произошла ошибка '{error}' при попытке извлечения ссылки на файл с предметом из категории '{item}'! "
-                      f"Возможно, проблема в некорректном содержимом файла кэша или его отсутствии.")
+        logging.error(f"Произошла ошибка '{error}' при попытке извлечения ссылки на файл с предметом "
+                      f"из категории '{item}'! Возможно, проблема в некорректном содержимом файла кэша "
+                      f"или его отсутствии.")
 
 
 def refresh_cache():
