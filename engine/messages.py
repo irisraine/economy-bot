@@ -855,7 +855,7 @@ def quiz_error(reason):
     embed_message = MessageContainer(
         title=ERROR_HEADER,
         description=description,
-        file_path=config.ERROR_IMAGE
+        file_path=config.QUIZ_PRIZE_FORBIDDEN
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
