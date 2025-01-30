@@ -7,57 +7,83 @@ import engine.messages as messages
 import engine.utils as utils
 import engine.config as config
 
-
-def items():
-    return {
-        "track": {"price": config.PRICES['track'], "description": "Трек про Леху"},
-        "frog": {"price": config.PRICES['frog'], "description": "Лягушку"},
-        "cite": {"price": config.PRICES['cite'], "description": "Мудрую мысль"},
-        "animal": {"price": config.PRICES['animal'], "description": "Питомца"},
-        "meme": {"price": config.PRICES['meme'], "description": "Мем"},
-        "food": {"price": config.PRICES['food'], "description": "Пищу аристократов"},
-        "soundpad": {"price": config.PRICES['soundpad'], "description": "Саундпад"},
-        "drawing": {"price": config.PRICES['drawing'], "description": "Скетч"},
-        "rain": {"price": config.PRICES['rain'], "description": "Дождь из лягушек"},
-        "role_lite": {"price": config.PRICES['role_lite'], "description": "Роль лягушонка"},
-        "role": {"price": config.PRICES['role'], "description": "Роль лягушки"},
-        "band": {"price": config.PRICES['band'], "description": "Банду"},
+ITEMS_DATA = {
+        "track": {
+            "description": "Трек про Леху",
+            "label": "Послушать случайный трек про Леху",
+            "emoji": "<:1bne:1133866946094440598>"
+        },
+        "frog": {
+            "description": "Лягушку",
+            "label": "Случайная лягушка",
+            "emoji": "<:1gz:1143167342688358442>"
+        },
+        "cite": {
+            "description": "Мудрую мысль",
+            "label": "Случайная мудрая мысль на день",
+            "emoji": "<:1bqa:1129141182908354580>"
+        },
+        "animal": {
+            "description": "Питомца",
+            "label": "Случайное фото домашнего любимца",
+            "emoji": "<:1el:1157338338559266846>"
+        },
+        "meme": {
+            "description": "Мем",
+            "label": "Случайный мем",
+            "emoji": "<:1flga:1135179517648977970>"
+        },
+        "food": {
+            "description": "Пищу аристократов",
+            "label": "Сделать заказ в ресторане «Жабий квак»",
+            "emoji": "<:1erb:1282815682244771882>"
+        },
+        "soundpad": {
+            "description": "Саундпад",
+            "label": "Случайный саундпад Лехи",
+            "emoji": "🔊"
+        },
+        "drawing": {
+            "description": "Скетч",
+            "label": "Авторский скетч",
+            "emoji": "🏞️"},
+        "rain": {
+            "description": "Дождь из лягушек",
+            "label": "Дождь из лягушек",
+            "emoji": "🌧️"
+        },
+        "role_lite": {
+            "description": "Роль лягушонка",
+            "label": "Роль «Лягушонок» на 1 месяц",
+            "emoji": "<:1fhc:1237130954368356393>"
+        },
+        "role": {
+            "description": "Роль лягушки",
+            "label": "Роль «Легушька» на 1 месяц",
+            "emoji": "<:1ba:1132997121725976626>"
+        },
+        "band": {
+            "description": "Банду",
+            "label": "Создать свою банду",
+            "emoji": "<:1bf:1132997100687339621>"
+        },
     }
-
-
-def probabilities():
-    return {
-        "common": int(config.PROBABILITIES['common'] * 100),
-        "uncommon": int(config.PROBABILITIES['uncommon'] * 100),
-        "epic": int(config.PROBABILITIES['epic'] * 100),
-        "legendary": int(config.PROBABILITIES['legendary'] * 100)
-    }
-
-
-options = [
-    nextcord.SelectOption(label="Послушать случайный трек про Леху", value="track", emoji=f"{config.ITEMS_EMOJI['track']}"),
-    nextcord.SelectOption(label="Случайная лягушка", value="frog", emoji=f"{config.ITEMS_EMOJI['frog']}"),
-    nextcord.SelectOption(label="Случайная мудрая мысль на день", value="cite", emoji=f"{config.ITEMS_EMOJI['cite']}"),
-    nextcord.SelectOption(label="Случайное фото домашнего любимца", value="animal", emoji=f"{config.ITEMS_EMOJI['animal']}"),
-    nextcord.SelectOption(label="Случайный мем", value="meme", emoji=f"{config.ITEMS_EMOJI['meme']}"),
-    nextcord.SelectOption(label="Сделать заказ в ресторане «Жабий квак»", value="food", emoji=f"{config.ITEMS_EMOJI['food']}"),
-    nextcord.SelectOption(label="Случайный саундпад Лехи", value="soundpad", emoji=f"{config.ITEMS_EMOJI['soundpad']}"),
-    nextcord.SelectOption(label="Авторский скетч", value="drawing", emoji=f"{config.ITEMS_EMOJI['drawing']}"),
-    nextcord.SelectOption(label="Дождь из лягушек", value="rain", emoji=f"{config.ITEMS_EMOJI['rain']}"),
-    nextcord.SelectOption(label="Роль «Лягушонок» на 1 месяц", value="role_lite", emoji=f"{config.ITEMS_EMOJI['role_lite']}"),
-    nextcord.SelectOption(label="Роль «Легушька» на 1 месяц", value="role", emoji=f"{config.ITEMS_EMOJI['role']}"),
-    nextcord.SelectOption(label="Создать свою банду", value="band", emoji=f"{config.ITEMS_EMOJI['band']}"),
-]
 
 
 class ShopMenuView(nextcord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-    @nextcord.ui.select(placeholder="Выбери нужный товар", options=options)
+    @nextcord.ui.select(
+        placeholder="Выбери нужный товар",
+        options=[
+            nextcord.SelectOption(label=data["label"], value=key, emoji=data["emoji"])
+            for key, data in ITEMS_DATA.items()
+        ]
+    )
     async def select_purchase_callback(self, select, interaction: nextcord.Interaction):
-        item = items()[select.values[0]]['description']
-        price = items()[select.values[0]]['price']
+        item = ITEMS_DATA[select.values[0]]['description']
+        price = config.PRICES[select.values[0]]
 
         await interaction.response.defer()
         await interaction.edit_original_message(
@@ -302,13 +328,13 @@ class AdminActionBasicView(nextcord.ui.View):
 class SetPriceModal(nextcord.ui.Modal):
     def __init__(self, item):
         self.item = item
-        super().__init__(f"Установить новую цену на {items()[self.item]['description']}")
+        super().__init__(f"Установить новую цену на {ITEMS_DATA[self.item]['description']}")
 
         self.price = nextcord.ui.TextInput(
             label="Новая цена",
             max_length=4,
             required=True,
-            placeholder=f"Текущая цена: {items()[self.item]['price']} лягушек",
+            placeholder=f"Текущая цена: {config.PRICES[self.item]} лягушек",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.price)
@@ -327,7 +353,13 @@ class SetPriceView(AdminActionBasicView):
     def __init__(self):
         super().__init__()
 
-    @nextcord.ui.select(placeholder="Выбери нужный товар", options=options)
+    @nextcord.ui.select(
+        placeholder="Выбери нужный товар",
+        options=[
+            nextcord.SelectOption(label=data["label"], value=key, emoji=data["emoji"])
+            for key, data in ITEMS_DATA.items()
+        ]
+    )
     async def set_price_callback(self, select, interaction: nextcord.Interaction):
         await interaction.response.send_modal(SetPriceModal(select.values[0]))
 
@@ -347,7 +379,7 @@ class SetProbabilitiesModal(nextcord.ui.Modal):
             label="Стандартный улов",
             max_length=4,
             required=True,
-            placeholder=f"Текущая вероятность: {probabilities()['common']} %",
+            placeholder=f"Текущая вероятность: {int(config.PROBABILITIES['common'] * 100)} %",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.common)
@@ -355,7 +387,7 @@ class SetProbabilitiesModal(nextcord.ui.Modal):
             label="Редкий улов",
             max_length=4,
             required=True,
-            placeholder=f"Текущая вероятность: {probabilities()['uncommon']} %",
+            placeholder=f"Текущая вероятность: {int(config.PROBABILITIES['uncommon'] * 100)} %",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.uncommon)
@@ -363,7 +395,7 @@ class SetProbabilitiesModal(nextcord.ui.Modal):
             label="Эпичный улов",
             max_length=4,
             required=True,
-            placeholder=f"Текущая вероятность: {probabilities()['epic']} %",
+            placeholder=f"Текущая вероятность: {int(config.PROBABILITIES['epic'] * 100)} %",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.epic)
@@ -371,7 +403,7 @@ class SetProbabilitiesModal(nextcord.ui.Modal):
             label="Легендарный улов",
             max_length=4,
             required=True,
-            placeholder=f"Текущая вероятность: {probabilities()['legendary']} %",
+            placeholder=f"Текущая вероятность: {int(config.PROBABILITIES['legendary'] * 100)} %",
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.legendary)

@@ -76,21 +76,6 @@ TAXES_COLLECTION_AND_ENCASHMENT_TIME = utils.get_time_object(
 
 FROG_EMOJI = "<:1fb:1227748132868194346>"
 
-ITEMS_EMOJI = {
-    "track": "<:1bne:1133866946094440598>",
-    "frog": "<:1gz:1143167342688358442>",
-    "cite": "<:1bqa:1129141182908354580>",
-    "animal": "<:1el:1157338338559266846>",
-    "meme": "<:1flga:1135179517648977970>",
-    "food": "<:1erb:1282815682244771882>",
-    "soundpad": "🔊",
-    "drawing": "🏞️",
-    "rain": "🌧️",
-    "role_lite": "<:1fhc:1237130954368356393>",
-    "role": "<:1ba:1132997121725976626>",
-    "band": "<:1bf:1132997100687339621>",
-}
-
 SEPARATOR = "assets/separator.png"
 SUCCESS_OPERATION_IMAGE = "assets/success_operation.jpg"
 ERROR_IMAGE = "assets/error.jpg"
