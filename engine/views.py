@@ -248,7 +248,7 @@ class AdminMenuView(nextcord.ui.View):
     )
     async def select_admin_menu_callback(self, select, interaction: nextcord.Interaction):
         admin_actions = {
-            "all_users_balances": {"message": messages.all_users_balances(), "view": None},
+            "all_users_balances": {"message": messages.all_users_balances(), "view": AdminActionBasicView()},
             "bank_balance": {"message": messages.bank_balance(), "view": None},
             "casino_balance": {"message": messages.casino_balance(), "view": None},
             "quiz_statistics": {"message": messages.quiz_statistics(), "view": None},
