@@ -194,7 +194,7 @@ def roulette_bet_confirmation(is_valid=True, category=None):
     if not is_valid:
         title = ERROR_HEADER
         file_path = config.SEPARATOR_ERROR
-        if category == "sector":
+        if category == "straight":
             description = ("Ставка не принята, вы ввели некорректное значение сектора. Он должен быть целым числом в "
                            "диапазоне от 0 до 36.")
         elif category == "trinary":
