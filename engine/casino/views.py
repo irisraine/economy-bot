@@ -131,7 +131,7 @@ class RouletteStraightUpBetModal(nextcord.ui.Modal):
 
         self.number = nextcord.ui.TextInput(
             label="Сектор",
-            max_length=1,
+            max_length=2,
             required=True,
             placeholder="Введите число в диапазоне от 0 до 36",
             style=nextcord.TextInputStyle.short
@@ -139,7 +139,7 @@ class RouletteStraightUpBetModal(nextcord.ui.Modal):
         self.add_item(self.number)
         self.bet_amount = nextcord.ui.TextInput(
             label="Величина ставки",
-            max_length=2,
+            max_length=1,
             required=True,
             placeholder="Введите размер ставки в диапазоне от 1 до 3 лягушек",
             style=nextcord.TextInputStyle.short
