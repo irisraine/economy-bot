@@ -117,7 +117,7 @@ class RouletteBetsView(OriginalPlayerBasicView):
             view=RouletteBetsConfirmView(self.roulette)
         )
 
-    @nextcord.ui.button(label="Отказаться от игры в рулетку", style=nextcord.ButtonStyle.gray, emoji="❌", row=4)
+    @nextcord.ui.button(label="Отказаться от игры", style=nextcord.ButtonStyle.gray, emoji="❌", row=4)
     async def close_roulette_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
         utils.set_game(self.player, game="roulette", reset=True)
@@ -341,7 +341,7 @@ class RouletteBetsConfirmView(OriginalPlayerBasicView):
             view=None
         )
 
-    @nextcord.ui.button(label="Отказаться от игры в рулетку", style=nextcord.ButtonStyle.gray, emoji="❌")
+    @nextcord.ui.button(label="Отказаться от игры", style=nextcord.ButtonStyle.gray, emoji="❌")
     async def close_roulette_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
         utils.set_game(self.roulette.player, game="roulette", reset=True)
