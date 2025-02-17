@@ -722,7 +722,7 @@ def encashment(amount, encashment_day):
     month_name = utils.get_month_name(month, case="accusative")
     title = "Инкассация"
     description = (f"Ежедневное выгребание содержимого касс болотного банка и казино. \n "
-                   f"За **{day} {month_name} {year} года** участники потратили в магазине и спустили "
+                   f"За **{str(int(day))} {month_name} {year} года** участники потратили в магазине и спустили "
                    f"в казино **{amount}** {config.FROG_EMOJI}. Эти средства поступают на "
                    f"счет <@{config.ADMIN_ID}>.")
 

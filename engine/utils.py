@@ -14,7 +14,7 @@ def catch_attempt():
     if rand < config.PROBABILITIES['legendary']:
         amount_of_caught_frogs = random.randint(8, 50)
     elif rand < config.PROBABILITIES['epic']:
-        amount_of_caught_frogs = random.choice([5, 7])
+        amount_of_caught_frogs = random.choice([5, 6, 7])
     elif rand < config.PROBABILITIES['uncommon']:
         amount_of_caught_frogs = random.choice([3, 4])
     elif rand < config.PROBABILITIES['common']:
