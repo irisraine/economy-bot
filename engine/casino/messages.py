@@ -401,7 +401,7 @@ def yahtzee_reroll_set(dice_index):
 
 def yahtzee_result(player, bet, payout, roll_outcome, image_binary_data, is_reroll=False):
     winning_type = {
-        'drawn': ["small_straight"],
+        'tiny': ["small_straight"],
         'small': ["full_house", "large_straight"],
         'large': ["four_of_a_kind", "yahtzee"]
     }
@@ -429,7 +429,7 @@ def yahtzee_result(player, bet, payout, roll_outcome, image_binary_data, is_rero
                             f"пульсировал в груди. Со стола раздался чей-то смешок - игра продолжалась, но для тебя "
                             f"она уже закончилась.\n\nУдачи в следующей игре! 🍀")
     else:
-        if roll_outcome['winning_combination'] in winning_type['drawn']:
+        if roll_outcome['winning_combination'] in winning_type['tiny']:
             title = "Ни дать, ни взять"
             description = (f"Пятерка игральных костей прокатилась по зеленому сукну стола и, остановившись, сложилась "
                            f"в самую младшую из выигрышных комбинаций:"
