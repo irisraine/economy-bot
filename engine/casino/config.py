@@ -141,9 +141,9 @@ YAHTZEE_DIMENSIONS = {
     "dice_positions": [(150, 121), (250, 121), (350, 121), (450, 121), (550, 121)]
 }
 YAHTZEE_PAYOUT_MULTIPLIERS = {
-    "small_straight": 1.5,
+    "small_straight": 1,
     "full_house": 2,
     "four_of_a_kind": 3,
-    "large_straight": 6,
-    "yahtzee": 11
+    "large_straight": 5,
+    "yahtzee": 10
 }
