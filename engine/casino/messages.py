@@ -136,7 +136,7 @@ def slot_machine_result(player, reels, bet, payout, image_binary_data):
                         f"Не сдавайся, <@{player.id}>! Может быть, следующий спин принесет тебе удачу? 🍀")
     elif payout < 50:
         title = "Я живой, спасибо фортуне!"
-        description += (f"<@{player.id}>, символы на центральной сложились в выигрышную комбинацию: "
+        description += (f"<@{player.id}>, символы на центральной линии сложились в выигрышную комбинацию: "
                         f"{config.SLOT_MACHINE_REEL_SYMBOLS[reels[1][0]]['emoji']} "
                         f"{config.SLOT_MACHINE_REEL_SYMBOLS[reels[1][1]]['emoji']} "
                         f"{config.SLOT_MACHINE_REEL_SYMBOLS[reels[1][2]]['emoji']}. "
