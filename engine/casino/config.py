@@ -142,8 +142,8 @@ YAHTZEE_DIMENSIONS = {
 }
 YAHTZEE_PAYOUT_MULTIPLIERS = {
     "small_straight": 1,
-    "full_house": 2,
-    "large_straight": 3,
-    "four_of_a_kind": 5,
+    "full_house": 1.5,
+    "large_straight": 2,
+    "four_of_a_kind": 4,
     "yahtzee": 10
 }
