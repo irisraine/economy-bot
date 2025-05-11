@@ -654,6 +654,61 @@ def gift_confirmation(other_user, amount, is_valid=True):
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
+def confiscation():
+    embed_message = MessageContainer(
+        title="Конфискация имущества по решению суда",
+        description=f"Вы собираетесь сурово наказать участника, поправшего все писаные и неписаные законы нашего "
+                    f"уютного сообщества - лишить его части или всех накопленных лягушек.",
+        file_path=config.CONFISCATION_IMAGE
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
+def confiscation_confirmation(other_user, amount=0, is_penalty=False, empty_balance=False, is_valid_amount=True, insufficient_funds=False):
+    if not other_user:
+        title = ERROR_HEADER
+        description = "Конфискация невозможна. Пользователя с таким именем нет на нашем сервере."
+        file_path = config.ERROR_IMAGE
+    elif empty_balance:
+        title = ERROR_HEADER
+        description = ("Конфискация невозможна. В пруду участника нет ни одной лягушки, и ему нечем заплатить "
+                       "за свои преступления.")
+        file_path = config.ERROR_IMAGE
+    elif insufficient_funds:
+        title = ERROR_HEADER
+        description = (f"Конфискация невозможна. Введенная вами сумма штрафа, "
+                       f"равная **{amount}** {utils.numeral(int(amount))}, превышает или в точности равна количеству "
+                       f"лягушек в пруду наказываемого участника. Помните, что после уплаты штрафа у участника должна "
+                       f"остаться хотя бы одна лягушка!")
+        file_path = config.ERROR_IMAGE
+    elif not is_valid_amount:
+        title = ERROR_HEADER
+        description = "Конфискация невозможна. Похоже, вы ошиблись при вводе размера суммы штрафа."
+        file_path = config.ERROR_IMAGE
+    else:
+        if is_penalty:
+            title = "Недобросовестный пользователь оштрафован!"
+            description = (f"Вы оштрафовали пользователя **{other_user.mention}** "
+                           f"на **{amount}** {utils.numeral(int(amount))}! Все изъятые лягушки выпущены в пруд "
+                           f"главного администратора.\n"
+                           f"**{other_user.mention}**, надеемся, что наказание послужит тебе хорошим уроком и "
+                           f"предупредит неприятные инциденты с твоим участием в дальнейшем!")
+        else:
+            title = "Конфискация имущества преступника по решению суда"
+            description = (f"Вы конфисковали **всех лягушек** пользователя **{other_user.mention}**. Все изъятые "
+                           f"лягушки выпущены в пруд главного администратора.\n"
+                           f"Строгость наказания соразмерна тяжести его преступлений, которые шокировали все уважаемое "
+                           f"сообщество нашего сервера! **{other_user.mention}**, можешь считать себя легендарным "
+                           f"преступником, по чью душу пришли охотники за головами - и тебе не удалось скрыться.")
+        file_path = config.CONFISCATION_SUCCESS_IMAGE
+    embed_message = MessageContainer(
+        title=title,
+        description=description,
+        file_path=file_path
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
 def taxes_setup():
     tax_status = "сбор активен" if config.TAXATION["is_taxes_active"] else "не собирается"
     embed_message = MessageContainer(

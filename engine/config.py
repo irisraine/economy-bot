@@ -142,6 +142,9 @@ ENCASHMENT_IMAGE = "assets/encashment.jpg"
 GIFT_IMAGE = "assets/gift.jpg"
 GIFT_SUCCESS_IMAGE = "assets/gift_successful.jpg"
 
+CONFISCATION_IMAGE = "assets/confiscation.jpg"
+CONFISCATION_SUCCESS_IMAGE = "assets/confiscation_successful.jpg"
+
 ROLE_LISTING_IMAGE = "assets/role_listing.jpg"
 ROLE_REMOVAL_IMAGE = "assets/role_removal.jpg"
 ROLE_NOTHING_TO_REMOVE_IMAGE = "assets/role_nothing_to_remove.jpg"
