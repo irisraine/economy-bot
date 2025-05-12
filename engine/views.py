@@ -529,7 +529,7 @@ class GiftView(AdminActionBasicView):
         await interaction.response.send_modal(GiftModal())
 
 
-class PenaltyModal(nextcord.ui.Modal):
+class ConfiscationPartialModal(nextcord.ui.Modal):
     def __init__(self):
         super().__init__("Оштрафовать участника")
 
@@ -546,43 +546,44 @@ class PenaltyModal(nextcord.ui.Modal):
             style=nextcord.TextInputStyle.short
         )
         self.add_item(self.penalty_amount)
+        self.penalty_message = nextcord.ui.TextInput(
+            label="Обращение к нарушителю",
+            placeholder="(необязательное поле)",
+            required=False,
+            style=nextcord.TextInputStyle.paragraph
+        )
+        self.add_item(self.penalty_message)
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        is_valid = utils.validate(self.penalty_amount.value, check_type='penalty')
-        other_user = nextcord.utils.get(bot.client.get_all_members(), name=self.username.value)
-        if other_user and is_valid:
-            other_user_balance = sql.get_user_balance(other_user)
+        is_valid_amount = utils.validate(self.penalty_amount.value, check_type='penalty')
+        user = nextcord.utils.get(bot.client.get_all_members(), name=self.username.value)
+        if user and is_valid_amount:
+            user_balance = sql.get_user_balance(user)
             penalty_amount = int(self.penalty_amount.value)
-            if other_user_balance == 0:
-                await interaction.followup.send(
-                    **messages.confiscation_confirmation(other_user, empty_balance=True),
-                    ephemeral=True
-                )
-            elif other_user_balance <= penalty_amount:
-                await interaction.followup.send(
-                    **messages.confiscation_confirmation(
-                        other_user, amount=penalty_amount, insufficient_funds=True
-                    ),
-                    ephemeral=True
-                )
+            confiscation_confirmation_message = messages.confiscation_confirmation(
+                user,
+                user_balance=user_balance,
+                penalty_amount=penalty_amount,
+                penalty_message=self.penalty_message.value,
+                is_partial=True
+            )
+            if user_balance == 0 or user_balance <= penalty_amount:
+                await interaction.followup.send(**confiscation_confirmation_message, ephemeral=True)
             else:
                 administrator = await bot.client.fetch_user(config.ADMIN_ID)
-                sql.set_user_balance(other_user, -penalty_amount)
+                sql.set_user_balance(user, -penalty_amount)
                 sql.set_user_balance(administrator, penalty_amount)
-                await interaction.edit_original_message(
-                    **messages.confiscation_confirmation(other_user, is_penalty=True, amount=penalty_amount),
-                    view=None
-                )
+                await interaction.edit_original_message(**confiscation_confirmation_message, view=None)
                 logging.info(f"Администратор штрафует пользователя {self.username.value}, отнимая у него лягушек "
                              f"в количестве {penalty_amount} шт.")
         else:
             await interaction.followup.send(
-                **messages.confiscation_confirmation(other_user, is_valid_amount=is_valid),
+                **messages.confiscation_confirmation(user, is_valid_amount=False),
                 ephemeral=True)
 
 
-class ConfiscationModal(nextcord.ui.Modal):
+class ConfiscationTotalModal(nextcord.ui.Modal):
     def __init__(self):
         super().__init__("Конфисковать всех жаб")
 
@@ -595,26 +596,22 @@ class ConfiscationModal(nextcord.ui.Modal):
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        other_user = nextcord.utils.get(bot.client.get_all_members(), name=self.username.value)
-        if other_user:
-            other_user_balance = sql.get_user_balance(other_user)
-            if other_user_balance == 0:
-                await interaction.followup.send(
-                    **messages.confiscation_confirmation(other_user, empty_balance=True),
-                    ephemeral=True
-                )
+        user = nextcord.utils.get(bot.client.get_all_members(), name=self.username.value)
+        if user:
+            user_balance = sql.get_user_balance(user)
+            confiscation_confirmation_message = messages.confiscation_confirmation(user, user_balance=user_balance)
+            if user_balance == 0:
+                await interaction.followup.send(**confiscation_confirmation_message, ephemeral=True)
             else:
                 administrator = await bot.client.fetch_user(config.ADMIN_ID)
-                sql.set_user_balance(other_user, -other_user_balance)
-                sql.set_user_balance(administrator, other_user_balance)
-                await interaction.edit_original_message(
-                    **messages.confiscation_confirmation(other_user, amount=other_user_balance), view=None
-                )
+                sql.set_user_balance(user, -user_balance)
+                sql.set_user_balance(administrator, user_balance)
+                await interaction.edit_original_message(**confiscation_confirmation_message, view=None)
                 logging.info(f"Администратор штрафует пользователя {self.username.value}, отнимая всех его "
-                             f"лягушек в количестве {other_user_balance} шт.")
+                             f"лягушек в количестве {user_balance} шт.")
         else:
             await interaction.followup.send(
-                **messages.confiscation_confirmation(other_user),
+                **messages.confiscation_confirmation(user),
                 ephemeral=True)
 
 
@@ -624,11 +621,11 @@ class ConfiscationView(AdminActionBasicView):
 
     @nextcord.ui.button(label="Штраф", style=nextcord.ButtonStyle.red, emoji="🧾")
     async def penalty_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-        await interaction.response.send_modal(PenaltyModal())
+        await interaction.response.send_modal(ConfiscationPartialModal())
 
     @nextcord.ui.button(label="Тотальная конфискация", style=nextcord.ButtonStyle.red, emoji="⚰️")
     async def confiscation_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-        await interaction.response.send_modal(ConfiscationModal())
+        await interaction.response.send_modal(ConfiscationTotalModal())
 
 
 class TaxesSetupModal(nextcord.ui.Modal):
