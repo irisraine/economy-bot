@@ -690,7 +690,7 @@ def confiscation_confirmation(user, user_balance=0, penalty_amount=0, is_partial
             title = "Недобросовестный пользователь оштрафован"
             description = (f"Вы оштрафовали пользователя **{user.mention}** "
                            f"на **{penalty_amount}** {utils.numeral(int(penalty_amount))}! Все изъятые лягушки "
-                           f"выпущены в пруд главного администратора.\n**{user.mention}**! ")
+                           f"выпущены в пруд главного администратора.\n")
             if penalty_message:
                 description += penalty_message
             else:
@@ -700,8 +700,8 @@ def confiscation_confirmation(user, user_balance=0, penalty_amount=0, is_partial
             title = "Конфискация имущества преступника по решению суда"
             description = (f"Вы конфисковали **всех лягушек** пользователя **{user.mention}**. Изъятые лягушки "
                            f"выпущены в пруд главного администратора.\n"
-                           f"**{user.mention}**, можешь считать себя легендарным преступником, по чью душу пришли "
-                           f"охотники за головами. И тебе не удалось скрыться.")
+                           f"Можешь считать себя легендарным преступником, по чью душу пришли охотники за головами. "
+                           f"И тебе не удалось скрыться.")
         file_path = config.CONFISCATION_SUCCESS_IMAGE
     embed_message = MessageContainer(
         title=title,
