@@ -664,44 +664,38 @@ def confiscation():
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def confiscation_confirmation(user, user_balance=0, penalty_amount=0, is_partial=False, penalty_message="", is_valid_amount=True):
+def confiscation_confirmation(user, user_balance=0, penalty_amount=0, is_full=True, penalty_message="", is_valid=True):
+    title = ERROR_HEADER
+    description = "Конфискация невозможна. "
+    file_path = config.ERROR_IMAGE
+
     if not user:
-        title = ERROR_HEADER
-        description = "Конфискация невозможна. Пользователя с таким именем нет на нашем сервере."
-        file_path = config.ERROR_IMAGE
-    elif not is_valid_amount:
-        title = ERROR_HEADER
-        description = "Конфискация невозможна. Похоже, вы ошиблись при вводе размера суммы штрафа."
-        file_path = config.ERROR_IMAGE
+        description += "Пользователя с таким именем нет на нашем сервере."
+    elif not is_valid:
+        description += "Похоже, вы ошиблись при вводе размера суммы штрафа."
     elif user_balance == 0:
-        title = ERROR_HEADER
-        description = ("Конфискация невозможна. В пруду участника нет ни одной лягушки, и ему нечем заплатить "
-                       "за свои преступления.")
-        file_path = config.ERROR_IMAGE
+        description += "В пруду участника нет ни одной лягушки, и ему нечем заплатить за свои преступления."
     elif user_balance <= penalty_amount:
-        title = ERROR_HEADER
-        description = (f"Конфискация невозможна. Введенная вами сумма штрафа, "
-                       f"равная **{penalty_amount}** {utils.numeral(int(penalty_amount))}, превышает или в точности "
-                       f"равна количеству лягушек в пруду наказываемого участника. Помните, что после уплаты штрафа "
-                       f"у участника должна остаться хотя бы одна лягушка!")
-        file_path = config.ERROR_IMAGE
+        description += (f"Введенная вами сумма штрафа, равная **{penalty_amount}** {utils.numeral(penalty_amount)}, "
+                        f"превышает или в точности равна количеству лягушек в пруду наказываемого участника. Помните, "
+                        f"что после уплаты штрафа у участника должна остаться хотя бы одна лягушка!")
     else:
-        if is_partial:
+        if is_full:
+            title = "Конфискация имущества по решению суда"
+            description = (f"**{user.mention}**! Твоим злодеяниям нет прощения. **Все твои лягушки** конфискованы и "
+                           f"выпущены в пруд главного администратора. "
+                           f"Можешь считать себя легендарным преступником, по чью душу пришли охотники за головами. "
+                           f"И тебе не удалось скрыться.")
+        else:
             title = "Недобросовестный пользователь оштрафован"
             description = (f"**{user.mention}**! Тебя оштрафовали "
-                           f"на **{penalty_amount}** {utils.numeral(int(penalty_amount))}. Все изъятые лягушки "
+                           f"на **{penalty_amount}** {utils.numeral(penalty_amount)}. Все изъятые лягушки "
                            f"выпущены в пруд главного администратора.\n")
             if penalty_message:
                 description += penalty_message
             else:
                 description += ("Надеемся, что наказание послужит тебе хорошим уроком и предупредит неприятные "
                                 "инциденты с твоим участием в дальнейшем!")
-        else:
-            title = "Конфискация имущества по решению суда"
-            description = (f"**{user.mention}**! **Все твои лягушки** конфискованы и выпущены в пруд главного "
-                           f"администратора.\n"
-                           f"Можешь считать себя легендарным преступником, по чью душу пришли охотники за головами. "
-                           f"И тебе не удалось скрыться.")
         file_path = config.CONFISCATION_SUCCESS_IMAGE
     embed_message = MessageContainer(
         title=title,

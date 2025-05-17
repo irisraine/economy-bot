@@ -556,9 +556,9 @@ class ConfiscationPartialModal(nextcord.ui.Modal):
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         await interaction.response.defer()
-        is_valid_amount = utils.validate(self.penalty_amount.value, check_type='penalty')
+        is_valid = utils.validate(self.penalty_amount.value, check_type='penalty')
         user = nextcord.utils.get(bot.client.get_all_members(), name=self.username.value)
-        if user and is_valid_amount:
+        if user and is_valid:
             user_balance = sql.get_user_balance(user)
             penalty_amount = int(self.penalty_amount.value)
             confiscation_confirmation_message = messages.confiscation_confirmation(
@@ -566,7 +566,7 @@ class ConfiscationPartialModal(nextcord.ui.Modal):
                 user_balance=user_balance,
                 penalty_amount=penalty_amount,
                 penalty_message=self.penalty_message.value,
-                is_partial=True
+                is_full=False
             )
             if user_balance == 0 or user_balance <= penalty_amount:
                 await interaction.followup.send(**confiscation_confirmation_message, ephemeral=True)
@@ -578,9 +578,7 @@ class ConfiscationPartialModal(nextcord.ui.Modal):
                 logging.info(f"Администратор штрафует пользователя {self.username.value}, отнимая у него лягушек "
                              f"в количестве {penalty_amount} шт.")
         else:
-            await interaction.followup.send(
-                **messages.confiscation_confirmation(user, is_valid_amount=False),
-                ephemeral=True)
+            await interaction.followup.send(**messages.confiscation_confirmation(user, is_valid=False), ephemeral=True)
 
 
 class ConfiscationTotalModal(nextcord.ui.Modal):
@@ -610,9 +608,7 @@ class ConfiscationTotalModal(nextcord.ui.Modal):
                 logging.info(f"Администратор штрафует пользователя {self.username.value}, отнимая всех его "
                              f"лягушек в количестве {user_balance} шт.")
         else:
-            await interaction.followup.send(
-                **messages.confiscation_confirmation(user),
-                ephemeral=True)
+            await interaction.followup.send(**messages.confiscation_confirmation(user), ephemeral=True)
 
 
 class ConfiscationView(AdminActionBasicView):
