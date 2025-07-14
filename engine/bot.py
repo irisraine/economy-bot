@@ -147,6 +147,19 @@ async def scheduled_collection():
 
 
 @client.event
+async def on_member_remove(removed_user):
+    user_balance = sql.get_user_balance(removed_user)
+    if user_balance:
+        channel = client.get_channel(config.ECONOMY_BOT_MAIN_CHANNEL)
+        administrator = await client.fetch_user(config.ADMIN_ID)
+        sql.set_user_balance(removed_user, -user_balance)
+        sql.set_user_balance(administrator, user_balance)
+        logging.info(f"Пользователь {removed_user.name} ушел сервера, либо был выгнан. Его лягушки в количестве "
+                     f"{user_balance} шт. были переведены на счет администратора.")
+        await channel.send(**messages.member_removed_from_server(removed_user=removed_user, user_balance=user_balance))
+
+
+@client.event
 async def on_application_command_error(interaction: nextcord.Interaction, error):
     if isinstance(error, application_checks.ApplicationMissingPermissions):
         await interaction.response.send_message(**messages.admin_option_only_warning(), ephemeral=True)

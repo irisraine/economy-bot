@@ -156,3 +156,5 @@ QUIZ_TIME_UP = "assets/quiz_time_up.jpg"
 QUIZ_PRIZE_BASIC = "assets/quiz_prize_basic.jpg"
 QUIZ_PRIZE_SPECIAL = "assets/quiz_prize_special.jpg"
 QUIZ_PRIZE_FORBIDDEN = "assets/quiz_prize_forbidden.jpg"
+
+USER_REMOVED_IMAGE = "assets/user_removed.jpg"

@@ -964,6 +964,22 @@ def image_url_error():
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
+def member_removed_from_server(removed_user, user_balance):
+    embed_message = MessageContainer(
+        title="Прощай навеки, последняя любовь!",
+        description=f"Пользователь {removed_user.mention} покинул наш сервер. Сам ли он сделал этот выбор, или же "
+                    f"навлек на себя гнев своим непристойным поведением и был изгнан - но теперь ему больше никогда "
+                    f"не услышать легенд о древних временах, о героях и богах, никогда не поучаствовать в невероятных "
+                    f"приключениях, что становятся самым ярким воспоминанием на всю жизнь.\n"
+                    f"Он пойдет своею дорогой и найдет свою судьбу - без нас.\n"
+                    f"Поскольку {removed_user.mention} больше нет с нами, и вскорости время сотрет его имя, то "
+                    f"принадлежавшее ему болото вместе со всеми пойманными лягушками в количестве "
+                    f"**{user_balance}** {config.FROG_EMOJI} отныне переходит в собственность администрации.",
+        file_path=config.USER_REMOVED_IMAGE
+    )
+    return {'embed': embed_message.embed, 'file': embed_message.file}
+
+
 def admin_option_only_warning():
     embed_message = MessageContainer(
         title=ERROR_HEADER,
