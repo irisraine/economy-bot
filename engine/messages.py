@@ -407,11 +407,11 @@ def already_has_premium_role(user, assigned_premium_role):
     return {'embed': embed_message.embed, 'file': embed_message.file}
 
 
-def admin():
+def settings():
     embed_message = MessageContainer(
         title="Админка",
         description="Настройки бота, доступные только для администраторов.",
-        file_path=config.ADMIN_MENU_IMAGE
+        file_path=config.SETTINGS_MENU_IMAGE
     )
     return {'embed': embed_message.embed, 'file': embed_message.file}
 

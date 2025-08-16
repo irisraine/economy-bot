@@ -122,7 +122,7 @@ TRANSFER_DENIED_IMAGE = "assets/transfer_denied.jpg"
 TRANSFER_FAILED_TO_SELF_IMAGE = "assets/transfer_to_self.jpg"
 TRANSFER_FAILED_TO_BOT_IMAGE = "assets/transfer_to_bot.jpg"
 
-ADMIN_MENU_IMAGE = "assets/admin_menu.jpg"
+SETTINGS_MENU_IMAGE = "assets/settings_menu.jpg"
 
 CACHING_IMAGE = "assets/caching.jpg"
 CACHING_SUCCESSFUL_IMAGE = "assets/caching_successful.jpg"

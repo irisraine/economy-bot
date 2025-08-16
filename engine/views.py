@@ -191,7 +191,7 @@ class TransferView(nextcord.ui.View):
         await interaction.delete_original_message()
 
 
-class AdminMenuView(nextcord.ui.View):
+class SettingsMenuView(nextcord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
@@ -277,9 +277,9 @@ class AdminMenuView(nextcord.ui.View):
                 emoji="🔪"),
         ]
     )
-    async def select_admin_menu_callback(self, select, interaction: nextcord.Interaction):
-        admin_actions = {
-            "all_users_balances": {"message": messages.all_users_balances(), "view": AdminActionBasicView()},
+    async def select_settings_menu_callback(self, select, interaction: nextcord.Interaction):
+        settings_actions = {
+            "all_users_balances": {"message": messages.all_users_balances(), "view": SettingsActionBasicView()},
             "bank_balance": {"message": messages.bank_balance(), "view": None},
             "casino_balance": {"message": messages.casino_balance(), "view": None},
             "quiz_statistics": {"message": messages.quiz_statistics(), "view": None},
@@ -296,8 +296,8 @@ class AdminMenuView(nextcord.ui.View):
         }
         await interaction.response.defer()
         await interaction.edit_original_message(
-            **admin_actions[select.values[0]]["message"],
-            view=admin_actions[select.values[0]]["view"]
+            **settings_actions[select.values[0]]["message"],
+            view=settings_actions[select.values[0]]["view"]
         )
 
     @nextcord.ui.button(label="Закрыть админку", style=nextcord.ButtonStyle.gray, emoji="❌")
@@ -306,7 +306,7 @@ class AdminMenuView(nextcord.ui.View):
         await interaction.delete_original_message()
 
 
-class AdminActionBasicView(nextcord.ui.View):
+class SettingsActionBasicView(nextcord.ui.View):
     def __init__(self, *args, **kwargs):
         super().__init__(timeout=None, *args, **kwargs)
 
@@ -318,11 +318,11 @@ class AdminActionBasicView(nextcord.ui.View):
             return False
 
     @nextcord.ui.button(label="Вернуться в админку", style=nextcord.ButtonStyle.gray, emoji="◀️", row=2)
-    async def return_to_admin_menu_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+    async def return_to_settings_menu_callback(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.defer()
         await interaction.edit_original_message(
-            **messages.admin(),
-            view=AdminMenuView()
+            **messages.settings(),
+            view=SettingsMenuView()
         )
 
     @nextcord.ui.button(label="Закрыть", style=nextcord.ButtonStyle.gray, emoji="❌", row=2)
@@ -355,7 +355,7 @@ class SetPriceModal(nextcord.ui.Modal):
         await interaction.followup.send(**messages.set_price_confirmation(is_valid), ephemeral=True)
 
 
-class SetPriceView(AdminActionBasicView):
+class SetPriceView(SettingsActionBasicView):
     def __init__(self):
         super().__init__()
 
@@ -433,7 +433,7 @@ class SetProbabilitiesModal(nextcord.ui.Modal):
         await interaction.followup.send(**messages.set_probabilities_confirmation(is_valid), ephemeral=True)
 
 
-class SetProbabilitiesView(AdminActionBasicView):
+class SetProbabilitiesView(SettingsActionBasicView):
     def __init__(self):
         super().__init__()
 
@@ -472,7 +472,7 @@ class SetCooldownModal(nextcord.ui.Modal):
         await interaction.followup.send(**messages.set_cooldown_confirmation(is_valid), ephemeral=True)
 
 
-class SetCooldownView(AdminActionBasicView):
+class SetCooldownView(SettingsActionBasicView):
     def __init__(self):
         super().__init__()
 
@@ -520,7 +520,7 @@ class GiftModal(nextcord.ui.Modal):
             await interaction.followup.send(**gift_confirmation_message, ephemeral=True)
 
 
-class GiftView(AdminActionBasicView):
+class GiftView(SettingsActionBasicView):
     def __init__(self):
         super().__init__()
 
@@ -611,7 +611,7 @@ class ConfiscationTotalModal(nextcord.ui.Modal):
             await interaction.followup.send(**messages.confiscation_confirmation(user), ephemeral=True)
 
 
-class ConfiscationView(AdminActionBasicView):
+class ConfiscationView(SettingsActionBasicView):
     def __init__(self):
         super().__init__()
 
@@ -654,7 +654,7 @@ class TaxesSetupModal(nextcord.ui.Modal):
         )
 
 
-class TaxesSetupView(AdminActionBasicView):
+class TaxesSetupView(SettingsActionBasicView):
     def __init__(self):
         super().__init__()
 
@@ -729,7 +729,7 @@ class PostNewsWindow(nextcord.ui.Modal):
         await interaction.followup.send(**messages.post_news_confirmation(), ephemeral=True)
 
 
-class PostNewsView(AdminActionBasicView):
+class PostNewsView(SettingsActionBasicView):
     def __init__(self):
         super().__init__()
 
@@ -738,7 +738,7 @@ class PostNewsView(AdminActionBasicView):
         await interaction.response.send_modal(PostNewsWindow())
 
 
-class RoleManageView(AdminActionBasicView):
+class RoleManageView(SettingsActionBasicView):
     def __init__(self):
         super().__init__()
 
@@ -768,7 +768,7 @@ class RoleManageView(AdminActionBasicView):
             await interaction.followup.send(**messages.expired_roles_removal(has_expired_roles=False), ephemeral=True)
 
 
-class CacheView(AdminActionBasicView):
+class CacheView(SettingsActionBasicView):
     def __init__(self):
         super().__init__()
 
@@ -801,7 +801,7 @@ class ResetDatabaseModal(nextcord.ui.Modal):
         await interaction.followup.send(**messages.reset_database_confirmation(is_valid), ephemeral=True)
 
 
-class ResetDatabaseView(AdminActionBasicView):
+class ResetDatabaseView(SettingsActionBasicView):
     def __init__(self):
         super().__init__()
 

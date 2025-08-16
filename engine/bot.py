@@ -103,10 +103,10 @@ async def prize(
 
 @client.slash_command(description="Админка")
 @application_checks.has_permissions(administrator=True)
-async def admin(interaction: nextcord.Interaction):
+async def settings(interaction: nextcord.Interaction):
     await interaction.response.send_message(
-        **messages.admin(),
-        view=views.AdminMenuView()
+        **messages.settings(),
+        view=views.SettingsMenuView()
     )
 
 
